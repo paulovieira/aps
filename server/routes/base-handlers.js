@@ -31,7 +31,7 @@ var handlers = {
         console.log(utils.logHandlerInfo(request));
         debugger;
 
-        return reply.redirect("/" + config.get("allowedLanguages")[0]);
+        return reply.redirect("/" + config.get("allowedLanguages")[0] + "/login");
     },
 
 
@@ -49,6 +49,10 @@ debugger;
         request.params.level3 = request.params.level3 || "";
 
         var viewFile = utils.getView(request.params);
+
+        if(viewFile==="home"){
+            return reply.redirect("/" + request.params.lang + "/login");
+        }
 
         // if the combination of the level params is not recognized (that is, not present in the availableRoutes
         // array in config/default.js), the empty string will be returned
@@ -79,8 +83,8 @@ debugger;
         debugger;
 
         if (request.auth.isAuthenticated) {
-            console.log("loginForm handler: valid cookie, will now redirect to /" + request.params.lang + "/dashboard");
-            return reply.redirect("/" + request.params.lang + "/dashboard");
+            console.log("loginForm handler: valid cookie, will now redirect to /" + request.params.lang + "/cirac");
+            return reply.redirect("/" + request.params.lang + "/cirac");
         }
 
         var context = {
@@ -107,8 +111,8 @@ debugger;
 
 
         if (request.auth.isAuthenticated) {
-            console.log("loginAuthenticate handler: is already authenticated, will now redirect to /lang/dashboard");
-            return reply.redirect("/" + request.params.lang + "/dashboard");
+            console.log("loginAuthenticate handler: is already authenticated, will now redirect to /lang/cirac");
+            return reply.redirect("/" + request.params.lang + "/cirac");
         }
 
         /*
@@ -192,9 +196,9 @@ console.log("usersGroups", usersGroups);
 
                             console.log(chalk.bgGreen("    ") + chalk.bgYellow(" session was set in catbox ") + chalk.bgGreen("    "));
                             console.log("    credentials:\n", credentials);
-                            console.log("    will now redirect to /lang/dashboard");
+                            console.log("    will now redirect to /lang/cirac");
 
-                            return reply.redirect("/" + request.params.lang + "/dashboard");
+                            return reply.redirect("/" + request.params.lang + "/cirac");
                         }
                     );
 
@@ -207,8 +211,8 @@ console.log("usersGroups", usersGroups);
     },
 
 
-    /* will handle these paths: /pt/dashboard, /en/dashboard   */
-    dashboard: function(request, reply) {
+    /* will handle these paths: /pt/cirac, /en/cirac   */
+    cirac: function(request, reply) {
         console.log(utils.logHandlerInfo(request));
 
         debugger;
@@ -233,10 +237,10 @@ console.log("usersGroups", usersGroups);
             files:      request.pre.files,
             filesArray: request.pre.filesArray,
             auth:       request.auth,
-            urlParam1:  "dashboard",
+            urlParam1:  "cirac",
         };
 
-        return reply.view('dashboard', {
+        return reply.view('cirac', {
             ctx: context
         });
 

@@ -206,8 +206,8 @@ var routes = [
 
     {
         method: "GET",
-        path: "/{lang}/dashboard",
-        handler: baseHandlers.dashboard,
+        path: "/{lang}/cirac",
+        handler: baseHandlers.cirac,
 
         config: {
 

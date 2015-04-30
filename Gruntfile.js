@@ -7,17 +7,10 @@ module.exports = function(grunt) {
 
         nunjucks: {
 
-            dashboard: {
-                baseDir: 'client/dashboard',
-                src: ['client/dashboard/**/*.html'],
-                dest: 'client/dashboard/templates.js',
-                options: {}
-            },
-
-            dashboard3: {
-                baseDir: 'client/dashboard3',
-                src: ['client/dashboard3/**/*.html'],
-                dest: 'client/dashboard3/templates.js',
+            cirac: {
+                baseDir: 'client/cirac',
+                src: ['client/cirac/**/*.html'],
+                dest: 'client/cirac/templates.js',
                 options: {}
             },
 
@@ -105,9 +98,9 @@ module.exports = function(grunt) {
                 files: 'client/dashboard/**/*.html',
                 tasks: ['nunjucks:dashboard']
             },
-            "dashboard3 templates": {
-                files: 'client/dashboard3/**/*.html',
-                tasks: ['nunjucks:dashboard3']
+            "cirac templates": {
+                files: 'client/cirac/**/*.html',
+                tasks: ['nunjucks:cirac']
             },
             "ferramenta templates": {
                 files: 'client/ferramenta/**/*.html',

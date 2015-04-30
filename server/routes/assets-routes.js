@@ -25,31 +25,9 @@ var routeTable = [
 
     {
         method: 'GET',
-        path: '/dashboard/{anyPath*}',
+        path: '/cirac/{anyPath*}',
         handler: {
-            directory: { path: './client/dashboard' }
-        },
-        config: {
-            auth: false,
-        }
-    },
-
-    {
-        method: 'GET',
-        path: '/dashboard2/{anyPath*}',
-        handler: {
-            directory: { path: './client/dashboard2' }
-        },
-        config: {
-            auth: false,
-        }
-    },
-
-    {
-        method: 'GET',
-        path: '/dashboard3/{anyPath*}',
-        handler: {
-            directory: { path: './client/dashboard3' }
+            directory: { path: './client/cirac' }
         },
         config: {
             auth: false,
