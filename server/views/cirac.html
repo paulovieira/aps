@@ -10,6 +10,8 @@
     <link href="/common/css/leaflet-0.7.3.css" rel="stylesheet" />
     <link href="/cirac/css/fileinput.css" rel="stylesheet" />
     <link href="/cirac/css/cirac.css" rel="stylesheet" />
+    <link href="/cirac/lib/css/leaflet.groupedlayercontrol.min.css" rel="stylesheet" />
+    <link href="/cirac/lib/css/leaflet-geocoder-1.1.0.css" rel="stylesheet" />
 
 {% endblock %}
 
@@ -52,6 +54,11 @@
     <script src="/common/js/moment_2.9.0.js"></script>
     <script src="/common/js/nunjucks-slim.js"></script>
     <script src="/common/js/leaflet-src-0.7.3.js"></script>
+{#    <script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script> #}
+
+    <script src="/cirac/lib/js/leaflet-providers-1.0.29.js"></script> 
+    <script src="/cirac/lib/js/leaflet.groupedlayercontrol.min.js"></script> 
+    <script src="/cirac/lib/js/leaflet-geocoder-1.1.0.js"></script> 
 
     <script src="/common/js/backbone-1.1.2.js"></script>
     <script src="/common/js/backbone.radio.js"></script>
@@ -85,6 +92,7 @@
     <script src="/cirac/behaviors.js"></script>
 
     <script src="/cirac/map/map.js"></script>
+    <script src="/cirac/main-menu-left/main-menu-left.js"></script>
 {#
     <script src="/cirac/profile/profile.js"></script>
     <script src="/cirac/texts/texts.js"></script>
@@ -95,6 +103,7 @@
 #}
     <script src="/cirac/main-layout/main-layout.js"></script>
     <script src="/cirac/index.js"></script>
+
 {#
     <script src="/cirac/texts/texts.js"></script>
     <script src="/cirac/profile/profile.js"></script>

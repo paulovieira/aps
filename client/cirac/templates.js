@@ -165,6 +165,23 @@ root: root
 };
 })();
 })();
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["main-menu-left/templates/main-menu-left.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+output += "<div class=\"row\">\n\t<div class=\"col-sm-6 col-sm-offset-3\">\n\t\t<button class=\"btn btn-info btn-block btn-pressure btn-sensitive\"><span style=\"font-size: 170%\">Gestão de utilizadores</span></button>\n\t</div>\n\n\t<div class=\"col-sm-6 col-sm-offset-3\" style=\"margin-top: 15px\">\n\t\t<button class=\"btn btn-info btn-block  btn-pressure btn-sensitive\"><span style=\"font-size: 170%\">Pesquisa de vulnerabilidade</span></button>\n\t</div>\n\n\t<div class=\"col-sm-6 col-sm-offset-3\" style=\"margin-top: 15px\">\n\t\t<button class=\"btn btn-info btn-block  btn-pressure btn-sensitive\"><span style=\"font-size: 170%\">Ver carteira de clientes</span></button>\n\t</div>\n\n\t<div class=\"col-sm-6 col-sm-offset-3\" style=\"margin-top: 15px\">\n\t\t<button class=\"btn btn-info btn-block  btn-pressure btn-sensitive\"><span style=\"font-size: 170%\">Adicionar clientes à carteira</span></button>\n\t</div>\n</div>\n\n";
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
 (function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["map/templates/map.html"] = (function() {function root(env, context, frame, runtime, cb) {
 var lineno = null;
 var colno = null;
