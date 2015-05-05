@@ -170,7 +170,7 @@ var lineno = null;
 var colno = null;
 var output = "";
 try {
-output += "<div class=\"row\">\n\t<div class=\"col-sm-6 col-sm-offset-3\">\n\t\t<button class=\"btn btn-info btn-block btn-pressure btn-sensitive\"><span style=\"font-size: 170%\">Gestão de utilizadores</span></button>\n\t</div>\n\n\t<div class=\"col-sm-6 col-sm-offset-3\" style=\"margin-top: 15px\">\n\t\t<button class=\"btn btn-info btn-block  btn-pressure btn-sensitive\"><span style=\"font-size: 170%\">Pesquisa de vulnerabilidade</span></button>\n\t</div>\n\n\t<div class=\"col-sm-6 col-sm-offset-3\" style=\"margin-top: 15px\">\n\t\t<button class=\"btn btn-info btn-block  btn-pressure btn-sensitive\"><span style=\"font-size: 170%\">Ver carteira de clientes</span></button>\n\t</div>\n\n\t<div class=\"col-sm-6 col-sm-offset-3\" style=\"margin-top: 15px\">\n\t\t<button class=\"btn btn-info btn-block  btn-pressure btn-sensitive\"><span style=\"font-size: 170%\">Adicionar clientes à carteira</span></button>\n\t</div>\n</div>\n\n";
+output += "<div class=\"row\">\n\t<div class=\"col-sm-6 col-sm-offset-3\">\n\t\t<button class=\"btn btn-info btn-block btn-pressure btn-sensitive\"><span style=\"font-size: 170%\">Gestão de utilizadores</span></button>\n\t</div>\n\n\t<div class=\"col-sm-6 col-sm-offset-3\" style=\"margin-top: 15px\">\n\t\t<button class=\"btn btn-info btn-block  btn-pressure btn-sensitive\"><span style=\"font-size: 170%\">Os meus mapas</span></button>\n\t</div>\n\n\t<div class=\"col-sm-6 col-sm-offset-3\" style=\"margin-top: 15px\">\n\t\t<button class=\"btn btn-info btn-block  btn-pressure btn-sensitive\"><span style=\"font-size: 170%\">Estatísticas</span></button>\n\t</div>\n</div>\n\n";
 cb(null, output);
 ;
 } catch (e) {

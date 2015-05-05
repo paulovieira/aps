@@ -37,7 +37,7 @@ END IF;
     
 FOR options_row IN ( select json_array_elements(options) ) LOOP
 
-	command := 'SELECT vuln.value from cirac_vul_bgri_FVI_N vuln';
+	command := 'SELECT vuln.value from cirac_vul_bgri_fvi_n vuln';
 			
 	-- extract values to be (optionally) used in the WHERE clause
 	SELECT json_extract_path_text(options_row, 'lat')::real         INTO lat;

@@ -8,9 +8,9 @@
 
   - update the configuration files: database name
 
-  - add the bgri shape:
+  - add the bgri shape (make sure the name of the table is lowercase):
 
-shp2pgsql -D -I -s 4326 BGRI/Indice-de-vulnerabilidade/cirac_vul_bgri_FVI_N.shp cirac_vul_bgri_FVI_N |  psql --dbname=aps_150428
+shp2pgsql -D -I -s 4326 BGRI/Indice-de-vulnerabilidade/cirac_vul_bgri_FVI_N.shp cirac_vul_bgri_FVI_N |  psql --dbname=aps_150504
 
 ## tiles
 

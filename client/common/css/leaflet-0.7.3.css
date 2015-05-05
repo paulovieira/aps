@@ -160,7 +160,7 @@
 /* cursors */
 
 .leaflet-clickable {
-	cursor: pointer;
+	cursor: help;
 	}
 .leaflet-container {
 	cursor: -webkit-grab;

@@ -11,6 +11,17 @@
 
 
 /*
+leaflet cursor 
+*/
+.leaflet-clickable {
+    cursor: auto;
+}
+.leaflet-container {
+    cursor: auto;
+    cursor: auto;
+}
+
+/*
 custom controls
 */
 

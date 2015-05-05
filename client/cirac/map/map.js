@@ -3,48 +3,6 @@ var MapIV = Mn.ItemView.extend({
 
     initialize: function() {
         this.initializeTileProviders();
-/*
-        var geocoder = new google.maps.Geocoder();
-
-        debugger;
-        geocoder.geocode({
-            'address': "campo grande, lisboa, portugal"
-        }, function(results, status) {
-
-            debugger;
-
-            if (status == google.maps.GeocoderStatus.OK) {
-                map.setCenter(results[0].geometry.location);
-                var marker = new google.maps.Marker({
-                    map: map,
-                    position: results[0].geometry.location,
-                    draggable: false
-                });
-
-
-
-
-                var temp = document.getElementById("geolocation").value;
-                //var street=results[0].adddress_components[1].short_name;
-                //var number=results[0].adddress_components[0].short_name;
-                //var locality=results[0].adddress_components[2].short_name;
-                //var cp4=results[0].adddress_components[8].short_name;
-                //var municipality=results[0].adddress_components[4].short_name;
-                //var district=results[0].adddress_components[5].short_name;
-                //var country=results[0].adddress_components[6].short_name;
-                temp = temp + results[0].geometry.location_type + "; " + results[0].formatted_address + " ; " + results[0].geometry.location.lat() + " ; " + results[0].geometry.location.lng() + "\n";
-                document.getElementById("geolocation").value = temp;
-
-                markersArray.push(marker);
-
-            }
-
-            //else {
-            //alert("Não foi possível georreferenciar a sua morada. Experimente novamente.");
-            //}
-
-        });
-*/
     },
 
     initializeTileProviders: function() {
@@ -150,24 +108,41 @@ var MapIV = Mn.ItemView.extend({
             placeholder: "Procurar morada",
             errorMessage: "Morada desconhecida",
             geocoder: L.Control.Geocoder.bing('AoArA0sD6eBGZyt5PluxhuN7N7X1vloSEIhzaKVkBBGL37akEVbrr0wn17hoYAMy'),
+            //geocoder: L.Control.Geocoder.google('AIzaSyBoM_J6Ysno6znvigDm3MYja829lAeVupM'),
+            
             collapsed: "true",
         };
 
         var geocoder = L.Control.geocoder(geocoderOptions).addTo(this.map);
+        var view = this;
 
         geocoder.markGeocode = function(result) {
-            this._map.fitBounds(result.bbox);
 
-            if (this._geocodeMarker) {
-                this._map.removeLayer(this._geocodeMarker);
-            }
+            var promise = $.ajax({
+                url: "/api/vulnerabilities/" + result.center.lat + "," + result.center.lng
+            });
 
-            this._geocodeMarker = new L.Marker(result.center)
-                .bindPopup(result.html || result.name)
-                .addTo(this._map)
-                .openPopup();
 
-            console.log("TODO: in the markGeocode callback, get the vulnerability of the point. Result: ", result);
+            Q(promise)
+                .then(function(data) {
+
+                    view.map.fitBounds(result.bbox);
+
+                    if (view._geocodeMarker) {
+                        view.map.removeLayer(view._geocodeMarker);
+                    }
+
+                    view._geocodeMarker = new L.Marker(result.center)
+                        .bindPopup(result.name + " <br><br> Vulnerabilidade: " + data[0].value)
+                        .addTo(view.map)
+                        .openPopup();
+
+                    console.log("TODO: in the markGeocode callback, get the vulnerability of the point. Result: ", result);
+
+                })
+                .catch(function(err) {
+                    throw err;
+                });
 
             return this;
         };
@@ -238,15 +213,26 @@ var MapIV = Mn.ItemView.extend({
 
     registerMapEvents: function() {
 
+        var view = this;
         this.map.on('click', function getVulnerability(e) {
 
             var promise = $.ajax({
                 url: "/api/vulnerabilities/" + e.latlng.lat + "," + e.latlng.lng
             });
 
+
             Q(promise)
                 .then(function(data) {
-                    console.log(data[0])
+//                    console.log(data[0])
+
+                    if (view._geocodeMarker) {
+                        view.map.removeLayer(view._geocodeMarker);
+                    }
+
+                    view._geocodeMarker = new L.Marker([e.latlng.lat, e.latlng.lng])
+                        .bindPopup("Vulnerabilidade: " + data[0].value)
+                        .addTo(view.map)
+                        .openPopup();
                 })
                 .catch(function(err) {
                     throw err;
