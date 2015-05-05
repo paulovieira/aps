@@ -173,7 +173,9 @@ debugger;
         var lat = request.params.coordinates[0],
              lon = request.params.coordinates[1];
 
-        db.func('vulnerabilities_read', {lat: lat, lon: lon})
+console.log("request.query: ", request.query);
+
+        db.func('vulnerabilities_read', {lat: lat, lon: lon, map: request.query.map})
             .then(function(data){
                 debugger;
                 console.log("           success handler (then)")

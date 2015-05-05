@@ -124,6 +124,7 @@
 			this._clearResults();
 
 			//var query = this._input.value;
+			//debugger;
 			var query = this._input.value + ", portugal";
 			this.options.geocoder.geocode(query, this._geocodeResult, this);
 

@@ -54,15 +54,23 @@ var MapIV = Mn.ItemView.extend({
                 },
 
                 cirac: {
-                    "BGRIBordersOnly": L.tileLayer('http://localhost:8001/v2/bgri_lisboa_borders_only/{z}/{x}/{y}.png', {
-                        maxZoom: 16
-                    }),
-
-                    "BGRIVuln": L.tileLayer('http://localhost:8001/v2/bgri_lisboa/{z}/{x}/{y}.png', {
+                    "BGRIBordersOnly": L.tileLayer('http://localhost:8001/v2/cirac_brgi_borders/{z}/{x}/{y}.png', {
                         maxZoom: 16
                     }),
 
                     "cirac_vul_bgri_FVI_N": L.tileLayer('http://localhost:8001/v2/cirac_vul_bgri_FVI_N/{z}/{x}/{y}.png', {
+                        maxZoom: 16
+                    }),
+
+                    "cirac_vul_bgri_FVI_75": L.tileLayer('http://localhost:8001/v2/cirac_vul_bgri_FVI_75/{z}/{x}/{y}.png', {
+                        maxZoom: 16
+                    }),
+
+                    "cirac_vul_bgri_cfvi": L.tileLayer('http://localhost:8001/v2/cirac_vul_bgri_cfvi/{z}/{x}/{y}.png', {
+                        maxZoom: 16
+                    }),
+
+                    "cirac_vul_bgri_cfvi75": L.tileLayer('http://localhost:8001/v2/cirac_vul_bgri_cfvi75/{z}/{x}/{y}.png', {
                         maxZoom: 16
                     })
                 }
@@ -97,7 +105,7 @@ var MapIV = Mn.ItemView.extend({
         this.initializeMap();
         //this.addTileLayer("base", "Hydda.Base");
         this.addTileLayer("streets", "MapQuestOpen.OSM");
-        this.addVulnLegend();
+        this.initializeVulnLegend();
         this.addGeocoderControl();
         this.registerMapEvents();
 
@@ -118,13 +126,21 @@ var MapIV = Mn.ItemView.extend({
 
         geocoder.markGeocode = function(result) {
 
-            var promise = $.ajax({
-                url: "/api/vulnerabilities/" + result.center.lat + "," + result.center.lng
-            });
+            var promise;
+
+            if(view.hasVulnMap()){
+                promise = $.ajax({
+                    url: "/api/vulnerabilities/" + result.center.lat + "," + result.center.lng + "?map=" + view.getCurrentMapTable()
+                });
+            }
 
 
             Q(promise)
                 .then(function(data) {
+
+                    if(!data){
+                        data = [{value: undefined}];
+                    }
 
                     view.map.fitBounds(result.bbox);
 
@@ -133,11 +149,12 @@ var MapIV = Mn.ItemView.extend({
                     }
 
                     view._geocodeMarker = new L.Marker(result.center)
-                        .bindPopup(result.name + " <br><br> Vulnerabilidade: " + data[0].value)
+                        //.bindPopup(result.name + " <br><br> Vulnerabilidade: " + data[0].value)
+                        .bindPopup(view.getPopupMessage(data[0].value, result.name))
                         .addTo(view.map)
                         .openPopup();
 
-                    console.log("TODO: in the markGeocode callback, get the vulnerability of the point. Result: ", result);
+                    //console.log("TODO: in the markGeocode callback, get the vulnerability of the point. Result: ", result);
 
                 })
                 .catch(function(err) {
@@ -148,19 +165,190 @@ var MapIV = Mn.ItemView.extend({
         };
     },
 
-    addVulnLegend: function() {
-        function getColor(vuln) {
-            return vuln == 3 ? '#1a9850' :
-                vuln == 4 ? '#66bd63' :
-                vuln == 5 ? '#a6d96a' :
-                vuln == 6 ? '#d9ef8b' :
-                vuln == 7 ? '#fee08b' :
-                vuln == 8 ? '#fdae61' :
-                vuln == 9 ? '#f46d43' :
-                '#d73027';
+    hasVulnMap: function(){
+
+        if(
+            this.map.hasLayer(this.tileProviders["cirac"]["cirac_vul_bgri_FVI_N"])  ||
+            this.map.hasLayer(this.tileProviders["cirac"]["cirac_vul_bgri_FVI_75"]) || 
+            this.map.hasLayer(this.tileProviders["cirac"]["cirac_vul_bgri_cfvi"])   ||
+            this.map.hasLayer(this.tileProviders["cirac"]["cirac_vul_bgri_cfvi75"])
+        ){
+            return true;
+        }
+
+        return false;
+    },
+
+    getCurrentMapTable: function(){
+        var mapTable = "";
+        if(this.map.hasLayer(this.tileProviders["cirac"]["cirac_vul_bgri_FVI_N"])){
+            mapTable = "cirac_vul_bgri_fvi_n";
+        }
+        else if(this.map.hasLayer(this.tileProviders["cirac"]["cirac_vul_bgri_FVI_75"])){
+            mapTable = "cirac_vul_bgri_fvi_75";
+        }
+        else if(this.map.hasLayer(this.tileProviders["cirac"]["cirac_vul_bgri_cfvi"])){
+            mapTable = "cirac_vul_bgri_cfvi";
+        }
+        else if(this.map.hasLayer(this.tileProviders["cirac"]["cirac_vul_bgri_cfvi75"])){
+            mapTable = "cirac_vul_bgri_cfvi75";
+        }
+        else{
+            alert("ERROR: the selected vulnerability map is unknown");
+        }
+
+        return mapTable;
+    },
+
+    getPopupMessage: function(value, locationName){
+        //return " <br><br> xxVulnerabilidade: " + value;
+        //debugger;
+        // if the selected map if the normal 
+        var message = "";
+        if(this.map.hasLayer(this.tileProviders["cirac"]["cirac_vul_bgri_FVI_N"])){
+            message += "<h5>Normal FVI (mode)</h5>";
+
+            if(locationName){
+                message += "<div><b>Location:</b> " + locationName + "</div>";
+            }
+
+            message += "<div><b>Vulnerability:</b> " + value + " (" + this.getNormalFVIDescription(value, true) + ")</div>";
+
+            message += "<div><b>Description:</b> " + this.getNormalFVIDescription(value) + "</div>";
+        }
+
+        else if(this.map.hasLayer(this.tileProviders["cirac"]["cirac_vul_bgri_FVI_75"])){
+            message += "<h5>Normal FVI (75 percentile)</h5>";
+
+            if(locationName){
+                message += "<div><b>Location:</b> " + locationName + "</div>";
+            }
+
+            message += "<div><b>Vulnerability:</b> " + value + " (" + this.getNormalFVIDescription(value, true) + ")</div>";
+
+            message += "<div><b>Description:</b> " + this.getNormalFVIDescription(value) + "</div>";
+        }
+
+        else if(this.map.hasLayer(this.tileProviders["cirac"]["cirac_vul_bgri_cfvi"])){
+            message += "<h5>Combined FVI (mode)</h5>";
+
+            if(locationName){
+                message += "<div><b>Location:</b> " + locationName + "</div>";
+            }
+
+            message += "<div><b>Vulnerability:</b> " + value + "</div>";
+
+            message += "<div><b>Description:</b> " + this.getCombinedFVIDescription(value) + "</div>";
+        }
+
+        else if(this.map.hasLayer(this.tileProviders["cirac"]["cirac_vul_bgri_cfvi75"])){
+            message += "<h5>Combined FVI (75 percentile)</h5>";
+
+            if(locationName){
+                message += "<div><b>Location:</b> " + locationName + "</div>";
+            }
+
+            message += "<div><b>Vulnerability:</b> " + value + "</div>";
+
+            message += "<div><b>Description:</b> " + this.getCombinedFVIDescription(value) + "</div>";
+        }
+        else{
+            if(locationName){
+                message += "<div><b>Location:</b> " + locationName + "</div>";
+            }
+        }
+        return message;
+    },
+
+    getNormalFVIDescription: function(value, shortDescription){
+        var message = "";
+        if(value >= 3 && value <= 5){        
+            message = shortDescription ? 
+                "baixo" : 
+                "Áreas improváveis de ter inundações (E, PSI) e onde as comunidades são menos suscetíveis (SSI).";
+        }
+        else if(value >= 6 && value <= 7){  
+            message =  shortDescription ? 
+                "moderado" : 
+                "Áreas improváveis de sofrer danos durante ocorrências de inundações (E, PSI) e onde as comunidades tendem a ser menos suscetíveis (SSI).";
+        }
+        else if(value >= 8 && value <= 10){  
+            message = shortDescription ? 
+                "elevado" :
+                "Áreas suscetíveis de sofrer danos durante ocorrências de inundações (E, PSI) e com comunidades suscetíveis (SSI).";
+        }
+        else if(value >= 11 && value <= 12){ 
+            message = shortDescription ? 
+                "muito elevado" :
+                "Áreas muito suscetíveis de sofrer danos durante ocorrências de inundações (E, PSI) e com comunidades suscetíveis (SSI).";
+        }
+
+        return message;
+    },
+
+    getCombinedFVIDescription: function(value, shortDescription){
+        var message = "";
+        if(value == 1){        
+            message = shortDescription ? 
+                "" : 
+                "Baixa Susceptibilidade Física, Exposição e Precipitação";
+        }
+        if(value == 2){
+            message = shortDescription ? 
+                "" : 
+                "Baixa Susceptibilidade Física e Precipitação, elevada Exposição";
+        }
+        if(value == 3){
+            message = shortDescription ? 
+                "" : 
+                "Baixa Susceptibilidade Física e Exposição, elevada Precipitação";
+        }
+        if(value == 4){
+            message = shortDescription ? 
+                "" : 
+                "Baixa Susceptibilidade Física, elevada Exposição e Precipitação";
+        }
+        if(value == 5){
+            message = shortDescription ? 
+                "" : 
+                "Elevada Susceptibilidade Física, baixa Exposição e Precipitação";
+        }
+        if(value == 6){
+            message = shortDescription ? 
+                "" : 
+                "Elevada Susceptibilidade Física e Exposição, baixa Precipitação";
+        }
+        if(value == 7){
+            message = shortDescription ? 
+                "" : 
+                "Elevada Susceptibilidade Física e Precipitação, baixa Exposição";
+        }
+        if(value == 8){
+            message = shortDescription ? 
+                "" : 
+                "Elevada Susceptibilidade Física, Exposição e Precipitação";
+        }
+
+        return message;
+    },
+
+
+    initializeVulnLegend: function() {
+
+        // legend control for normal FVI
+
+        function getFVINormalColors(value) {
+            var color = "#FFF";
+
+            if(value >= 3 && value <= 5){        color = "#38A800"; }
+            else if(value >= 6 && value <= 7){   color = "#FFFF00"; }
+            else if(value >= 8 && value <= 10){  color = "#FF9500"; }
+            else if(value >= 11 && value <= 12){ color = "#FF0000"; }
+
+            return color;
         };
 
-        var LegendControl = L.Control.extend({
+        var FVINormalLegendControl = L.Control.extend({
 
             options: {
                 position: 'bottomright'
@@ -169,32 +357,84 @@ var MapIV = Mn.ItemView.extend({
             onAdd: function(map) {
 
                 var div = L.DomUtil.create('div', 'info legend'),
-                    vuln = [3, 4, 5, 6, 7, 8, 9, 10];
+                    vuln = [3, 6, 8, 11, 13];
 
-                div.innerHTML = '<div style="margin-bottom: 5px; font-weight: 700;">Vulnerabilidade</div>';
+                div.innerHTML = '<div style="margin-bottom: 5px; font-weight: 700;">FVI (normal)</div>';
 
-                for (var i = 0; i < vuln.length; i++) {
+                for (var i = 0; i < vuln.length-1; i++) {
 
                     div.innerHTML +=
-                        '<div style="margin-bottom: 2px;"><i style="background:' + getColor(vuln[i]) + '"></i>&nbsp;' +
-                        vuln[i] + '&nbsp;<div>';
+                        '<div style="margin-bottom: 2px;"><i style="background:' + getFVINormalColors(vuln[i]) + '"></i>&nbsp;' +
+                        vuln[i] + '-' + (vuln[i+1]-1) +  '&nbsp;<div>';
                 }
 
                 return div;
             }
         });
 
-        this.map.addControl(new LegendControl());
+        this.fviNormalLegendControl = new FVINormalLegendControl();
+
+
+        // legend control for combined FVI
+
+        function getFVICombinedColors(value) {
+            var color = "#FFF";
+
+            if(value == 1){      color = "#38A800"; }
+            else if(value == 2){ color = "#66BF00"; }
+            else if(value == 3){ color = "#9BD900"; }
+            else if(value == 4){ color = "#DEF200"; }
+            else if(value == 5){ color = "#FFDD00"; }
+            else if(value == 6){ color = "#FF9100"; }
+            else if(value == 7){ color = "#FF4800"; }
+            else if(value == 8){ color = "#FF0000"; }
+
+            return color;
+        };
+
+        var FVICombinedLegendControl = L.Control.extend({
+
+            options: {
+                position: 'bottomright'
+            },
+
+            onAdd: function(map) {
+
+                var div = L.DomUtil.create('div', 'info legend'),
+                    vuln = [1, 2, 3, 4, 5, 6, 7, 8];
+
+                div.innerHTML = '<div style="margin-bottom: 5px; font-weight: 700;">FVI (combined)</div>';
+
+                for (var i = 0; i < vuln.length; i++) {
+
+                    div.innerHTML +=
+                        '<div style="margin-bottom: 2px;"><i style="background:' + getFVICombinedColors(vuln[i]) + '"></i>&nbsp;' +
+                        vuln[i] +  '&nbsp;<div>';
+                }
+
+                return div;
+            }
+        });
+
+        this.fviCombinedLegendControl = new FVICombinedLegendControl();
     },
 
     initializeMap: function() {
         this.map = L.map('map', {
             center: [38.75, -9.15],
+            zoomControl: false,
+            attributionControl: false,
             zoom: 10,
             maxZoom: 16,
             minZoom: 8,
             layers: [this.groupedOverlays["Mapa base"]["Ruas"]]
         });
+
+        var zoomControl = L.control.zoom({
+            position: "topright"
+        });
+
+        this.map.addControl(zoomControl);
     },
 
     addTileLayer: function(tileCategory, tileName) {
@@ -205,10 +445,61 @@ var MapIV = Mn.ItemView.extend({
         //     maxZoom: 16
         // }).addTo(this.map);
 
-        L.control.groupedLayers(undefined, this.groupedOverlays, {
-            exclusiveGroups: ["Mapa base", "Vulnerabilidades"],
-            collapsed: true
-        }).addTo(this.map);
+        // L.control.groupedLayers(undefined, this.groupedOverlays, {
+        //     exclusiveGroups: ["Mapa base", "Vulnerabilidades"],
+        //     collapsed: true
+        // }).addTo(this.map);
+
+        var baseMaps = [
+                { 
+                    groupName : "Street maps",
+                    expanded: false,
+                    layers: {
+                        "Mapquest Open": this.tileProviders["streets"]["MapQuestOpen.OSM"],
+                        "HERE Day Grey": this.tileProviders["streets"]["HERE.normalDayGrey"],
+                        "HERE Satellite": this.tileProviders["satellite"]["HERE.satelliteDay"]
+                    }
+                },
+                { 
+                    groupName : "Flood Vulnerability Index",
+                    expanded: false,
+                    layers: {
+                        "Flood Vulnerability Index by BGRI (mode)": this.tileProviders["cirac"]["cirac_vul_bgri_FVI_N"],
+                        "Flood Vulnerability Index by BGRI (75 percentile)": this.tileProviders["cirac"]["cirac_vul_bgri_FVI_75"]
+                    }
+                },
+                { 
+                    groupName : "Combined Flood Vulnerability Index",
+                    expanded: false,
+                    layers: {
+                        "Combined Flood Vulnerability Index by BGRI (mode)": this.tileProviders["cirac"]["cirac_vul_bgri_cfvi"],
+                        "Combined Flood Vulnerability Index by BGRI (75 percentile)": this.tileProviders["cirac"]["cirac_vul_bgri_cfvi75"]
+                    }
+                }
+        ];
+
+        var overlays = [
+                 {
+                    groupName : "Other layers",
+                    expanded  : false,
+                    layers    : { 
+                        "BGRI boundary" : this.tileProviders["cirac"]["BGRIBordersOnly"]
+                    }   
+                 }
+        ];
+
+        var options = {
+            container_width     : "350px",
+            container_maxHeight : "350px", 
+            group_maxHeight     : "110px",
+            exclusive           : false,
+            position: "topleft",
+            collapsed: false
+        };
+
+        var layerControl = L.Control.styledLayerControl(baseMaps, overlays, options);
+        this.map.addControl(layerControl);
+
     },
 
     registerMapEvents: function() {
@@ -216,8 +507,12 @@ var MapIV = Mn.ItemView.extend({
         var view = this;
         this.map.on('click', function getVulnerability(e) {
 
+            if(!view.hasVulnMap()){
+                return;
+            }
+
             var promise = $.ajax({
-                url: "/api/vulnerabilities/" + e.latlng.lat + "," + e.latlng.lng
+                url: "/api/vulnerabilities/" + e.latlng.lat + "," + e.latlng.lng + "?map=" + view.getCurrentMapTable()
             });
 
 
@@ -230,13 +525,48 @@ var MapIV = Mn.ItemView.extend({
                     }
 
                     view._geocodeMarker = new L.Marker([e.latlng.lat, e.latlng.lng])
-                        .bindPopup("Vulnerabilidade: " + data[0].value)
+                        //.bindPopup("Vulnerabilidade: " + data[0].value)
+                        .bindPopup(view.getPopupMessage(data[0].value))
                         .addTo(view.map)
                         .openPopup();
                 })
                 .catch(function(err) {
                     throw err;
                 });
+        });
+
+        this.map.on("baselayerchange", function(e){
+            var tilesUrl = e.layer._url.toLowerCase();
+
+            if(view.currentLegendControl){
+                view.map.removeControl(view.currentLegendControl);
+            }
+
+            // normal FVI - show the corresponding legend control
+            if(tilesUrl.indexOf("cirac_vul_bgri_fvi_n/{z}/{x}/{y}.png") > 0 ||
+                tilesUrl.indexOf("cirac_vul_bgri_fvi_75/{z}/{x}/{y}.png") > 0){
+
+                view.currentLegendControl = view.fviNormalLegendControl;
+                
+            }
+
+            // combined FVI - show the corresponding legend control
+            else if(tilesUrl.indexOf("cirac_vul_bgri_cfvi/{z}/{x}/{y}.png") > 0 ||
+                tilesUrl.indexOf("cirac_vul_bgri_cfvi75/{z}/{x}/{y}.png") > 0){
+
+                view.currentLegendControl = view.fviCombinedLegendControl;
+            }
+            else{
+                console.log("street");   
+                view.currentLegendControl = undefined;
+            }
+
+            // update the legend control (if not undefined)
+            if(view.currentLegendControl){
+                view.map.addControl(view.currentLegendControl);
+            }
+
+
         });
     },
 

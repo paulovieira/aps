@@ -17,7 +17,7 @@ var MainLayoutLV = Mn.LayoutView.extend({
 		// });
 		// this.mainLeftRegion.show(menuLeftIV);
 
-		this.showMainMenuLeft();
+		//this.showMainMenuLeft();
 		this.showMap();
 	},
 

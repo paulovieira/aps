@@ -9,7 +9,7 @@ body {
 }
 
 #map {
-	height: 600px; 
+	height: 800px; 
 }
 
 .header {
@@ -55,8 +55,12 @@ body {
 }
 */
 
+.navbar {
+  margin-bottom: 0px;
+}
+
 body {
-  background-image: url('/common/images/bg/grid_noise.png') ;
+/*  background-image: url('/common/images/bg/grid_noise.png') ;*/
 }
 
 #main-container {

@@ -13,15 +13,16 @@
 	                <span class="icon-bar"></span>
 	            </button>
 	            <a class="navbar-brand" href="/{{ lang }}" style="padding-left: 30px; padding-right: 30px;">
-	            	{{ ctx.texts[0]["pt"] }}
+	            	Mapas CIRAC
 	            </a>
 	        </div>
 
 	        <!-- Collect the nav links, forms, and other content for toggling -->
+{#
 	        <div class="collapse navbar-collapse" id="top-bar">
 	            <ul class="nav navbar-nav">
 
-					{# dropdown for the introduction #}
+
 	                <li class="dropdown {% if ctx.urlParam1=='introducao' %}active{% endif %} nav-border-left">
 
 	                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ ctx.texts[17][lang] }} <span class="caret"></span></a>
@@ -52,7 +53,7 @@
 	                </li>
 
 
-					{# dropdown for the sectors #}
+
 	                <li class="dropdown {% if ctx.urlParam1=='sectores' %}active{% endif %} nav-border-left">
 	                    <a href="/{{ lang }}/sectores" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ ctx.texts[23][lang] }} <span class="caret"></span></a>
 
@@ -106,6 +107,7 @@
 	                </li>
 
 	            </ul>
+#}
 
 {#
 	            <form class="navbar-form navbar-right" role="search">

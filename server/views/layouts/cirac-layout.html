@@ -3,10 +3,16 @@
 {% from "macros/navigation.html" import navigation %}
 
 
+{% block navigation %}
+{{ navigation(ctx) }}
+{% endblock %}
+
 {% block content %}
 
-<div class="row">
-    <div class="col-sm-12" id="main-container" style="z-index: 999; padding: 35px 30px 20px 30px; box-shadow: 0 0 60px rgba(186, 203, 224, 0.5);" >
+{% block mainColumnContent %}{% endblock %}
+
+<div xclass="row">
+    <div xclass="col-sm-12" id="main-container" style="z-index: 999; padding: 35px 30px 20px 30px; box-shadow: 0 0 60px rgba(186, 203, 224, 0.5);" >
 
 {#
 		{{ navigation(ctx) }}

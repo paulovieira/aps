@@ -25,6 +25,7 @@ DECLARE
 	-- fields to be used in WHERE clause
 	lat REAL;
 	lon REAL;
+	map TEXT;
 	geojson_point JSON;
 
 BEGIN
@@ -37,11 +38,12 @@ END IF;
     
 FOR options_row IN ( select json_array_elements(options) ) LOOP
 
-	command := 'SELECT vuln.value from cirac_vul_bgri_fvi_n vuln';
-			
 	-- extract values to be (optionally) used in the WHERE clause
 	SELECT json_extract_path_text(options_row, 'lat')::real         INTO lat;
 	SELECT json_extract_path_text(options_row, 'lon')::real         INTO lon;
+	SELECT json_extract_path_text(options_row, 'map')::text         INTO map;
+
+	command := 'SELECT vuln.value FROM ' || map || ' AS vuln ';
 
 	IF lat IS NULL OR lon IS NULL THEN
 		CONTINUE;
