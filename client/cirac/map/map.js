@@ -433,8 +433,14 @@ var MapIV = Mn.ItemView.extend({
         var zoomControl = L.control.zoom({
             position: "topright"
         });
-
         this.map.addControl(zoomControl);
+
+        var scaleControl = L.control.scale({
+            position: "bottomright",
+            imperial: false,
+            maxWidth: 130
+        });
+        this.map.addControl(scaleControl);
     },
 
     addTileLayer: function(tileCategory, tileName) {
