@@ -23,7 +23,31 @@ leaflet cursor
 
 /*
 custom controls
+
+
+.grow { transition: all .2s ease-in-out; }
+.grow:hover { transform: scale(1.1); }
 */
+#menu-container {
+    font-size: 150%;
+    transition: all .15s ease;
+}
+
+#menu-container:hover {
+/*
+    transform: scale(1.1);
+*/
+}
+
+.main-control {
+
+    padding: 6px 8px;
+    font: 14px/16px Arial, Helvetica, sans-serif;
+    background: white;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
 
 .info {
     padding: 6px 8px;

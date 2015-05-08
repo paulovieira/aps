@@ -182,12 +182,48 @@ root: root
 };
 })();
 })();
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["map/templates/main-control.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+output += "<div id=\"menu-container\">\n\t<span class=\"glyphicon glyphicon-menu-hamburger\"></span>\n</div>\n\n<div id=\"control-main-region\"></div>\n";
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
 (function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["map/templates/map.html"] = (function() {function root(env, context, frame, runtime, cb) {
 var lineno = null;
 var colno = null;
 var output = "";
 try {
 output += "<div id=\"map\"></div>";
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["map/templates/my-view.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+output += "<h1 class='title'>The control title</h1><span>The time is ";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "now"), env.autoesc);
+output += "</span>";
 cb(null, output);
 ;
 } catch (e) {

@@ -1,103 +1,180 @@
+var mapboxAccessToken = "pk.eyJ1IjoicGF1bG9zYW50b3N2aWVpcmEiLCJhIjoidWlIaGRJayJ9.xDEbXL8LPTO0gJW-NBN8eg";
+
+var tileProviders = {
+
+    base: {
+        "Hydda.Base": L.tileLayer.provider('Hydda.Base'), // maxZoom: 18
+        "Esri.WorldShadedRelief": L.tileLayer.provider('Esri.WorldShadedRelief'), // maxZoom: 13
+        "OpenMapSurfer.Grayscale": L.tileLayer.provider('OpenMapSurfer.Grayscale'),
+    },
+
+    rivers: {
+        "Esri.WorldGrayCanvas": L.tileLayer.provider('Esri.WorldGrayCanvas'), // maxZoom: 16
+        "Esri.WorldTopoMap": L.tileLayer.provider('Esri.WorldTopoMap'),
+    },
+
+    streets: {
+        "Esri.WorldStreetMap": L.tileLayer.provider('Esri.WorldStreetMap'),
+        "MapQuestOpen.OSM": L.tileLayer.provider('MapQuestOpen.OSM'),
+        "HERE.normalDayGrey": L.tileLayer.provider('HERE.normalDayGrey', {
+            'app_id': 'Y8m9dK2brESDPGJPdrvs',
+            'app_code': 'dq2MYIvjAotR8tHvY8Q_Dg'
+        }),
+    },
+
+    terrain: {
+        "Mapbox.Emerald": L.tileLayer('https://{s}.tiles.mapbox.com/v4/examples.map-i87786ca/{z}/{x}/{y}.png?access_token=' + mapboxAccessToken, {
+            maxZoom: 18,
+            id: 'paulosantosvieira.l4h4omm9'
+        }),
+        "Esri.DeLorme": L.tileLayer.provider('Esri.DeLorme'), // maxZoom: 11
+        "Acetate.hillshading": L.tileLayer.provider('Acetate.hillshading'),
+        "Thunderforest.Outdoors": L.tileLayer.provider('Thunderforest.Outdoors'),
+        "HERE.terrainDay": L.tileLayer.provider('HERE.terrainDay', {
+            'app_id': 'Y8m9dK2brESDPGJPdrvs',
+            'app_code': 'dq2MYIvjAotR8tHvY8Q_Dg'
+        }),
+    },
+
+    satellite: {
+        "MapQuestOpen.Aerial": L.tileLayer.provider('MapQuestOpen.Aerial'), // maxZoom: 11
+        "Esri.WorldImagery": L.tileLayer.provider('Esri.WorldImagery'), // maxZoom: 13
+        "HERE.satelliteDay": L.tileLayer.provider('HERE.satelliteDay', {
+            'app_id': 'Y8m9dK2brESDPGJPdrvs',
+            'app_code': 'dq2MYIvjAotR8tHvY8Q_Dg'
+        }), // maxZoom: 19
+    },
+
+    cirac: {
+        "BGRIBordersOnly": L.tileLayer('http://localhost:8001/v2/cirac_brgi_borders/{z}/{x}/{y}.png', {
+            maxZoom: 16
+        }),
+
+        "cirac_vul_bgri_FVI_N": L.tileLayer('http://localhost:8001/v2/cirac_vul_bgri_FVI_N/{z}/{x}/{y}.png', {
+            maxZoom: 16
+        }),
+
+        "cirac_vul_bgri_FVI_75": L.tileLayer('http://localhost:8001/v2/cirac_vul_bgri_FVI_75/{z}/{x}/{y}.png', {
+            maxZoom: 16
+        }),
+
+        "cirac_vul_bgri_cfvi": L.tileLayer('http://localhost:8001/v2/cirac_vul_bgri_cfvi/{z}/{x}/{y}.png', {
+            maxZoom: 16
+        }),
+
+        "cirac_vul_bgri_cfvi75": L.tileLayer('http://localhost:8001/v2/cirac_vul_bgri_cfvi75/{z}/{x}/{y}.png', {
+            maxZoom: 16
+        })
+    }
+
+};
+
+var overlays = {
+    "Mapa base": {
+        //"Ruas": this.tileProviders["streets"]["Esri.WorldStreetMap"],
+        "Ruas": tileProviders["streets"]["MapQuestOpen.OSM"],
+        "Satélite": tileProviders["satellite"]['HERE.satelliteDay'], // maxZoom: 19
+        "Vulnerabilidades (normal)": tileProviders["cirac"]["BGRIVuln"],
+        "Vulnerabilidades2 (normal)": tileProviders["cirac"]["cirac_vul_bgri_FVI_N"]
+    },
+
+    "BGRI": {
+        "Delimitação": tileProviders["cirac"]["BGRIBordersOnly"], // maxZoom: 16
+    }
+};
+
+
+// create an instance of a backbone model
+var myModel = new Backbone.Model({
+    now: Date.now()
+});
+
+var MyView = Mn.ItemView.extend({
+    className: "info",
+
+    template: "map/templates/my-view.html",
+
+    modelEvents: {
+        "change": "render"
+    },
+
+    triggers: {
+        "click .title": "title:clicked"
+    },
+
+    onTitleClicked: function(){
+        this.model.set("now", Date.now());
+    }
+});
+
+
+
+var MainControlLV = Mn.LayoutView.extend({
+
+    className: "main-control",
+    //template: _.template("<h1 class='title'>The control title was clicked</h1><span>The time is <%= now %></span>"),
+    template: "map/templates/main-control.html",
+
+    initialize: function(){
+    },
+    // triggers: {
+    //     "click .title": "control:clicked"
+    // },
+    // onControlClicked: function(){
+    //     this.model.set("now", Date.now());
+    // }
+
+    events: {
+        "click .glyphicon-menu-hamburger": "toggleMenu",
+        "dblclick .glyphicon-menu-hamburger": "stopPropagation"
+    },
+
+    regions: {
+        controlMainRegion: "#control-main-region"
+    },
+
+    stopPropagation: function(e){
+        e.stopPropagation();
+    },
+
+    toggleMenu: function(e){
+//debugger;
+        e.stopPropagation();
+        console.log("toggle");
+//debugger;
+        var menuIsOpen = this.controlMainRegion.hasView()
+
+        if(menuIsOpen){
+            this.closeMenu();
+        }
+        else{
+            this.openMenu();
+        }
+    },
+
+    openMenu: function(){
+//        debugger;
+
+        var myView = new MyView({
+            model: myModel
+        });
+
+        this.controlMainRegion.show(myView);
+    },
+
+    closeMenu: function(){
+//        debugger;
+        this.controlMainRegion.reset();
+    }
+});
+
+var mainControlLV = new MainControlLV({});
+mainControlLV.render();
+
 var MapIV = Mn.ItemView.extend({
     template: "map/templates/map.html",
 
     initialize: function() {
-        this.initializeTileProviders();
-    },
-
-    initializeTileProviders: function() {
-        var mapboxAccessToken = "pk.eyJ1IjoicGF1bG9zYW50b3N2aWVpcmEiLCJhIjoidWlIaGRJayJ9.xDEbXL8LPTO0gJW-NBN8eg";
-
-        this.tileProviders = {
-
-                base: {
-                    "Hydda.Base": L.tileLayer.provider('Hydda.Base'), // maxZoom: 18
-                    "Esri.WorldShadedRelief": L.tileLayer.provider('Esri.WorldShadedRelief'), // maxZoom: 13
-                    "OpenMapSurfer.Grayscale": L.tileLayer.provider('OpenMapSurfer.Grayscale'),
-                },
-
-                rivers: {
-                    "Esri.WorldGrayCanvas": L.tileLayer.provider('Esri.WorldGrayCanvas'), // maxZoom: 16
-                    "Esri.WorldTopoMap": L.tileLayer.provider('Esri.WorldTopoMap'),
-                },
-
-                streets: {
-                    "Esri.WorldStreetMap": L.tileLayer.provider('Esri.WorldStreetMap'),
-                    "MapQuestOpen.OSM": L.tileLayer.provider('MapQuestOpen.OSM'),
-                    "HERE.normalDayGrey": L.tileLayer.provider('HERE.normalDayGrey', {
-                        'app_id': 'Y8m9dK2brESDPGJPdrvs',
-                        'app_code': 'dq2MYIvjAotR8tHvY8Q_Dg'
-                    }),
-                },
-
-                terrain: {
-                    "Mapbox.Emerald": L.tileLayer('https://{s}.tiles.mapbox.com/v4/examples.map-i87786ca/{z}/{x}/{y}.png?access_token=' + mapboxAccessToken, {
-                        maxZoom: 18,
-                        id: 'paulosantosvieira.l4h4omm9'
-                    }),
-                    "Esri.DeLorme": L.tileLayer.provider('Esri.DeLorme'), // maxZoom: 11
-                    "Acetate.hillshading": L.tileLayer.provider('Acetate.hillshading'),
-                    "Thunderforest.Outdoors": L.tileLayer.provider('Thunderforest.Outdoors'),
-                    "HERE.terrainDay": L.tileLayer.provider('HERE.terrainDay', {
-                        'app_id': 'Y8m9dK2brESDPGJPdrvs',
-                        'app_code': 'dq2MYIvjAotR8tHvY8Q_Dg'
-                    }),
-                },
-
-                satellite: {
-                    "MapQuestOpen.Aerial": L.tileLayer.provider('MapQuestOpen.Aerial'), // maxZoom: 11
-                    "Esri.WorldImagery": L.tileLayer.provider('Esri.WorldImagery'), // maxZoom: 13
-                    "HERE.satelliteDay": L.tileLayer.provider('HERE.satelliteDay', {
-                        'app_id': 'Y8m9dK2brESDPGJPdrvs',
-                        'app_code': 'dq2MYIvjAotR8tHvY8Q_Dg'
-                    }), // maxZoom: 19
-                },
-
-                cirac: {
-                    "BGRIBordersOnly": L.tileLayer('http://localhost:8001/v2/cirac_brgi_borders/{z}/{x}/{y}.png', {
-                        maxZoom: 16
-                    }),
-
-                    "cirac_vul_bgri_FVI_N": L.tileLayer('http://localhost:8001/v2/cirac_vul_bgri_FVI_N/{z}/{x}/{y}.png', {
-                        maxZoom: 16
-                    }),
-
-                    "cirac_vul_bgri_FVI_75": L.tileLayer('http://localhost:8001/v2/cirac_vul_bgri_FVI_75/{z}/{x}/{y}.png', {
-                        maxZoom: 16
-                    }),
-
-                    "cirac_vul_bgri_cfvi": L.tileLayer('http://localhost:8001/v2/cirac_vul_bgri_cfvi/{z}/{x}/{y}.png', {
-                        maxZoom: 16
-                    }),
-
-                    "cirac_vul_bgri_cfvi75": L.tileLayer('http://localhost:8001/v2/cirac_vul_bgri_cfvi75/{z}/{x}/{y}.png', {
-                        maxZoom: 16
-                    })
-                }
-            },
-
-            this.groupedOverlays = {
-                "Mapa base": {
-                    //"Ruas": this.tileProviders["streets"]["Esri.WorldStreetMap"],
-                    "Ruas": this.tileProviders["streets"]["MapQuestOpen.OSM"],
-                    "Satélite": this.tileProviders["satellite"]['HERE.satelliteDay'], // maxZoom: 19
-                    "Vulnerabilidades (normal)": this.tileProviders["cirac"]["BGRIVuln"],
-                    "Vulnerabilidades2 (normal)": this.tileProviders["cirac"]["cirac_vul_bgri_FVI_N"]
-                },
-
-                "BGRI": {
-                    "Delimitação": this.tileProviders["cirac"]["BGRIBordersOnly"], // maxZoom: 16
-                },
-
-
-
-                // "Satellite": {
-                //     "Esri World Imagery": this.tileProviders["satellite"]["Esri.WorldImagery"], // maxZoom: 13
-                //     "HERE satellite Day": this.tileProviders["satellite"]['HERE.satelliteDay'] // maxZoom: 19
-                // }
-
-            };
-
     },
 
     onAttach: function() {
@@ -168,10 +245,10 @@ var MapIV = Mn.ItemView.extend({
     hasVulnMap: function(){
 
         if(
-            this.map.hasLayer(this.tileProviders["cirac"]["cirac_vul_bgri_FVI_N"])  ||
-            this.map.hasLayer(this.tileProviders["cirac"]["cirac_vul_bgri_FVI_75"]) || 
-            this.map.hasLayer(this.tileProviders["cirac"]["cirac_vul_bgri_cfvi"])   ||
-            this.map.hasLayer(this.tileProviders["cirac"]["cirac_vul_bgri_cfvi75"])
+            this.map.hasLayer(tileProviders["cirac"]["cirac_vul_bgri_FVI_N"])  ||
+            this.map.hasLayer(tileProviders["cirac"]["cirac_vul_bgri_FVI_75"]) || 
+            this.map.hasLayer(tileProviders["cirac"]["cirac_vul_bgri_cfvi"])   ||
+            this.map.hasLayer(tileProviders["cirac"]["cirac_vul_bgri_cfvi75"])
         ){
             return true;
         }
@@ -181,16 +258,16 @@ var MapIV = Mn.ItemView.extend({
 
     getCurrentMapTable: function(){
         var mapTable = "";
-        if(this.map.hasLayer(this.tileProviders["cirac"]["cirac_vul_bgri_FVI_N"])){
+        if(this.map.hasLayer(tileProviders["cirac"]["cirac_vul_bgri_FVI_N"])){
             mapTable = "cirac_vul_bgri_fvi_n";
         }
-        else if(this.map.hasLayer(this.tileProviders["cirac"]["cirac_vul_bgri_FVI_75"])){
+        else if(this.map.hasLayer(tileProviders["cirac"]["cirac_vul_bgri_FVI_75"])){
             mapTable = "cirac_vul_bgri_fvi_75";
         }
-        else if(this.map.hasLayer(this.tileProviders["cirac"]["cirac_vul_bgri_cfvi"])){
+        else if(this.map.hasLayer(tileProviders["cirac"]["cirac_vul_bgri_cfvi"])){
             mapTable = "cirac_vul_bgri_cfvi";
         }
-        else if(this.map.hasLayer(this.tileProviders["cirac"]["cirac_vul_bgri_cfvi75"])){
+        else if(this.map.hasLayer(tileProviders["cirac"]["cirac_vul_bgri_cfvi75"])){
             mapTable = "cirac_vul_bgri_cfvi75";
         }
         else{
@@ -205,7 +282,7 @@ var MapIV = Mn.ItemView.extend({
         //debugger;
         // if the selected map if the normal 
         var message = "";
-        if(this.map.hasLayer(this.tileProviders["cirac"]["cirac_vul_bgri_FVI_N"])){
+        if(this.map.hasLayer(tileProviders["cirac"]["cirac_vul_bgri_FVI_N"])){
             message += "<h5>Normal FVI (mode)</h5>";
 
             if(locationName){
@@ -217,7 +294,7 @@ var MapIV = Mn.ItemView.extend({
             message += "<div><b>Description:</b> " + this.getNormalFVIDescription(value) + "</div>";
         }
 
-        else if(this.map.hasLayer(this.tileProviders["cirac"]["cirac_vul_bgri_FVI_75"])){
+        else if(this.map.hasLayer(tileProviders["cirac"]["cirac_vul_bgri_FVI_75"])){
             message += "<h5>Normal FVI (75 percentile)</h5>";
 
             if(locationName){
@@ -229,7 +306,7 @@ var MapIV = Mn.ItemView.extend({
             message += "<div><b>Description:</b> " + this.getNormalFVIDescription(value) + "</div>";
         }
 
-        else if(this.map.hasLayer(this.tileProviders["cirac"]["cirac_vul_bgri_cfvi"])){
+        else if(this.map.hasLayer(tileProviders["cirac"]["cirac_vul_bgri_cfvi"])){
             message += "<h5>Combined FVI (mode)</h5>";
 
             if(locationName){
@@ -241,7 +318,7 @@ var MapIV = Mn.ItemView.extend({
             message += "<div><b>Description:</b> " + this.getCombinedFVIDescription(value) + "</div>";
         }
 
-        else if(this.map.hasLayer(this.tileProviders["cirac"]["cirac_vul_bgri_cfvi75"])){
+        else if(this.map.hasLayer(tileProviders["cirac"]["cirac_vul_bgri_cfvi75"])){
             message += "<h5>Combined FVI (75 percentile)</h5>";
 
             if(locationName){
@@ -420,6 +497,7 @@ var MapIV = Mn.ItemView.extend({
     },
 
     initializeMap: function() {
+
         this.map = L.map('map', {
             center: [38.75, -9.15],
             zoomControl: false,
@@ -427,31 +505,44 @@ var MapIV = Mn.ItemView.extend({
             zoom: 10,
             maxZoom: 16,
             minZoom: 8,
-            layers: [this.groupedOverlays["Mapa base"]["Ruas"]]
+            layers: [overlays["Mapa base"]["Ruas"]]
         });
 
+
+        // add the zoom control manually
         var zoomControl = L.control.zoom({
             position: "topright"
         });
         this.map.addControl(zoomControl);
 
+
+        // add the scale control
         var scaleControl = L.control.scale({
             position: "bottomright",
             imperial: false,
             maxWidth: 130
         });
         this.map.addControl(scaleControl);
+
+
+        // add the main control
+        var mainControl = new L.Control.BackboneView({
+            view: mainControlLV,
+            position: "topleft"
+        });
+        this.map.addControl(mainControl);
+
     },
 
     addTileLayer: function(tileCategory, tileName) {
 
-        //this.tileProviders[tileCategory][tileName].addTo(this.map);
+        //tileProviders[tileCategory][tileName].addTo(this.map);
 
         // L.tileLayer('http://localhost:8001/v2/bgri_lisboa_borders_only/{z}/{x}/{y}.png', {
         //     maxZoom: 16
         // }).addTo(this.map);
 
-        // L.control.groupedLayers(undefined, this.groupedOverlays, {
+        // L.control.groupedLayers(undefined, this.overlays, {
         //     exclusiveGroups: ["Mapa base", "Vulnerabilidades"],
         //     collapsed: true
         // }).addTo(this.map);
@@ -461,25 +552,25 @@ var MapIV = Mn.ItemView.extend({
                     groupName : "Street maps",
                     expanded: false,
                     layers: {
-                        "Mapquest Open": this.tileProviders["streets"]["MapQuestOpen.OSM"],
-                        "HERE Day Grey": this.tileProviders["streets"]["HERE.normalDayGrey"],
-                        "HERE Satellite": this.tileProviders["satellite"]["HERE.satelliteDay"]
+                        "Mapquest Open": tileProviders["streets"]["MapQuestOpen.OSM"],
+                        "HERE Day Grey": tileProviders["streets"]["HERE.normalDayGrey"],
+                        "HERE Satellite": tileProviders["satellite"]["HERE.satelliteDay"]
                     }
                 },
                 { 
                     groupName : "Flood Vulnerability Index",
                     expanded: false,
                     layers: {
-                        "Flood Vulnerability Index by BGRI (mode)": this.tileProviders["cirac"]["cirac_vul_bgri_FVI_N"],
-                        "Flood Vulnerability Index by BGRI (75 percentile)": this.tileProviders["cirac"]["cirac_vul_bgri_FVI_75"]
+                        "Flood Vulnerability Index by BGRI (mode)": tileProviders["cirac"]["cirac_vul_bgri_FVI_N"],
+                        "Flood Vulnerability Index by BGRI (75 percentile)": tileProviders["cirac"]["cirac_vul_bgri_FVI_75"]
                     }
                 },
                 { 
                     groupName : "Combined Flood Vulnerability Index",
                     expanded: false,
                     layers: {
-                        "Combined Flood Vulnerability Index by BGRI (mode)": this.tileProviders["cirac"]["cirac_vul_bgri_cfvi"],
-                        "Combined Flood Vulnerability Index by BGRI (75 percentile)": this.tileProviders["cirac"]["cirac_vul_bgri_cfvi75"]
+                        "Combined Flood Vulnerability Index by BGRI (mode)": tileProviders["cirac"]["cirac_vul_bgri_cfvi"],
+                        "Combined Flood Vulnerability Index by BGRI (75 percentile)": tileProviders["cirac"]["cirac_vul_bgri_cfvi75"]
                     }
                 }
         ];
@@ -489,7 +580,7 @@ var MapIV = Mn.ItemView.extend({
                     groupName : "Other layers",
                     expanded  : false,
                     layers    : { 
-                        "BGRI boundary" : this.tileProviders["cirac"]["BGRIBordersOnly"]
+                        "BGRI boundary" : tileProviders["cirac"]["BGRIBordersOnly"]
                     }   
                  }
         ];
