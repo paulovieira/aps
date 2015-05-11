@@ -342,23 +342,24 @@ var MapIV = Mn.ItemView.extend({
         var message = "";
         if(value >= 3 && value <= 5){        
             message = shortDescription ? 
-                "baixo" : 
-                "Áreas improváveis de ter inundações (E, PSI) e onde as comunidades são menos suscetíveis (SSI).";
+                "Low" : 
+                "Areas unlikely to have flood events (E, PSI), and where communities are less susceptible (SSI).";
+
         }
         else if(value >= 6 && value <= 7){  
             message =  shortDescription ? 
-                "moderado" : 
-                "Áreas improváveis de sofrer danos durante ocorrências de inundações (E, PSI) e onde as comunidades tendem a ser menos suscetíveis (SSI).";
+                "Moderate":
+                "Areas unlikely to suffer damage during flood events (E, PSI), and where communities tend to be less susceptib­le (SSI).";
         }
         else if(value >= 8 && value <= 10){  
             message = shortDescription ? 
-                "elevado" :
-                "Áreas suscetíveis de sofrer danos durante ocorrências de inundações (E, PSI) e com comunidades suscetíveis (SSI).";
+                "High" :
+                "Areas likely to suffer damage during flood events (E, PSI) and with susceptible communities (SSI).";
         }
         else if(value >= 11 && value <= 12){ 
             message = shortDescription ? 
-                "muito elevado" :
-                "Áreas muito suscetíveis de sofrer danos durante ocorrências de inundações (E, PSI) e com comunidades suscetíveis (SSI).";
+                "Very high" :
+                "Areas very likely to suffer damage during flood events (E, PSI), with highly susceptible communities (SSI).";
         }
 
         return message;
@@ -369,42 +370,42 @@ var MapIV = Mn.ItemView.extend({
         if(value == 1){        
             message = shortDescription ? 
                 "" : 
-                "Baixa Susceptibilidade Física, Exposição e Precipitação";
+                "Low Physical Susceptibility, Exposure and Precipitation.";
         }
         if(value == 2){
             message = shortDescription ? 
                 "" : 
-                "Baixa Susceptibilidade Física e Precipitação, elevada Exposição";
+                "Low Physical Susceptibility and Precipitation, High Exposure.";
         }
         if(value == 3){
             message = shortDescription ? 
                 "" : 
-                "Baixa Susceptibilidade Física e Exposição, elevada Precipitação";
+                "Low Physical Susceptibility and Exposure and High Precipitation.";
         }
         if(value == 4){
             message = shortDescription ? 
                 "" : 
-                "Baixa Susceptibilidade Física, elevada Exposição e Precipitação";
+                "Low Physical Susceptibility and High Exposure and Precipitation.";
         }
         if(value == 5){
             message = shortDescription ? 
                 "" : 
-                "Elevada Susceptibilidade Física, baixa Exposição e Precipitação";
+                "High Physical Susceptibility and Low Exposure and Precipitation.";
         }
         if(value == 6){
             message = shortDescription ? 
                 "" : 
-                "Elevada Susceptibilidade Física e Exposição, baixa Precipitação";
+                "High Physical Susceptibility and Exposure and Low Precipitation.";
         }
         if(value == 7){
             message = shortDescription ? 
                 "" : 
-                "Elevada Susceptibilidade Física e Precipitação, baixa Exposição";
+                "High Physical Susceptibility and Precipitation and Low Exposure.";
         }
         if(value == 8){
             message = shortDescription ? 
                 "" : 
-                "Elevada Susceptibilidade Física, Exposição e Precipitação";
+                "High Physical Susceptibility, Exposure and Precipitation.";
         }
 
         return message;
