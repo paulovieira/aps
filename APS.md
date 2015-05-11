@@ -28,12 +28,25 @@ in a separate directory, clone tilestream and start the tile server
 
 In this case:
 
-    ./index.js start --tiles=/home/pvieira/github/aps/mbtiles --tilePort=8001
+    ./index.js start --tiles=/home/pvieira/mbtiles --tilePort=8001
 
-tiles will be available from 
+
+
+
+
+NOTE: tiles will be available from 
 
     http://localhost:8001/v2/MBTILES_FILENAME/{z}/{x}/{y}.png
 
 where "MBTILES_FILENAME" is the name of the mbtiles file
 
-We now probably have to configure nginx (rewrite rule) to access the tiles from the outside with a pretty url.
+We have to configure nginx (rewrite rule) to access the tiles from the outside with a pretty url. That is, a request to
+
+    http://clima.dev/tiles/v2/MBTILES_FILENAME/{z}/{x}/{y}.png 
+
+should be obtained from
+
+    http://localhost:8001/v2/MBTILES_FILENAME/{z}/{x}/{y}.png
+
+
+pm2 start index.js --name "cirac.fc.ul.pt"
