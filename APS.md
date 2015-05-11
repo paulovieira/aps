@@ -22,6 +22,8 @@ shp2pgsql -D -I -s 4326 BGRI/Indice-de-Vulnerabilidade-Combinado/Percentile-75/c
 
 in a separate directory, clone tilestream and start the tile server
 
+    mkdir $HOME/mapbox
+    cd $HOME/mapbox
     git clone https://github.com/mapbox/tilestream
     sudo npm install
     ./index.js start --tiles=... --tilePort=8001
@@ -31,22 +33,30 @@ In this case:
     ./index.js start --tiles=/home/pvieira/mbtiles --tilePort=8001
 
 
-
-
-
-NOTE: tiles will be available from 
+NOTE: with tilestream running, tiles will be available from 
 
     http://localhost:8001/v2/MBTILES_FILENAME/{z}/{x}/{y}.png
 
 where "MBTILES_FILENAME" is the name of the mbtiles file
 
-We have to configure nginx (rewrite rule) to access the tiles from the outside with a pretty url. That is, a request to
+To access the tiles from the outside we have to configure nginx properly (a rewrite rule). That is, a request to
 
     http://clima.dev/tiles/v2/MBTILES_FILENAME/{z}/{x}/{y}.png 
 
-should be obtained from
+should be proxyed to
 
     http://localhost:8001/v2/MBTILES_FILENAME/{z}/{x}/{y}.png
 
+## start the app with pm2
 
+start the main app:
+
+export NODE_ENV=dev
 pm2 start index.js --name "cirac.fc.ul.pt"
+
+
+start the tile server (we have to pass the arguments after "--"):
+
+pm2 start index.js --name "mbtiles" -- --tiles=/home/pvieira/mbtiles --tilePort=8001
+
+
