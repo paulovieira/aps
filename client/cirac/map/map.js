@@ -46,23 +46,24 @@ var tileProviders = {
     },
 
     cirac: {
-        "BGRIBordersOnly": L.tileLayer('http://localhost:8001/v2/cirac_brgi_borders/{z}/{x}/{y}.png', {
+        //"BGRIBordersOnly": L.tileLayer('http://localhost:8001/v2/cirac_brgi_borders/{z}/{x}/{y}.png', {
+        "BGRIBordersOnly": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_brgi_borders/{z}/{x}/{y}.png', {
             maxZoom: 16
         }),
 
-        "cirac_vul_bgri_FVI_N": L.tileLayer('http://localhost:8001/v2/cirac_vul_bgri_FVI_N/{z}/{x}/{y}.png', {
+        "cirac_vul_bgri_FVI_N": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_FVI_N/{z}/{x}/{y}.png', {
             maxZoom: 16
         }),
 
-        "cirac_vul_bgri_FVI_75": L.tileLayer('http://localhost:8001/v2/cirac_vul_bgri_FVI_75/{z}/{x}/{y}.png', {
+        "cirac_vul_bgri_FVI_75": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_FVI_75/{z}/{x}/{y}.png', {
             maxZoom: 16
         }),
 
-        "cirac_vul_bgri_cfvi": L.tileLayer('http://localhost:8001/v2/cirac_vul_bgri_cfvi/{z}/{x}/{y}.png', {
+        "cirac_vul_bgri_cfvi": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_cfvi/{z}/{x}/{y}.png', {
             maxZoom: 16
         }),
 
-        "cirac_vul_bgri_cfvi75": L.tileLayer('http://localhost:8001/v2/cirac_vul_bgri_cfvi75/{z}/{x}/{y}.png', {
+        "cirac_vul_bgri_cfvi75": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_cfvi75/{z}/{x}/{y}.png', {
             maxZoom: 16
         })
     }
@@ -530,7 +531,7 @@ var MapIV = Mn.ItemView.extend({
             view: mainControlLV,
             position: "topleft"
         });
-        this.map.addControl(mainControl);
+//        this.map.addControl(mainControl);
 
     },
 

@@ -238,6 +238,7 @@ console.log("usersGroups", usersGroups);
             filesArray: request.pre.filesArray,
             auth:       request.auth,
             urlParam1:  "cirac",
+            tilesBaseUrl: config.get("tilesBaseUrl"),
         };
 
         return reply.view('cirac', {

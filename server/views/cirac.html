@@ -81,6 +81,7 @@
         Clima.texts  = {{ ctx.textsArray | stringify }};
         Clima.files  = {{ ctx.filesArray | stringify }};
         Clima.userId = {{ ctx.auth.credentials.id }};
+        Clima.tilesBaseUrl = "{{ ctx.tilesBaseUrl }}";
     </script>
 {#
     <script src="/cirac/templates.js"></script>

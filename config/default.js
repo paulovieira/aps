@@ -11,6 +11,7 @@ module.exports = {
     // the default language is the first in the array below
     allowedLanguages: ["pt", "en"],
 
+    tilesBaseUrl: "/tiles",
 
     hapi: {
 
