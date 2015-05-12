@@ -1,3 +1,5 @@
+
+
 var tabChannel = Backbone.Radio.channel('tabChannel');
 var mapboxAccessToken = "pk.eyJ1IjoicGF1bG9zYW50b3N2aWVpcmEiLCJhIjoidWlIaGRJayJ9.xDEbXL8LPTO0gJW-NBN8eg";
 
@@ -66,6 +68,31 @@ var tileProviders = {
 };
 
 var util = {
+    getFVINormalColors: function (value) {
+        var color = "#FFF";
+
+        if(value >= 3 && value <= 5){        color = "#38A800"; }
+        else if(value >= 6 && value <= 7){   color = "#FFFF00"; }
+        else if(value >= 8 && value <= 10){  color = "#FF9500"; }
+        else if(value >= 11 && value <= 12){ color = "#FF0000"; }
+
+        return color;
+    },
+
+    getFVICombinedColors: function(value) {
+        var color = "#FFF";
+
+        if(value == 1){      color = "#38A800"; }
+        else if(value == 2){ color = "#66BF00"; }
+        else if(value == 3){ color = "#9BD900"; }
+        else if(value == 4){ color = "#DEF200"; }
+        else if(value == 5){ color = "#FFDD00"; }
+        else if(value == 6){ color = "#FF9100"; }
+        else if(value == 7){ color = "#FF4800"; }
+        else if(value == 8){ color = "#FF0000"; }
+
+        return color;
+    }
 };
 
 
@@ -100,6 +127,84 @@ var PointsListCV = Mn.CompositeView.extend({
         "click #new-upload": function(){
             tabChannel.command("show:my:maps");
         }
+    },
+
+    // after the list is shown, show the markers as well
+    onShow: function(){
+
+        var geoJson = [];
+/*
+        // create an array of geoJson feature objects
+        window.pointCollection.each(function(model){
+            geoJson.push({
+                "type": "Feature",
+                "properties": {
+                    "description": model.get("description") || "",
+                    "value": model.get("value") || 0,
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [model.get("lon"), model.get("lat")]
+                }
+            })
+        });
+
+*/
+
+        
+geoJson = [
+{
+    "type": "Feature",
+    "properties": {
+        "description": "xxx",
+        "value": 9
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [-9.15, 38.75]
+    }
+},
+
+{
+    "type": "Feature",
+    "properties": {
+        "description": "yyy",
+        "value": 4
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [-9.15, 38.54]
+    }
+}
+
+]
+        debugger;
+        function getColor(value){
+
+            return "red";
+
+            var color = util.getFVINormalColors(value);
+            //debugger;
+            return color;
+
+        };
+
+        L.geoJson(geoJson, {
+                xpointToLayer: function (feature, latlng) {
+debugger;
+                    var markerOptions = {
+                        radius: 8,
+                        //fillColor: getColor(feature.properties.value),
+                        fillColor: "red",
+                        color: "#000",
+                        weight: 1,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    };
+                    return L.circleMarker(latlng, markerOptions);
+                }
+           }).addTo(this.map);
+
     }
 });
 
@@ -337,6 +442,8 @@ var TabMenuLV = Mn.LayoutView.extend({
         var pointsListCV = new PointsListCV({
             collection: pointCollection
         });
+        pointsListCV.map = this.map;
+
 
         this.contentRegion.show(pointsListCV);
     }
@@ -415,9 +522,7 @@ var MapIV = Mn.ItemView.extend({
         this.initializeMap();
         this.addBasicControls();
         this.addGeocoderControl();
-        //this.addTileLayer("streets", "MapQuestOpen.OSM");
         this.initializeVulnLegend();
-
         this.registerMapEvents();
 
     },
@@ -692,17 +797,6 @@ var MapIV = Mn.ItemView.extend({
 
         // legend control for normal FVI
 
-        function getFVINormalColors(value) {
-            var color = "#FFF";
-
-            if(value >= 3 && value <= 5){        color = "#38A800"; }
-            else if(value >= 6 && value <= 7){   color = "#FFFF00"; }
-            else if(value >= 8 && value <= 10){  color = "#FF9500"; }
-            else if(value >= 11 && value <= 12){ color = "#FF0000"; }
-
-            return color;
-        };
-
         var FVINormalLegendControl = L.Control.extend({
 
             options: {
@@ -719,7 +813,7 @@ var MapIV = Mn.ItemView.extend({
                 for (var i = 0; i < vuln.length-1; i++) {
 
                     div.innerHTML +=
-                        '<div style="margin-bottom: 2px;"><i style="background:' + getFVINormalColors(vuln[i]) + '"></i>&nbsp;' +
+                        '<div style="margin-bottom: 2px;"><i style="background:' + util.getFVINormalColors(vuln[i]) + '"></i>&nbsp;' +
                         vuln[i] + '-' + (vuln[i+1]-1) +  '&nbsp;<div>';
                 }
 
@@ -731,22 +825,6 @@ var MapIV = Mn.ItemView.extend({
 
 
         // legend control for combined FVI
-
-        function getFVICombinedColors(value) {
-            var color = "#FFF";
-
-            if(value == 1){      color = "#38A800"; }
-            else if(value == 2){ color = "#66BF00"; }
-            else if(value == 3){ color = "#9BD900"; }
-            else if(value == 4){ color = "#DEF200"; }
-            else if(value == 5){ color = "#FFDD00"; }
-            else if(value == 6){ color = "#FF9100"; }
-            else if(value == 7){ color = "#FF4800"; }
-            else if(value == 8){ color = "#FF0000"; }
-
-            return color;
-        };
-
         var FVICombinedLegendControl = L.Control.extend({
 
             options: {
@@ -763,7 +841,7 @@ var MapIV = Mn.ItemView.extend({
                 for (var i = 0; i < vuln.length; i++) {
 
                     div.innerHTML +=
-                        '<div style="margin-bottom: 2px;"><i style="background:' + getFVICombinedColors(vuln[i]) + '"></i>&nbsp;' +
+                        '<div style="margin-bottom: 2px;"><i style="background:' + util.getFVICombinedColors(vuln[i]) + '"></i>&nbsp;' +
                         vuln[i] +  '&nbsp;<div>';
                 }
 
@@ -775,72 +853,7 @@ var MapIV = Mn.ItemView.extend({
     },
 
 
-    addTileLayer: function(tileCategory, tileName) {
 
-        //tileProviders[tileCategory][tileName].addTo(this.map);
-
-        // L.tileLayer('http://localhost:8001/v2/bgri_lisboa_borders_only/{z}/{x}/{y}.png', {
-        //     maxZoom: 16
-        // }).addTo(this.map);
-
-        // L.control.groupedLayers(undefined, this.overlays, {
-        //     exclusiveGroups: ["Mapa base", "Vulnerabilidades"],
-        //     collapsed: true
-        // }).addTo(this.map);
-
-/*
-        var baseMaps = [
-                { 
-                    groupName : "Street maps",
-                    expanded: false,
-                    layers: {
-                        "Mapquest Open": tileProviders["MapQuestOpen.OSM"],
-                        "HERE Day Grey": tileProviders["HERE.normalDayGrey"],
-                        "HERE Satellite": tileProviders["HERE.satelliteDay"]
-                    }
-                },
-                { 
-                    groupName : "Flood Vulnerability Index",
-                    expanded: false,
-                    layers: {
-                        "Flood Vulnerability Index by BGRI (mode)": tileProviders["cirac_vul_bgri_FVI_N"],
-                        "Flood Vulnerability Index by BGRI (75 percentile)": tileProviders["cirac_vul_bgri_FVI_75"]
-                    }
-                },
-                { 
-                    groupName : "Combined Flood Vulnerability Index",
-                    expanded: false,
-                    layers: {
-                        "Combined Flood Vulnerability Index by BGRI (mode)": tileProviders["cirac_vul_bgri_cfvi"],
-                        "Combined Flood Vulnerability Index by BGRI (75 percentile)": tileProviders["cirac_vul_bgri_cfvi75"]
-                    }
-                }
-        ];
-
-        var overlays = [
-                 {
-                    groupName : "Other layers",
-                    expanded  : false,
-                    layers    : { 
-                        "BGRI boundary" : tileProviders["BGRIBordersOnly"]
-                    }   
-                 }
-        ];
-
-        var options = {
-            container_width     : "350px",
-            container_maxHeight : "350px", 
-            group_maxHeight     : "110px",
-            exclusive           : false,
-            position: "topleft",
-            collapsed: false
-        };
-
-        var layerControl = L.Control.styledLayerControl(baseMaps, overlays, options);
-        this.map.addControl(layerControl);
-*/
-
-    },
 
     registerMapEvents: function() {
 
@@ -875,8 +888,8 @@ var MapIV = Mn.ItemView.extend({
                 });
         });
 
-        this.map.on("baselayerchange", function(e){
-            var tilesUrl = e.layer._url.toLowerCase();
+        this.map.on("layeradd", function(e){
+            var tilesUrl = e.layer._url.toLowerCase() || "";
 //debugger;
             if(view.currentLegendControl){
                 view.map.removeControl(view.currentLegendControl);
