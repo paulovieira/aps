@@ -11,6 +11,9 @@ CREATE FUNCTION vulnerabilities_read(options json DEFAULT '[{}]')
 
 -- return table, uses the definition of the maps table + extra data from the join
 RETURNS TABLE(
+	lat REAL,
+	lon REAL,
+	description TEXT,
 	value SMALLINT
 )
 AS
@@ -25,7 +28,8 @@ DECLARE
 	-- fields to be used in WHERE clause
 	lat REAL;
 	lon REAL;
-	map TEXT;
+	description TEXT;
+	map_table TEXT;
 	geojson_point JSON;
 
 BEGIN
@@ -41,9 +45,10 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 	-- extract values to be (optionally) used in the WHERE clause
 	SELECT json_extract_path_text(options_row, 'lat')::real         INTO lat;
 	SELECT json_extract_path_text(options_row, 'lon')::real         INTO lon;
-	SELECT json_extract_path_text(options_row, 'map')::text         INTO map;
+	SELECT COALESCE(json_extract_path_text(options_row, 'description')::text, '')   INTO description;
+	SELECT json_extract_path_text(options_row, 'map_table')::text         INTO map_table;
 
-	command := 'SELECT vuln.value FROM ' || map || ' AS vuln ';
+	command := 'SELECT ' || lat || '::real AS lat, ' || lon || '::real AS lon, ''' || description ||'''::text as description,  vuln.value FROM ' || map_table || ' AS vuln ';
 
 	IF lat IS NULL OR lon IS NULL THEN
 		CONTINUE;
@@ -66,7 +71,8 @@ $BODY$
 LANGUAGE plpgsql;
 
 /*
-select * from vulnerabilities_read('[{"lat":38.75, "lon": -9.15}, {"latx":38.85, "lon": -9.17}]');
+select * from vulnerabilities_read('[{"lat":38.75, "lon": -9.15, "map_table": "cirac_vul_bgri_fvi_n"}, {"lat":38.85, "lon": -9.17, "map_table": "cirac_vul_bgri_fvi_n"}]');
 
-select * from vulnerabilities_read('[{"lat":38.75, "lon": -9.15}]');
+select * from vulnerabilities_read('[{"lat":38.75, "lon": -9.15, "description": "xyz", "map_table": "cirac_vul_bgri_fvi_n"}]');
+select * from vulnerabilities_read('[{"lat":38.75, "lon": -9.15,  "map_table": "cirac_vul_bgri_fvi_n"}]');
 */

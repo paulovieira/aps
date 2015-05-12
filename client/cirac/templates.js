@@ -153,7 +153,7 @@ var lineno = null;
 var colno = null;
 var output = "";
 try {
-output += "    <div id=\"main-right-region\">\n    </div>\n\n<div class=\"row\" style=\"padding-top: 20px;\">\n\n    <div class=\"col-sm-0\" id=\"main-left-region\">\n    \n    </div>\n\n    <div class=\"col-sm-12\" id=\"main-right-regionx\">\n    </div>\n\n</div>\n";
+output += "<div id=\"main-right-region\">\n</div>\n\n<div class=\"row\" style=\"padding-top: 20px;\">\n\n    <div class=\"col-sm-0\" id=\"main-left-region\">\n    \n    </div>\n\n    <div class=\"col-sm-12\" id=\"main-right-regionx\">\n    </div>\n\n</div>\n";
 cb(null, output);
 ;
 } catch (e) {
@@ -187,7 +187,7 @@ var lineno = null;
 var colno = null;
 var output = "";
 try {
-output += "<div id=\"menu-container\">\n\t<span class=\"glyphicon glyphicon-menu-hamburger\"></span>\n</div>\n\n<div id=\"control-main-region\">\n</div>\n\n";
+output += "<div id=\"menu-container\">\n    <span class=\"glyphicon glyphicon-menu-hamburger\"></span>\n</div>\n\n\n<div style=\"padding: 0px 0px;\" id=\"control-main-region\">\n</div>\n\n\n\n";
 cb(null, output);
 ;
 } catch (e) {
@@ -221,7 +221,52 @@ var lineno = null;
 var colno = null;
 var output = "";
 try {
-output += "<h3>my maps!</h3>";
+output += "\n\n        <form enctype=\"multipart/form-data\">\n\n";
+output += "\n            <div class=\"form-group\">\n                <label for=\"new_file\" style=\"margin-top: 20px;\">Choose file</label>\n                <input id=\"new_file\" name=\"new_file\" type=\"file\" multiple=false class=\"filex\" ";
+output += runtime.suppressValue((runtime.contextOrFrameLookup(context, frame, "activeMapIsCirac") == false?"disabled":""), env.autoesc);
+output += ">\n            </div>\n        </form>\n\n";
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["map/templates/point-row.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+output += "<td>\n\t";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "description"), env.autoesc);
+output += "\n</td>\n\n<td>\n\t";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "value"), env.autoesc);
+output += "\n</td>\n\n<td>";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "lat"), env.autoesc);
+output += "</td>\n\n<td>";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "lon"), env.autoesc);
+output += "</td>\n\n";
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["map/templates/points-table.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+output += "<div class=\"xtable-responsive\">\n    <table class=\"table table-striped table-condensed table-dashboard\">\n\n        <thead>\n            <tr>\n                <th style=\"width: 45%\">Description</th>\n                <th style=\"width: 30%\">Vulnerability</th>\n                <th style=\"width: 12%\">Lat</th>\n                <th style=\"width: 12%\">Lon</th>\n            </tr>\n        </thead>\n\n        <tbody>\n        </tbody>\n\n    </table>\n</div>\n\n<div class=\"text-center\"><button class=\"btn btn-primary\" id=\"new-upload\">New upload</button></div>\n";
 cb(null, output);
 ;
 } catch (e) {
@@ -238,11 +283,11 @@ var lineno = null;
 var colno = null;
 var output = "";
 try {
-output += "<ul class=\"nav nav-tabs\" >\n  <li role=\"presentation\" id=\"tile-switcher\" class=";
+output += "<ul class=\"nav nav-tabs\">\n    <li role=\"presentation\" id=\"tile-switcher\" class=";
 output += runtime.suppressValue((runtime.contextOrFrameLookup(context, frame, "activeTabId") == "tile-switcher"?"active":""), env.autoesc);
-output += "><a href=\"#\">Base layers</a></li>\n  <li role=\"presentation\" id=\"my-maps\" class=";
+output += "><a href=\"#\">Base layers</a></li>\n    <li role=\"presentation\" id=\"my-maps\" class=";
 output += runtime.suppressValue((runtime.contextOrFrameLookup(context, frame, "activeTabId") == "my-maps"?"active":""), env.autoesc);
-output += "><a href=\"#\">My maps</a></li>\n</ul>\n<div id=\"tab-content-region\"></div>";
+output += "><a href=\"#\">My maps</a></li>\n</ul>\n<div id=\"tab-content-region\"></div>\n";
 cb(null, output);
 ;
 } catch (e) {
@@ -259,7 +304,7 @@ var lineno = null;
 var colno = null;
 var output = "";
 try {
-output += "\n\n<form class=\"form-horizontal\">\n\n\t<div class=\"tile-group-title\">Street maps</div>\n\n\t<div class=\"radio\">\n\t\t<label>\n\t\t\t<input type=\"radio\" name=\"base-tiles\" id=\"tiles-mapquest\" value=\"MapQuestOpen.OSM\">\n\t\t\tMapquest Open\n\t\t</label>\n\t</div>\n\n\t<div class=\"radio\">\n\t\t<label>\n\t\t\t<input type=\"radio\" name=\"base-tiles\" id=\"tiles-here-streets\" value=\"HERE.normalDayGrey\">\n\t\t\tHERE Maps\n\t\t</label>\n\t</div>\n\n\t<div class=\"radio\">\n\t\t<label>\n\t\t\t<input type=\"radio\" name=\"base-tiles\" id=\"tiles-here-satellite\" value=\"HERE.satelliteDay\">\n\t\t\tHERE Satellite\n\t\t</label>\n\t</div>\n\n\t<div class=\"checkbox\">\n\t\t<label>\n\t\t\t<input type=\"checkbox\" id=\"tiles-bgri-borders\" value=\"BGRIBordersOnly\">\n\t\t\tshow BGRI borders\n\t\t</label>\n\t</div>\n\n\t<hr>\n\n\n\n\t<div class=\"tile-group-title\">Flood Vulnerability Index</div>\n\n\t<div class=\"radio\">\n\t\t<label>\n\t\t\t<input type=\"radio\" name=\"base-tiles\" id=\"tiles-fvi-mode\" value=\"cirac_vul_bgri_FVI_N\">\n\t\t\tFlood Vulnerability Index by BGRI (mode)\n\t\t</label>\n\t</div>\n\n\t<div class=\"radio\">\n\t\t<label>\n\t\t\t<input type=\"radio\" name=\"base-tiles\" id=\"tiles-fvi-p75\" value=\"cirac_vul_bgri_FVI_75\">\n\t\t\tFlood Vulnerability Index by BGRI (75 percentile)\n\t\t</label>\n\t</div>\n\n\n\n\t<hr>\n\n\t<div class=\"tile-group-title\">Combined Flood Vulnerability Index</div>\n\n\t<div class=\"radio\">\n\t\t<label>\n\t\t\t<input type=\"radio\" name=\"base-tiles\" id=\"tiles-fvi-mode\" value=\"cirac_vul_bgri_cfvi\">\n\t\t\tCombined Flood Vulnerability Index by BGRI (mode)\n\t\t</label>\n\t</div>\n\n\t<div class=\"radio\">\n\t\t<label>\n\t\t\t<input type=\"radio\" name=\"base-tiles\" id=\"tiles-fvi-p75\" value=\"cirac_vul_bgri_cfvi75\">\n\t\t\tCombined Flood Vulnerability Index by BGRI (75 percentile)\n\t\t</label>\n\t</div>\n\n</form>\n<hr>\n\n";
+output += "<form class=\"form-horizontal\">\n\n    <div class=\"tile-group-title\">Street maps</div>\n    <div class=\"radio\">\n        <label>\n            <input type=\"radio\" name=\"base-tiles\" id=\"tiles-mapquest\" value=\"MapQuestOpen.OSM\"> Mapquest Open\n        </label>\n    </div>\n    <div class=\"radio\">\n        <label>\n            <input type=\"radio\" name=\"base-tiles\" id=\"tiles-here-streets\" value=\"HERE.normalDayGrey\"> HERE Maps\n        </label>\n    </div>\n    <div class=\"radio\">\n        <label>\n            <input type=\"radio\" name=\"base-tiles\" id=\"tiles-here-satellite\" value=\"HERE.satelliteDay\"> HERE Satellite\n        </label>\n    </div>\n    <div class=\"checkbox\">\n        <label>\n            <input type=\"checkbox\" id=\"tiles-bgri-borders\" value=\"BGRIBordersOnly\"> show BGRI borders\n        </label>\n    </div>\n    <hr>\n\n\n\n    <div class=\"tile-group-title\">Flood Vulnerability Index</div>\n    <div class=\"radio\">\n        <label>\n            <input type=\"radio\" name=\"base-tiles\" id=\"tiles-fvi-mode\" value=\"cirac_vul_bgri_FVI_N\"> Flood Vulnerability Index by BGRI (mode)\n        </label>\n    </div>\n    <div class=\"radio\">\n        <label>\n            <input type=\"radio\" name=\"base-tiles\" id=\"tiles-fvi-p75\" value=\"cirac_vul_bgri_FVI_75\"> Flood Vulnerability Index by BGRI (75 percentile)\n        </label>\n    </div>\n    <hr>\n\n\n    \n    <div class=\"tile-group-title\">Combined Flood Vulnerability Index</div>\n    <div class=\"radio\">\n        <label>\n            <input type=\"radio\" name=\"base-tiles\" id=\"tiles-fvi-mode\" value=\"cirac_vul_bgri_cfvi\"> Combined Flood Vulnerability Index by BGRI (mode)\n        </label>\n    </div>\n    <div class=\"radio\">\n        <label>\n            <input type=\"radio\" name=\"base-tiles\" id=\"tiles-fvi-p75\" value=\"cirac_vul_bgri_cfvi75\"> Combined Flood Vulnerability Index by BGRI (75 percentile)\n        </label>\n    </div>\n</form>\n<hr>\n";
 cb(null, output);
 ;
 } catch (e) {

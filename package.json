@@ -41,7 +41,8 @@
     "strip-json-comments": "1.0.2",
     "underscore": "1.8.3",
     "underscore.string": "3.0.3",
-    "unzip": "^0.1.11"
+    "unzip": "^0.1.11",
+    "xlsx": "^0.8.0"
   },
   "devDependencies": {
     "browserify": "^9.0.3",

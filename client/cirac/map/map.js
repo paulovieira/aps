@@ -1,3 +1,4 @@
+var tabChannel = Backbone.Radio.channel('tabChannel');
 var mapboxAccessToken = "pk.eyJ1IjoicGF1bG9zYW50b3N2aWVpcmEiLCJhIjoidWlIaGRJayJ9.xDEbXL8LPTO0gJW-NBN8eg";
 
 
@@ -65,70 +66,109 @@ var tileProviders = {
 };
 
 var util = {
-/*
-    getCurrentBaseLayerKey(map){
-        var layerKey;
-
-        if(map.hasLayer(tileProviders["MapQuestOpen.OSM"])){
-            layerKey = "MapQuestOpen.OSM";
-        }
-        else if(map.hasLayer(tileProviders["HERE.normalDayGrey"])){
-            layerKey = "HERE.normalDayGrey";
-        }
-        else if(map.hasLayer(tileProviders["HERE.satelliteDay"])){
-            layerKey = "HERE.satelliteDay";
-        }
-        else if(map.hasLayer(tileProviders["cirac_vul_bgri_FVI_N"])){
-            layerKey = "cirac_vul_bgri_FVI_N";
-        }
-        else if(map.hasLayer(tileProviders["cirac_vul_bgri_FVI_75"])){
-            layerKey = "cirac_vul_bgri_FVI_75";
-        }
-        else if(map.hasLayer(tileProviders["cirac_vul_bgri_cfvi"])){
-            layerKey = "cirac_vul_bgri_cfvi";
-        }
-        else if(map.hasLayer(tileProviders["cirac_vul_bgri_cfvi75"])){
-            layerKey = "cirac_vul_bgri_cfvi75";
-        }
-
-        if(!layerKey){
-            throw new Error("Current base layer is unknown");
-        }
-        return layerKey;
-    }
-*/
-};
-
-var overlays = {
-    "Mapa base": {
-        //"Ruas": this.tileProviders["Esri.WorldStreetMap"],
-        "Ruas": tileProviders["MapQuestOpen.OSM"],
-        "Satélite": tileProviders['HERE.satelliteDay'], // maxZoom: 19
-        "Vulnerabilidades (normal)": tileProviders["BGRIVuln"],
-        "Vulnerabilidades2 (normal)": tileProviders["cirac_vul_bgri_FVI_N"]
-    },
-
-    "BGRI": {
-        "Delimitação": tileProviders["BGRIBordersOnly"], // maxZoom: 16
-    }
 };
 
 
 // create an instance of a backbone model
-var optionsMenuM = new Backbone.Model({
+var OptionsMenuM = Backbone.Model.extend({
+    initialize: function(){
+        this.on("change:activeLayerKey", function(){
+            var mapKey = this.get("activeLayerKey").toLowerCase();
+            this.set("activeMapIsCirac", mapKey.indexOf("cirac") !== -1 ? true : false);
+        });
+    }
+})
+var optionsMenuM = new OptionsMenuM({
     activeTabId: "tile-switcher",
     activeLayerKey: "MapQuestOpen.OSM",
+    activeMapIsCirac: false,
     BGRIBorders: false
+});
+
+window.pointCollection = undefined;
+
+var PointRowIV = Mn.ItemView.extend({
+    template: "map/templates/point-row.html",
+    tagName: "tr",
+});
+
+var PointsListCV = Mn.CompositeView.extend({
+    template: "map/templates/points-table.html",
+    childView: PointRowIV,
+    childViewContainer: "tbody",
+    events: {
+        "click #new-upload": function(){
+            tabChannel.command("show:my:maps");
+        }
+    }
 });
 
 var MyMapsIV = Mn.ItemView.extend({
     template: "map/templates/my-maps.html",
+
+    onAttach: function(){
+
+        var dropZoneTitle = this.model.get("activeMapIsCirac") ? 
+                                "Drag & drop an excel file here (or click the Browse button)" : 
+                                "To upload file you must select one of the vulnerabilities map";
+        
+        // self is the view       
+        var self = this;
+        $("#new_file").fileinput({
+            uploadUrl: '/api/vulnerabilities',
+            maxFileSize: 1000*200,  // in Kb
+            showUpload: true,
+            initialCaption: "Choose file",
+            dropZoneTitle: dropZoneTitle,
+            showRemove: false,
+            maxFileCount: 1,
+
+//            slugCallback: self.slugFilename,
+
+            ajaxSettings: {
+                error: function(jqxhr, status, err){
+                    var msg = jqxhr.responseJSON.message;
+
+                    alert("ERROR: " + jqxhr.responseJSON.message);
+                    throw new Error(msg);
+                },
+
+                success: function(data, y, z){
+                    //debugger;
+                    tabChannel.command("show:point:list", data);
+                }
+            },
+
+            uploadExtraData: function(){
+                return { 
+                    //tags: $("#new_file_tags").val(),
+                    // shapeDescription: JSON.stringify({
+                    //     "pt": $("#js-new-shape-desc-pt").val() || "",
+                    //     "en": $("#js-new-shape-desc-en").val() || ""
+                    // }),
+                    filename:  self.model.get("filename"),
+                    mapTable: optionsMenuM.get("activeLayerKey").toLowerCase()
+                    //shapeCode: (self.model.get("isShape") ? self.model.get("shapeCode") : "")
+                }
+            }
+
+        });
+
+
+        //this callback will execute after the file is selected (and before the upload button is clicked)
+        $('#new_file').on('fileloaded', function(e, file, previewId, index, reader) {
+            self.model.set("filename", file.name);
+        });
+
+
+    },
 });
 
 var TileSwitcherIV = Mn.ItemView.extend({
-    className: "info tile-switcher",
+    className: "infox tile-switcher",
     attributes: {
         //style: "margin-top: 10px;"
+        style: "padding: 10px 10px;"
     },
     template: "map/templates/tile-switcher.html",
 
@@ -207,11 +247,19 @@ var TabMenuLV = Mn.LayoutView.extend({
 
     className: "info",
     attributes: {
-        style: "margin-top: 10px;"
+        style: "margin-top: 10px; width: 500px;"
     },
 
     initialize: function(){
+        tabChannel.comply("show:point:list", function(data){
+            this.showPointList(data);
+        }, this);
 
+        tabChannel.comply("show:my:maps", function(){
+            debugger;
+            window.pointCollection = undefined;
+            this.showMyMaps();
+        }, this);
     },
 
     regions: {
@@ -242,12 +290,23 @@ var TabMenuLV = Mn.LayoutView.extend({
             this.showTileSwitcher()
         }
         else if(newActiveTab=="my-maps"){
-            this.showMyMaps()
+            // if we already have a point collection (from an upload already done), show it
+            if(window.pointCollection){
+                this.showPointList()
+            }
+            else{
+                this.showMyMaps()    
+            }
+            
         }
     },
 
     onBeforeShow: function(){
         this.updateContents();
+    },
+
+    onBeforeDestroy: function(){
+        tabChannel.stopComplying("show:point:list");
     },
 
     showTileSwitcher: function(e){
@@ -266,6 +325,20 @@ var TabMenuLV = Mn.LayoutView.extend({
         myMapsIV.map = this.map;
 
         this.contentRegion.show(myMapsIV);
+    },
+
+    showPointList: function(data){
+
+        // update the point collection
+        if(data){
+            window.pointCollection = new Backbone.Collection(data);    
+        }
+        
+        var pointsListCV = new PointsListCV({
+            collection: pointCollection
+        });
+
+        this.contentRegion.show(pointsListCV);
     }
 
 
@@ -283,6 +356,7 @@ var MainControlLV = Mn.LayoutView.extend({
 
     events: {
         "click .glyphicon-menu-hamburger": "toggleMenu",
+        "click": "stopPropagation",
         "dblclick": "stopPropagation"
     },
 
@@ -291,6 +365,7 @@ var MainControlLV = Mn.LayoutView.extend({
     },
 
     stopPropagation: function(e){
+//debugger;
         e.stopPropagation();
     },
 
@@ -340,7 +415,7 @@ var MapIV = Mn.ItemView.extend({
         this.initializeMap();
         this.addBasicControls();
         this.addGeocoderControl();
-        this.addTileLayer("streets", "MapQuestOpen.OSM");
+        //this.addTileLayer("streets", "MapQuestOpen.OSM");
         this.initializeVulnLegend();
 
         this.registerMapEvents();
@@ -356,8 +431,10 @@ var MapIV = Mn.ItemView.extend({
             zoom: 10,
             maxZoom: 16,
             minZoom: 8,
-            layers: [overlays["Mapa base"]["Ruas"]]
+            //layers: [overlays["Mapa base"]["Ruas"]]
         });
+
+        this.map.addLayer(tileProviders["MapQuestOpen.OSM"]);
 
     },
 
@@ -390,7 +467,7 @@ var MapIV = Mn.ItemView.extend({
 
     addGeocoderControl: function(){
         var geocoderOptions = {
-            placeholder: "Procurar morada",
+            placeholder: "Search address...",
             errorMessage: "Morada desconhecida",
             geocoder: L.Control.Geocoder.bing('AoArA0sD6eBGZyt5PluxhuN7N7X1vloSEIhzaKVkBBGL37akEVbrr0wn17hoYAMy'),
             //geocoder: L.Control.Geocoder.google('AIzaSyBoM_J6Ysno6znvigDm3MYja829lAeVupM'),
@@ -711,6 +788,7 @@ var MapIV = Mn.ItemView.extend({
         //     collapsed: true
         // }).addTo(this.map);
 
+/*
         var baseMaps = [
                 { 
                     groupName : "Street maps",
@@ -760,6 +838,7 @@ var MapIV = Mn.ItemView.extend({
 
         var layerControl = L.Control.styledLayerControl(baseMaps, overlays, options);
         this.map.addControl(layerControl);
+*/
 
     },
 

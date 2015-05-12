@@ -7,11 +7,11 @@
 
 {% block css %}
     <link href="/common/css/bootstrap-modal-2.2.5.css" rel="stylesheet" />
+    <link href="/common/css/bootstrap-fileinput-4.2.0.css" rel="stylesheet" />
 {#    <link href="/common/css/leaflet-0.7.3.css" rel="stylesheet" /> #}
     <link href="/cirac/lib/css/mapbox.uncompressed-2.1.9.css" rel="stylesheet" /> 
-    <link href="/cirac/css/fileinput.css" rel="stylesheet" />
-    <link href="/cirac/css/cirac.css" rel="stylesheet" />
-    <link href="/cirac/lib/css/leaflet.groupedlayercontrol.min.css" rel="stylesheet" />
+
+    <link href="/cirac/lib/css/cirac.css" rel="stylesheet" />
     <link href="/cirac/lib/css/styledLayerControl.css" rel="stylesheet" />
     <link href="/cirac/lib/css/leaflet-geocoder-1.1.0.css" rel="stylesheet" />
 {% endblock %}
@@ -49,7 +49,7 @@
 {% block scripts %}
 
 {# NOTE: libraries that are loaded in all pages: jquery, bootstrap, underscore, q #}
-    <script src="/cirac/fileinput.js"></script>
+    <script src="/common/js/bootstrap-fileinput-4.2.0.js"></script>
     <script src="/common/js/bootstrap-modal-2.2.5.js"></script>    
     <script src="/common/js/underscore.string-3.0.3.js"></script>
     <script src="/common/js/json2.js"></script>
@@ -61,8 +61,6 @@
 {#    <script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script> #}
 
     <script src="/cirac/lib/js/leaflet-providers-1.0.29.js"></script> 
-    <script src="/cirac/lib/js/leaflet.groupedlayercontrol.min.js"></script> 
-    <script src="/cirac/lib/js/styledLayerControl.js"></script> 
     <script src="/cirac/lib/js/leaflet-geocoder-1.1.0.js"></script> 
 
 

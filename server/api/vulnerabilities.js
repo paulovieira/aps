@@ -1,9 +1,12 @@
+var stream = require('stream');
 var Path = require('path');
 var Boom = require('boom');
 var Joi = require('joi');
 var config = require('config');
 var fs = require('fs');
 var Q = require("q");
+var rimraf = require("rimraf");
+var XLSX = require('xlsx');
 var db = require(global.rootPath + 'server/common/db.js');
 
 //var ent = require("ent");
@@ -175,7 +178,7 @@ debugger;
 
 console.log("request.query: ", request.query);
 
-        db.func('vulnerabilities_read', {lat: lat, lon: lon, map: request.query.map})
+        db.func('vulnerabilities_read', {lat: lat, lon: lon, map_table: request.query.map})
             .then(function(data){
                 debugger;
                 console.log("           success handler (then)")
@@ -211,6 +214,89 @@ console.log("request.query: ", request.query);
 			notes: 'Get 2 (long description)',
 			tags: ['api'],
 
+        }
+    });
+
+
+    // CREATE (one or more)
+    server.route({
+        method: 'POST',
+        path: internals.resourcePath,
+        handler: function (request, reply) {
+            console.log(utils.logHandlerInfo(request));
+debugger;
+
+//console.log("request.payload: ", JSON.stringify(request.payload));
+//console.log("request.payload: ", JSON.stringify(request.payload.shapeDescription));
+
+            //var filename     = request.payload.new_file.hapi.filename;
+            var filename     = request.payload.filename;
+            var mapTable     = request.payload.mapTable;
+            var logicalPath  = config.get("uploads.logicalPath");
+            var physicalPath = config.get("uploads.physicalPath");
+
+            if(typeof physicalPath!=="string" || typeof filename!=="string"){
+                return reply(Boom.badRequest("filename and physical path must be strings"));
+            }
+
+            var xlsFullPath = Path.join(global.rootPath, physicalPath, filename);
+            var ws = fs.createWriteStream(xlsFullPath);
+            request.payload.new_file.pipe(ws);
+
+            ws.on("finish", function(){
+
+                var workbook = XLSX.readFile(xlsFullPath);
+                var worksheet = workbook.Sheets[workbook.SheetNames[0]];
+
+                worksheet = XLSX.utils.sheet_to_json(worksheet);
+                worksheet.forEach(function(obj){ obj.mapTable = mapTable; })
+
+                var dbData = JSON.stringify(changeCaseKeys(worksheet, "underscored"));
+               
+                db.func('vulnerabilities_read', dbData)
+                    .then(function(data){
+                        debugger;
+                        console.log("           success handler (then)")
+                        return reply(data);
+                    })
+                    .catch(function(errMsg){
+                        debugger;
+                        console.log("           error handler (catch)")
+                        return reply(Boom.badImplementation(errMsg));
+                    });
+
+
+                
+            });
+
+            ws.on("error", function(err){
+                return reply(Boom.badImplementation(err.message));
+            });
+
+
+        },
+        config: {
+            validate: {
+                // NOTE: to crate a new file we have to send the file itself in a form (multipart/form-data);
+                // but if we do the validation the buffer will somehow be messed up by Joi; so here we don't
+                // do the validation
+
+                //payload: internals.validatePayloadForCreate
+            },
+            auth: config.get('hapi.auth'),
+            pre: [
+                pre.abortIfNotAuthenticated,
+                pre.payload.extractTags
+            ],
+
+            payload: {
+                output: "stream",
+                parse: true,
+                maxBytes: 1048576*300  // 3 megabytes
+            },
+            description: 'Post (short description)',
+            notes: 'Post (long description)',
+            tags: ['api'],
         }
     });
 
