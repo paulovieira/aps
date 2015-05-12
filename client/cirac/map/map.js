@@ -1,111 +1,274 @@
 var mapboxAccessToken = "pk.eyJ1IjoicGF1bG9zYW50b3N2aWVpcmEiLCJhIjoidWlIaGRJayJ9.xDEbXL8LPTO0gJW-NBN8eg";
 
+
 var tileProviders = {
 
-    base: {
-        "Hydda.Base": L.tileLayer.provider('Hydda.Base'), // maxZoom: 18
-        "Esri.WorldShadedRelief": L.tileLayer.provider('Esri.WorldShadedRelief'), // maxZoom: 13
-        "OpenMapSurfer.Grayscale": L.tileLayer.provider('OpenMapSurfer.Grayscale'),
-    },
+    // base
+    "Hydda.Base": L.tileLayer.provider('Hydda.Base'), // maxZoom: 18
+    "Esri.WorldShadedRelief": L.tileLayer.provider('Esri.WorldShadedRelief'), // maxZoom: 13
+    "OpenMapSurfer.Grayscale": L.tileLayer.provider('OpenMapSurfer.Grayscale'),
 
-    rivers: {
-        "Esri.WorldGrayCanvas": L.tileLayer.provider('Esri.WorldGrayCanvas'), // maxZoom: 16
-        "Esri.WorldTopoMap": L.tileLayer.provider('Esri.WorldTopoMap'),
-    },
+    // rivers
+    "Esri.WorldGrayCanvas": L.tileLayer.provider('Esri.WorldGrayCanvas'), // maxZoom: 16
+    "Esri.WorldTopoMap": L.tileLayer.provider('Esri.WorldTopoMap'),
 
-    streets: {
-        "Esri.WorldStreetMap": L.tileLayer.provider('Esri.WorldStreetMap'),
-        "MapQuestOpen.OSM": L.tileLayer.provider('MapQuestOpen.OSM'),
-        "HERE.normalDayGrey": L.tileLayer.provider('HERE.normalDayGrey', {
-            'app_id': 'Y8m9dK2brESDPGJPdrvs',
-            'app_code': 'dq2MYIvjAotR8tHvY8Q_Dg'
-        }),
-    },
+    // streets
+    "Esri.WorldStreetMap": L.tileLayer.provider('Esri.WorldStreetMap'),
+    "MapQuestOpen.OSM": L.tileLayer.provider('MapQuestOpen.OSM'),
+    "HERE.normalDayGrey": L.tileLayer.provider('HERE.normalDayGrey', {
+        'app_id': 'Y8m9dK2brESDPGJPdrvs',
+        'app_code': 'dq2MYIvjAotR8tHvY8Q_Dg'
+    }),
 
-    terrain: {
-        "Mapbox.Emerald": L.tileLayer('https://{s}.tiles.mapbox.com/v4/examples.map-i87786ca/{z}/{x}/{y}.png?access_token=' + mapboxAccessToken, {
-            maxZoom: 18,
-            id: 'paulosantosvieira.l4h4omm9'
-        }),
-        "Esri.DeLorme": L.tileLayer.provider('Esri.DeLorme'), // maxZoom: 11
-        "Acetate.hillshading": L.tileLayer.provider('Acetate.hillshading'),
-        "Thunderforest.Outdoors": L.tileLayer.provider('Thunderforest.Outdoors'),
-        "HERE.terrainDay": L.tileLayer.provider('HERE.terrainDay', {
-            'app_id': 'Y8m9dK2brESDPGJPdrvs',
-            'app_code': 'dq2MYIvjAotR8tHvY8Q_Dg'
-        }),
-    },
+    // terrain
+    "Mapbox.Emerald": L.tileLayer('https://{s}.tiles.mapbox.com/v4/examples.map-i87786ca/{z}/{x}/{y}.png?access_token=' + mapboxAccessToken, {
+        maxZoom: 18,
+        id: 'paulosantosvieira.l4h4omm9'
+    }),
+    "Esri.DeLorme": L.tileLayer.provider('Esri.DeLorme'), // maxZoom: 11
+    "Acetate.hillshading": L.tileLayer.provider('Acetate.hillshading'),
+    "Thunderforest.Outdoors": L.tileLayer.provider('Thunderforest.Outdoors'),
+    "HERE.terrainDay": L.tileLayer.provider('HERE.terrainDay', {
+        'app_id': 'Y8m9dK2brESDPGJPdrvs',
+        'app_code': 'dq2MYIvjAotR8tHvY8Q_Dg'
+    }),
 
-    satellite: {
-        "MapQuestOpen.Aerial": L.tileLayer.provider('MapQuestOpen.Aerial'), // maxZoom: 11
-        "Esri.WorldImagery": L.tileLayer.provider('Esri.WorldImagery'), // maxZoom: 13
-        "HERE.satelliteDay": L.tileLayer.provider('HERE.satelliteDay', {
-            'app_id': 'Y8m9dK2brESDPGJPdrvs',
-            'app_code': 'dq2MYIvjAotR8tHvY8Q_Dg'
-        }), // maxZoom: 19
-    },
+    // satellite
+    "MapQuestOpen.Aerial": L.tileLayer.provider('MapQuestOpen.Aerial'), // maxZoom: 11
+    "Esri.WorldImagery": L.tileLayer.provider('Esri.WorldImagery'), // maxZoom: 13
+    "HERE.satelliteDay": L.tileLayer.provider('HERE.satelliteDay', {
+        'app_id': 'Y8m9dK2brESDPGJPdrvs',
+        'app_code': 'dq2MYIvjAotR8tHvY8Q_Dg'
+    }), // maxZoom: 19
 
-    cirac: {
-        //"BGRIBordersOnly": L.tileLayer('http://localhost:8001/v2/cirac_brgi_borders/{z}/{x}/{y}.png', {
-        "BGRIBordersOnly": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_brgi_borders/{z}/{x}/{y}.png', {
-            maxZoom: 16
-        }),
+    // cirac
+    "BGRIBordersOnly": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_brgi_borders/{z}/{x}/{y}.png', {
+        maxZoom: 16
+    }),
 
-        "cirac_vul_bgri_FVI_N": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_FVI_N/{z}/{x}/{y}.png', {
-            maxZoom: 16
-        }),
+    "cirac_vul_bgri_FVI_N": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_FVI_N/{z}/{x}/{y}.png', {
+        maxZoom: 16
+    }),
 
-        "cirac_vul_bgri_FVI_75": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_FVI_75/{z}/{x}/{y}.png', {
-            maxZoom: 16
-        }),
+    "cirac_vul_bgri_FVI_75": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_FVI_75/{z}/{x}/{y}.png', {
+        maxZoom: 16
+    }),
 
-        "cirac_vul_bgri_cfvi": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_cfvi/{z}/{x}/{y}.png', {
-            maxZoom: 16
-        }),
+    "cirac_vul_bgri_cfvi": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_cfvi/{z}/{x}/{y}.png', {
+        maxZoom: 16
+    }),
 
-        "cirac_vul_bgri_cfvi75": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_cfvi75/{z}/{x}/{y}.png', {
-            maxZoom: 16
-        })
+    "cirac_vul_bgri_cfvi75": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_cfvi75/{z}/{x}/{y}.png', {
+        maxZoom: 16
+    })
+
+};
+
+var util = {
+/*
+    getCurrentBaseLayerKey(map){
+        var layerKey;
+
+        if(map.hasLayer(tileProviders["MapQuestOpen.OSM"])){
+            layerKey = "MapQuestOpen.OSM";
+        }
+        else if(map.hasLayer(tileProviders["HERE.normalDayGrey"])){
+            layerKey = "HERE.normalDayGrey";
+        }
+        else if(map.hasLayer(tileProviders["HERE.satelliteDay"])){
+            layerKey = "HERE.satelliteDay";
+        }
+        else if(map.hasLayer(tileProviders["cirac_vul_bgri_FVI_N"])){
+            layerKey = "cirac_vul_bgri_FVI_N";
+        }
+        else if(map.hasLayer(tileProviders["cirac_vul_bgri_FVI_75"])){
+            layerKey = "cirac_vul_bgri_FVI_75";
+        }
+        else if(map.hasLayer(tileProviders["cirac_vul_bgri_cfvi"])){
+            layerKey = "cirac_vul_bgri_cfvi";
+        }
+        else if(map.hasLayer(tileProviders["cirac_vul_bgri_cfvi75"])){
+            layerKey = "cirac_vul_bgri_cfvi75";
+        }
+
+        if(!layerKey){
+            throw new Error("Current base layer is unknown");
+        }
+        return layerKey;
     }
-
+*/
 };
 
 var overlays = {
     "Mapa base": {
-        //"Ruas": this.tileProviders["streets"]["Esri.WorldStreetMap"],
-        "Ruas": tileProviders["streets"]["MapQuestOpen.OSM"],
-        "Satélite": tileProviders["satellite"]['HERE.satelliteDay'], // maxZoom: 19
-        "Vulnerabilidades (normal)": tileProviders["cirac"]["BGRIVuln"],
-        "Vulnerabilidades2 (normal)": tileProviders["cirac"]["cirac_vul_bgri_FVI_N"]
+        //"Ruas": this.tileProviders["Esri.WorldStreetMap"],
+        "Ruas": tileProviders["MapQuestOpen.OSM"],
+        "Satélite": tileProviders['HERE.satelliteDay'], // maxZoom: 19
+        "Vulnerabilidades (normal)": tileProviders["BGRIVuln"],
+        "Vulnerabilidades2 (normal)": tileProviders["cirac_vul_bgri_FVI_N"]
     },
 
     "BGRI": {
-        "Delimitação": tileProviders["cirac"]["BGRIBordersOnly"], // maxZoom: 16
+        "Delimitação": tileProviders["BGRIBordersOnly"], // maxZoom: 16
     }
 };
 
 
 // create an instance of a backbone model
-var myModel = new Backbone.Model({
-    now: Date.now()
+var optionsMenuM = new Backbone.Model({
+    activeTabId: "tile-switcher",
+    activeLayerKey: "MapQuestOpen.OSM",
+    BGRIBorders: false
 });
 
-var MyView = Mn.ItemView.extend({
-    className: "info",
+var MyMapsIV = Mn.ItemView.extend({
+    template: "map/templates/my-maps.html",
+});
 
-    template: "map/templates/my-view.html",
+var TileSwitcherIV = Mn.ItemView.extend({
+    className: "info tile-switcher",
+    attributes: {
+        //style: "margin-top: 10px;"
+    },
+    template: "map/templates/tile-switcher.html",
+
+    onBeforeShow: function(){
+        this.updateForm();
+    },
+
+    events: {
+        "click input[type='radio']": "changeTileLayer",
+        "click input[type='checkbox']": "toggleOverlay",
+//        "dblclick": "stopPropagation"
+    },
+
+    updateForm: function(){
+        // update the radio button relative to the base layer
+        //var layerKey = util.getCurrentBaseLayerKey(this.map);
+        var layerKey = this.model.get("activeLayerKey");
+
+        var selector = "input[type='radio'][value='" + layerKey + "']";
+        this.$(selector).prop("checked", true);
+
+        // update the checkbox (overlays)
+        layerKey = "BGRIBordersOnly";
+        if(this.map.hasLayer(tileProviders[layerKey])){
+            selector = "input[type='checkbox'][value='" + layerKey + "']";
+            this.$(selector).prop("checked", true);
+        }
+    },
+
+    changeTileLayer: function(e){
+        var newLayerKey = $(e.target).val(),
+            newLayer = tileProviders[newLayerKey],
+            //activeLayerKey = util.getCurrentBaseLayerKey(this.map),
+            activeLayerKey = this.model.get("activeLayerKey"),
+            activeLayer = tileProviders[activeLayerKey];
+
+        if(newLayerKey === activeLayerKey){ return; }
+
+        if(!this.map.hasLayer(newLayer)){
+            this.map.addLayer(newLayer);            
+        }
+
+        if(this.map.hasLayer(activeLayer)){
+            this.map.removeLayer(activeLayer);            
+        }
+
+        this.model.set("activeLayerKey", newLayerKey);
+    },
+
+    toggleOverlay: function(e){
+        var layer, layerKey = $(e.target).val(), 
+            checked = $(e.target).prop("checked");
+
+        if(layerKey === "BGRIBordersOnly"){
+            layer = tileProviders[layerKey];
+
+            if(checked && !this.map.hasLayer(layer)){
+                this.map.addLayer(layer);
+            }
+            else if(!checked && this.map.hasLayer(layer)){
+                this.map.removeLayer(layer);
+            }
+        }
+    },
+/*
+    stopPropagation: function(e){
+        e.stopPropagation();
+    },
+*/    
+});
+
+
+var TabMenuLV = Mn.LayoutView.extend({
+
+    template: "map/templates/tab-menu.html",
+
+    className: "info",
+    attributes: {
+        style: "margin-top: 10px;"
+    },
+
+    initialize: function(){
+
+    },
+
+    regions: {
+        contentRegion: "#tab-content-region"
+    },
+
+    events: {
+        "click li#tile-switcher": function(){
+            this.model.set("activeTabId", "tile-switcher");
+        },
+        "click li#my-maps": function(){
+            this.model.set("activeTabId", "my-maps");
+        },
+    },
 
     modelEvents: {
-        "change": "render"
+        "change:activeTabId": "updateContents"
     },
 
-    triggers: {
-        "click .title": "title:clicked"
+    updateContents: function(){
+
+        this.$("li").removeClass("active");
+
+        var newActiveTab = this.model.get("activeTabId");
+        this.$("#" + newActiveTab).addClass("active")
+
+        if(newActiveTab=="tile-switcher"){
+            this.showTileSwitcher()
+        }
+        else if(newActiveTab=="my-maps"){
+            this.showMyMaps()
+        }
     },
 
-    onTitleClicked: function(){
-        this.model.set("now", Date.now());
+    onBeforeShow: function(){
+        this.updateContents();
+    },
+
+    showTileSwitcher: function(e){
+        var tileSwitcherIV = new TileSwitcherIV({
+            model: optionsMenuM
+        });
+        tileSwitcherIV.map = this.map;
+
+        this.contentRegion.show(tileSwitcherIV);
+    },
+
+    showMyMaps: function(){
+        var myMapsIV = new MyMapsIV({
+            model: optionsMenuM
+        });
+        myMapsIV.map = this.map;
+
+        this.contentRegion.show(myMapsIV);
     }
+
+
 });
 
 
@@ -113,21 +276,14 @@ var MyView = Mn.ItemView.extend({
 var MainControlLV = Mn.LayoutView.extend({
 
     className: "main-control",
-    //template: _.template("<h1 class='title'>The control title was clicked</h1><span>The time is <%= now %></span>"),
     template: "map/templates/main-control.html",
 
     initialize: function(){
     },
-    // triggers: {
-    //     "click .title": "control:clicked"
-    // },
-    // onControlClicked: function(){
-    //     this.model.set("now", Date.now());
-    // }
 
     events: {
         "click .glyphicon-menu-hamburger": "toggleMenu",
-        "dblclick .glyphicon-menu-hamburger": "stopPropagation"
+        "dblclick": "stopPropagation"
     },
 
     regions: {
@@ -141,26 +297,23 @@ var MainControlLV = Mn.LayoutView.extend({
     toggleMenu: function(e){
 //debugger;
         e.stopPropagation();
-        console.log("toggle");
+
 //debugger;
         var menuIsOpen = this.controlMainRegion.hasView()
-
-        if(menuIsOpen){
-            this.closeMenu();
-        }
-        else{
-            this.openMenu();
-        }
+        menuIsOpen ? this.closeMenu() : this.openMenu();
     },
 
     openMenu: function(){
-//        debugger;
 
-        var myView = new MyView({
-            model: myModel
+        //var tileSwitcherIV = new TileSwitcherIV({
+        var tabMenuLV = new TabMenuLV({
+            model: optionsMenuM
         });
 
-        this.controlMainRegion.show(myView);
+        // the nested view must have a reference to the map
+        tabMenuLV.map = this.map;
+
+        this.controlMainRegion.show(tabMenuLV);
     },
 
     closeMenu: function(){
@@ -169,8 +322,12 @@ var MainControlLV = Mn.LayoutView.extend({
     }
 });
 
-var mainControlLV = new MainControlLV({});
+var mainControlLV = new MainControlLV({
+    model: optionsMenuM
+});
 mainControlLV.render();
+
+
 
 var MapIV = Mn.ItemView.extend({
     template: "map/templates/map.html",
@@ -181,11 +338,53 @@ var MapIV = Mn.ItemView.extend({
     onAttach: function() {
 
         this.initializeMap();
-        //this.addTileLayer("base", "Hydda.Base");
+        this.addBasicControls();
+        this.addGeocoderControl();
         this.addTileLayer("streets", "MapQuestOpen.OSM");
         this.initializeVulnLegend();
-        this.addGeocoderControl();
+
         this.registerMapEvents();
+
+    },
+
+    initializeMap: function() {
+
+        this.map = L.map('map', {
+            center: [38.75, -9.15],
+            zoomControl: false,
+            attributionControl: false,
+            zoom: 10,
+            maxZoom: 16,
+            minZoom: 8,
+            layers: [overlays["Mapa base"]["Ruas"]]
+        });
+
+    },
+
+    addBasicControls: function() {
+
+        // add the zoom control manually
+        var zoomControl = L.control.zoom({
+            position: "topright"
+        });
+        this.map.addControl(zoomControl);
+
+
+        // add the scale control
+        var scaleControl = L.control.scale({
+            position: "bottomright",
+            imperial: false,
+            maxWidth: 130
+        });
+        this.map.addControl(scaleControl);
+
+
+        // add the main control
+        var mainControl = new L.Control.BackboneView({
+            view: mainControlLV,
+            position: "topleft"
+        });
+        this.map.addControl(mainControl);
 
     },
 
@@ -246,10 +445,10 @@ var MapIV = Mn.ItemView.extend({
     hasVulnMap: function(){
 
         if(
-            this.map.hasLayer(tileProviders["cirac"]["cirac_vul_bgri_FVI_N"])  ||
-            this.map.hasLayer(tileProviders["cirac"]["cirac_vul_bgri_FVI_75"]) || 
-            this.map.hasLayer(tileProviders["cirac"]["cirac_vul_bgri_cfvi"])   ||
-            this.map.hasLayer(tileProviders["cirac"]["cirac_vul_bgri_cfvi75"])
+            this.map.hasLayer(tileProviders["cirac_vul_bgri_FVI_N"])  ||
+            this.map.hasLayer(tileProviders["cirac_vul_bgri_FVI_75"]) || 
+            this.map.hasLayer(tileProviders["cirac_vul_bgri_cfvi"])   ||
+            this.map.hasLayer(tileProviders["cirac_vul_bgri_cfvi75"])
         ){
             return true;
         }
@@ -259,16 +458,16 @@ var MapIV = Mn.ItemView.extend({
 
     getCurrentMapTable: function(){
         var mapTable = "";
-        if(this.map.hasLayer(tileProviders["cirac"]["cirac_vul_bgri_FVI_N"])){
+        if(this.map.hasLayer(tileProviders["cirac_vul_bgri_FVI_N"])){
             mapTable = "cirac_vul_bgri_fvi_n";
         }
-        else if(this.map.hasLayer(tileProviders["cirac"]["cirac_vul_bgri_FVI_75"])){
+        else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_FVI_75"])){
             mapTable = "cirac_vul_bgri_fvi_75";
         }
-        else if(this.map.hasLayer(tileProviders["cirac"]["cirac_vul_bgri_cfvi"])){
+        else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_cfvi"])){
             mapTable = "cirac_vul_bgri_cfvi";
         }
-        else if(this.map.hasLayer(tileProviders["cirac"]["cirac_vul_bgri_cfvi75"])){
+        else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_cfvi75"])){
             mapTable = "cirac_vul_bgri_cfvi75";
         }
         else{
@@ -283,7 +482,7 @@ var MapIV = Mn.ItemView.extend({
         //debugger;
         // if the selected map if the normal 
         var message = "";
-        if(this.map.hasLayer(tileProviders["cirac"]["cirac_vul_bgri_FVI_N"])){
+        if(this.map.hasLayer(tileProviders["cirac_vul_bgri_FVI_N"])){
             message += "<h5>Normal FVI (mode)</h5>";
 
             if(locationName){
@@ -295,7 +494,7 @@ var MapIV = Mn.ItemView.extend({
             message += "<div><b>Description:</b> " + this.getNormalFVIDescription(value) + "</div>";
         }
 
-        else if(this.map.hasLayer(tileProviders["cirac"]["cirac_vul_bgri_FVI_75"])){
+        else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_FVI_75"])){
             message += "<h5>Normal FVI (75 percentile)</h5>";
 
             if(locationName){
@@ -307,7 +506,7 @@ var MapIV = Mn.ItemView.extend({
             message += "<div><b>Description:</b> " + this.getNormalFVIDescription(value) + "</div>";
         }
 
-        else if(this.map.hasLayer(tileProviders["cirac"]["cirac_vul_bgri_cfvi"])){
+        else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_cfvi"])){
             message += "<h5>Combined FVI (mode)</h5>";
 
             if(locationName){
@@ -319,7 +518,7 @@ var MapIV = Mn.ItemView.extend({
             message += "<div><b>Description:</b> " + this.getCombinedFVIDescription(value) + "</div>";
         }
 
-        else if(this.map.hasLayer(tileProviders["cirac"]["cirac_vul_bgri_cfvi75"])){
+        else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_cfvi75"])){
             message += "<h5>Combined FVI (75 percentile)</h5>";
 
             if(locationName){
@@ -498,43 +697,6 @@ var MapIV = Mn.ItemView.extend({
         this.fviCombinedLegendControl = new FVICombinedLegendControl();
     },
 
-    initializeMap: function() {
-
-        this.map = L.map('map', {
-            center: [38.75, -9.15],
-            zoomControl: false,
-            attributionControl: false,
-            zoom: 10,
-            maxZoom: 16,
-            minZoom: 8,
-            layers: [overlays["Mapa base"]["Ruas"]]
-        });
-
-
-        // add the zoom control manually
-        var zoomControl = L.control.zoom({
-            position: "topright"
-        });
-        this.map.addControl(zoomControl);
-
-
-        // add the scale control
-        var scaleControl = L.control.scale({
-            position: "bottomright",
-            imperial: false,
-            maxWidth: 130
-        });
-        this.map.addControl(scaleControl);
-
-
-        // add the main control
-        var mainControl = new L.Control.BackboneView({
-            view: mainControlLV,
-            position: "topleft"
-        });
-//        this.map.addControl(mainControl);
-
-    },
 
     addTileLayer: function(tileCategory, tileName) {
 
@@ -554,25 +716,25 @@ var MapIV = Mn.ItemView.extend({
                     groupName : "Street maps",
                     expanded: false,
                     layers: {
-                        "Mapquest Open": tileProviders["streets"]["MapQuestOpen.OSM"],
-                        "HERE Day Grey": tileProviders["streets"]["HERE.normalDayGrey"],
-                        "HERE Satellite": tileProviders["satellite"]["HERE.satelliteDay"]
+                        "Mapquest Open": tileProviders["MapQuestOpen.OSM"],
+                        "HERE Day Grey": tileProviders["HERE.normalDayGrey"],
+                        "HERE Satellite": tileProviders["HERE.satelliteDay"]
                     }
                 },
                 { 
                     groupName : "Flood Vulnerability Index",
                     expanded: false,
                     layers: {
-                        "Flood Vulnerability Index by BGRI (mode)": tileProviders["cirac"]["cirac_vul_bgri_FVI_N"],
-                        "Flood Vulnerability Index by BGRI (75 percentile)": tileProviders["cirac"]["cirac_vul_bgri_FVI_75"]
+                        "Flood Vulnerability Index by BGRI (mode)": tileProviders["cirac_vul_bgri_FVI_N"],
+                        "Flood Vulnerability Index by BGRI (75 percentile)": tileProviders["cirac_vul_bgri_FVI_75"]
                     }
                 },
                 { 
                     groupName : "Combined Flood Vulnerability Index",
                     expanded: false,
                     layers: {
-                        "Combined Flood Vulnerability Index by BGRI (mode)": tileProviders["cirac"]["cirac_vul_bgri_cfvi"],
-                        "Combined Flood Vulnerability Index by BGRI (75 percentile)": tileProviders["cirac"]["cirac_vul_bgri_cfvi75"]
+                        "Combined Flood Vulnerability Index by BGRI (mode)": tileProviders["cirac_vul_bgri_cfvi"],
+                        "Combined Flood Vulnerability Index by BGRI (75 percentile)": tileProviders["cirac_vul_bgri_cfvi75"]
                     }
                 }
         ];
@@ -582,7 +744,7 @@ var MapIV = Mn.ItemView.extend({
                     groupName : "Other layers",
                     expanded  : false,
                     layers    : { 
-                        "BGRI boundary" : tileProviders["cirac"]["BGRIBordersOnly"]
+                        "BGRI boundary" : tileProviders["BGRIBordersOnly"]
                     }   
                  }
         ];
@@ -636,7 +798,7 @@ var MapIV = Mn.ItemView.extend({
 
         this.map.on("baselayerchange", function(e){
             var tilesUrl = e.layer._url.toLowerCase();
-
+//debugger;
             if(view.currentLegendControl){
                 view.map.removeControl(view.currentLegendControl);
             }

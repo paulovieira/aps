@@ -187,7 +187,7 @@ var lineno = null;
 var colno = null;
 var output = "";
 try {
-output += "<div id=\"menu-container\">\n\t<span class=\"glyphicon glyphicon-menu-hamburger\"></span>\n</div>\n\n<div id=\"control-main-region\"></div>\n";
+output += "<div id=\"menu-container\">\n\t<span class=\"glyphicon glyphicon-menu-hamburger\"></span>\n</div>\n\n<div id=\"control-main-region\">\n</div>\n\n";
 cb(null, output);
 ;
 } catch (e) {
@@ -216,14 +216,50 @@ root: root
 };
 })();
 })();
-(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["map/templates/my-view.html"] = (function() {function root(env, context, frame, runtime, cb) {
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["map/templates/my-maps.html"] = (function() {function root(env, context, frame, runtime, cb) {
 var lineno = null;
 var colno = null;
 var output = "";
 try {
-output += "<h1 class='title'>The control title</h1><span>The time is ";
-output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "now"), env.autoesc);
-output += "</span>";
+output += "<h3>my maps!</h3>";
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["map/templates/tab-menu.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+output += "<ul class=\"nav nav-tabs\" >\n  <li role=\"presentation\" id=\"tile-switcher\" class=";
+output += runtime.suppressValue((runtime.contextOrFrameLookup(context, frame, "activeTabId") == "tile-switcher"?"active":""), env.autoesc);
+output += "><a href=\"#\">Base layers</a></li>\n  <li role=\"presentation\" id=\"my-maps\" class=";
+output += runtime.suppressValue((runtime.contextOrFrameLookup(context, frame, "activeTabId") == "my-maps"?"active":""), env.autoesc);
+output += "><a href=\"#\">My maps</a></li>\n</ul>\n<div id=\"tab-content-region\"></div>";
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["map/templates/tile-switcher.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+output += "\n\n<form class=\"form-horizontal\">\n\n\t<div class=\"tile-group-title\">Street maps</div>\n\n\t<div class=\"radio\">\n\t\t<label>\n\t\t\t<input type=\"radio\" name=\"base-tiles\" id=\"tiles-mapquest\" value=\"MapQuestOpen.OSM\">\n\t\t\tMapquest Open\n\t\t</label>\n\t</div>\n\n\t<div class=\"radio\">\n\t\t<label>\n\t\t\t<input type=\"radio\" name=\"base-tiles\" id=\"tiles-here-streets\" value=\"HERE.normalDayGrey\">\n\t\t\tHERE Maps\n\t\t</label>\n\t</div>\n\n\t<div class=\"radio\">\n\t\t<label>\n\t\t\t<input type=\"radio\" name=\"base-tiles\" id=\"tiles-here-satellite\" value=\"HERE.satelliteDay\">\n\t\t\tHERE Satellite\n\t\t</label>\n\t</div>\n\n\t<div class=\"checkbox\">\n\t\t<label>\n\t\t\t<input type=\"checkbox\" id=\"tiles-bgri-borders\" value=\"BGRIBordersOnly\">\n\t\t\tshow BGRI borders\n\t\t</label>\n\t</div>\n\n\t<hr>\n\n\n\n\t<div class=\"tile-group-title\">Flood Vulnerability Index</div>\n\n\t<div class=\"radio\">\n\t\t<label>\n\t\t\t<input type=\"radio\" name=\"base-tiles\" id=\"tiles-fvi-mode\" value=\"cirac_vul_bgri_FVI_N\">\n\t\t\tFlood Vulnerability Index by BGRI (mode)\n\t\t</label>\n\t</div>\n\n\t<div class=\"radio\">\n\t\t<label>\n\t\t\t<input type=\"radio\" name=\"base-tiles\" id=\"tiles-fvi-p75\" value=\"cirac_vul_bgri_FVI_75\">\n\t\t\tFlood Vulnerability Index by BGRI (75 percentile)\n\t\t</label>\n\t</div>\n\n\n\n\t<hr>\n\n\t<div class=\"tile-group-title\">Combined Flood Vulnerability Index</div>\n\n\t<div class=\"radio\">\n\t\t<label>\n\t\t\t<input type=\"radio\" name=\"base-tiles\" id=\"tiles-fvi-mode\" value=\"cirac_vul_bgri_cfvi\">\n\t\t\tCombined Flood Vulnerability Index by BGRI (mode)\n\t\t</label>\n\t</div>\n\n\t<div class=\"radio\">\n\t\t<label>\n\t\t\t<input type=\"radio\" name=\"base-tiles\" id=\"tiles-fvi-p75\" value=\"cirac_vul_bgri_cfvi75\">\n\t\t\tCombined Flood Vulnerability Index by BGRI (75 percentile)\n\t\t</label>\n\t</div>\n\n</form>\n<hr>\n\n";
 cb(null, output);
 ;
 } catch (e) {

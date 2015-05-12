@@ -10,15 +10,18 @@ L.Control.BackboneView = L.Control.extend({
 
 		if(options.view){
 			this._view = options.view;	
-			options.view.map = this;
 		}
-		
 		
 	},
 
 	onAdd: function (map) {
 		console.log("control onAdd");
 //debugger;
+
+		if(this._view){
+			this._view.map = this._map;
+		}
+
 	    return this._view.el;
 	},
 
