@@ -63,8 +63,23 @@ var tileProviders = {
 
     "cirac_vul_bgri_cfvi75": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_cfvi75/{z}/{x}/{y}.png', {
         maxZoom: 16
-    })
+    }),
 
+    "cirac_vul_bgri_E": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_E/{z}/{x}/{y}.png', {
+        maxZoom: 16
+    }),
+
+    "cirac_vul_bgri_E75": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_E75/{z}/{x}/{y}.png', {
+        maxZoom: 16
+    }),
+
+    "cirac_vul_bgri_SF": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_SF/{z}/{x}/{y}.png', {
+        maxZoom: 16
+    }),
+
+    "cirac_vul_bgri_SF75": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_SF75/{z}/{x}/{y}.png', {
+        maxZoom: 16
+    })
 };
 
 var scales = {
@@ -234,7 +249,11 @@ var OptionsMenuM = Backbone.Model.extend({
         this.on("change:activeLayerKey", function(){
             var mapKey = this.get("activeLayerKey").toLowerCase();
 
-            this.set("activeMapIsCirac", mapKey.indexOf("cirac") !== -1 ? true : false);
+            // TODO: missing exposure and physican susceptibility
+            var isCiracMap = mapKey.indexOf("cirac_vul_bgri_cfvi") !== -1 ||
+                        mapKey.indexOf("cirac_vul_bgri_fvi") !== -1;
+
+            this.set("activeMapIsCirac", isCiracMap);
         });
     }
 })
@@ -379,7 +398,7 @@ var MyMapsIV = Mn.ItemView.extend({
 
         var dropZoneTitle = this.model.get("activeMapIsCirac") ? 
                                 "Drag & drop an excel file here (or click the Browse button)" : 
-                                "To upload file you must select one of the vulnerabilities map";
+                                "To upload file you must select one of the vulnerability maps";
         
         // self is the view       
         var self = this;
@@ -793,6 +812,12 @@ var MapIV = Mn.ItemView.extend({
             this.map.hasLayer(tileProviders["cirac_vul_bgri_FVI_75"]) || 
             this.map.hasLayer(tileProviders["cirac_vul_bgri_cfvi"])   ||
             this.map.hasLayer(tileProviders["cirac_vul_bgri_cfvi75"])
+/*
+            this.map.hasLayer(tileProviders["cirac_vul_bgri_E"]) ||
+            this.map.hasLayer(tileProviders["cirac_vul_bgri_E75"]) ||
+            this.map.hasLayer(tileProviders["cirac_vul_bgri_SF"]) ||
+            this.map.hasLayer(tileProviders["cirac_vul_bgri_SF75"])
+*/
         ){
             return true;
         }
@@ -814,8 +839,22 @@ var MapIV = Mn.ItemView.extend({
         else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_cfvi75"])){
             mapTable = "cirac_vul_bgri_cfvi75";
         }
+/*
+        else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_E"])){
+            mapTable = "cirac_vul_bgri_e";
+        }
+        else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_E75"])){
+            mapTable = "cirac_vul_bgri_e75";
+        }
+        else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_SF"])){
+            mapTable = "cirac_vul_bgri_sf";
+        }
+        else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_SF75"])){
+            mapTable = "cirac_vul_bgri_sf75";
+        }
+*/
         else{
-            alert("ERROR: the selected vulnerability map is unknown");
+            throw new Error("ERROR: the selected vulnerability map is unknown");
         }
 
         return mapTable;
