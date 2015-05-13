@@ -45,7 +45,7 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 	-- extract values to be (optionally) used in the WHERE clause
 	SELECT json_extract_path_text(options_row, 'lat')::real         INTO lat;
 	SELECT json_extract_path_text(options_row, 'lon')::real         INTO lon;
-	SELECT COALESCE(json_extract_path_text(options_row, 'description')::text, '')   INTO description;
+	SELECT COALESCE(json_extract_path_text(options_row, 'description')::text, '(no description)')   INTO description;
 	SELECT json_extract_path_text(options_row, 'map_table')::text         INTO map_table;
 
 	command := 'SELECT ' || lat || '::real AS lat, ' || lon || '::real AS lon, ''' || description ||'''::text as description,  vuln.value FROM ' || map_table || ' AS vuln ';

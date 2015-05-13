@@ -337,13 +337,13 @@ var xgeoJson = [
             var color,
                 layerKey = optionsMenuM.get("activeLayerKey").toLowerCase();
 
-            if(layerKey.indexOf("cirac_vul_bgri_fvi_n") || 
-                layerKey.indexOf("cirac_vul_bgri_fvi_75")){
+            if(layerKey.indexOf("cirac_vul_bgri_fvi_n")!=-1 || 
+                layerKey.indexOf("cirac_vul_bgri_fvi_75")!=-1){
 
                 color = scales.FVINormalColors(value);    
             }
-            else if(layerKey.indexOf("cirac_vul_bgri_cfvi") || 
-                layerKey.indexOf("cirac_vul_bgri_cfvi75")){
+            else if(layerKey.indexOf("cirac_vul_bgri_cfvi")!=-1 || 
+                layerKey.indexOf("cirac_vul_bgri_cfvi75")!=-1){
 
                 color = scales.FVICombinedColors(value);    
             }

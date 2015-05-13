@@ -47,5 +47,13 @@
 		"lastName": "Gomes",
 		"email": "anaferradagomes@gmail.com",
 		"pwHash": "abc"
+	},
+	{
+		"id": 8,
+		"firstName": "Mr",
+		"lastName": "Demo",
+		"email": "demo@demo.com",
+		"pwHash": "demo"
 	}
+
 ]
