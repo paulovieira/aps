@@ -266,7 +266,7 @@ var lineno = null;
 var colno = null;
 var output = "";
 try {
-output += "<div class=\"xtable-responsive\">\n    <table class=\"table table-striped table-condensed table-dashboard\">\n\n        <thead>\n            <tr>\n                <th style=\"width: 45%\">Description</th>\n                <th style=\"width: 30%\">Vulnerability</th>\n                <th style=\"width: 12%\">Lat</th>\n                <th style=\"width: 12%\">Lon</th>\n            </tr>\n        </thead>\n\n        <tbody>\n        </tbody>\n\n    </table>\n</div>\n\n<div class=\"text-center\"><button class=\"btn btn-primary\" id=\"new-upload\">New upload</button></div>\n";
+output += "<div class=\"text-right\" style=\"margin: 15px 10px;\">\n    <button class=\"btn btn-primary\" id=\"new-upload\">Reset map</button>\n</div>\n \n<div class=\"xtable-responsive\">\n    <table class=\"table table-striped table-condensed table-dashboard\">\n\n        <thead>\n            <tr>\n                <th style=\"width: 45%\">Description</th>\n                <th style=\"width: 30%\">Vulnerability</th>\n                <th style=\"width: 12%\">Lat</th>\n                <th style=\"width: 12%\">Lon</th>\n            </tr>\n        </thead>\n\n        <tbody>\n        </tbody>\n\n    </table>\n</div>\n\n\n";
 cb(null, output);
 ;
 } catch (e) {

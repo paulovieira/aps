@@ -9,7 +9,7 @@ var pgp = pgpLib({
     promiseLib: Q
 });	
 
-var db = pgp({
+var dbInstance = pgp({
     host: config.get("db.postgres.host"),
     port: 5432,
     user: config.get("db.postgres.username"),
@@ -18,7 +18,7 @@ var db = pgp({
     //pgFormatting: true
 });
 
-db.queryResult = {
+dbInstance.queryResult = {
     one: 1,     // single-row result is expected;
     many: 2,    // multi-row result is expected;
     none: 4,    // no rows expected;
@@ -26,4 +26,7 @@ db.queryResult = {
 };
 
 
-module.exports = db;
+module.exports = {
+    dbInstance: dbInstance,
+    pgp: pgp
+};

@@ -7,7 +7,8 @@ var fs = require('fs');
 var Q = require("q");
 var rimraf = require("rimraf");
 var XLSX = require('xlsx');
-var db = require(global.rootPath + 'server/common/db.js');
+var db = require(global.rootPath + 'server/common/db.js').dbInstance;
+var pgp = require(global.rootPath + 'server/common/db.js').pgp;
 
 //var ent = require("ent");
 var _ = require('underscore');
@@ -249,10 +250,14 @@ debugger;
                 var worksheet = workbook.Sheets[workbook.SheetNames[0]];
 
                 worksheet = XLSX.utils.sheet_to_json(worksheet);
+
+//console.log("worksheet: ", worksheet);
                 worksheet.forEach(function(obj){ obj.mapTable = mapTable; })
 
+                //var dbData = pgp.as.json(changeCaseKeys(worksheet, "underscored"));
                 var dbData = JSON.stringify(changeCaseKeys(worksheet, "underscored"));
                
+//console.log("dbData: ", dbData);
                 db.func('vulnerabilities_read', dbData)
                     .then(function(data){
                         debugger;

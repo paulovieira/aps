@@ -67,8 +67,8 @@ var tileProviders = {
 
 };
 
-var util = {
-    getFVINormalColors: function (value) {
+var scales = {
+    FVINormalColors: function (value) {
         var color = "#FFF";
 
         if(value >= 3 && value <= 5){        color = "#38A800"; }
@@ -79,7 +79,7 @@ var util = {
         return color;
     },
 
-    getFVICombinedColors: function(value) {
+    FVICombinedColors: function(value) {
         var color = "#FFF";
 
         if(value == 1){      color = "#38A800"; }
@@ -95,12 +95,145 @@ var util = {
     }
 };
 
+var util = {
+    getPopupMessage: function(value, locationName){
+
+        var message = "",
+            layerKey = optionsMenuM.get("activeLayerKey").toLowerCase();
+
+        if(layerKey == "cirac_vul_bgri_fvi_n"){
+            message += "<h5>Normal FVI (mode)</h5>";
+
+            if(locationName){
+                message += "<div><b>Location:</b> " + locationName + "</div>";
+            }
+
+            message += "<div><b>Vulnerability:</b> " + value + " (" + util.getNormalFVIDescription(value, true) + ")</div>";
+
+            message += "<div><b>Description:</b> " + util.getNormalFVIDescription(value) + "</div>";
+        }
+        else if(layerKey == "cirac_vul_bgri_fvi_75"){
+            message += "<h5>Normal FVI (75 percentile)</h5>";
+
+            if(locationName){
+                message += "<div><b>Location:</b> " + locationName + "</div>";
+            }
+
+            message += "<div><b>Vulnerability:</b> " + value + " (" + util.getNormalFVIDescription(value, true) + ")</div>";
+
+            message += "<div><b>Description:</b> " + util.getNormalFVIDescription(value) + "</div>";
+        }
+        else if(layerKey == "cirac_vul_bgri_cfvi"){
+            message += "<h5>Combined FVI (mode)</h5>";
+
+            if(locationName){
+                message += "<div><b>Location:</b> " + locationName + "</div>";
+            }
+
+            message += "<div><b>Vulnerability:</b> " + value + "</div>";
+
+            message += "<div><b>Description:</b> " + util.getCombinedFVIDescription(value) + "</div>";
+        }
+        else if(layerKey == "cirac_vul_bgri_cfvi75"){
+            message += "<h5>Combined FVI (75 percentile)</h5>";
+
+            if(locationName){
+                message += "<div><b>Location:</b> " + locationName + "</div>";
+            }
+
+            message += "<div><b>Vulnerability:</b> " + value + "</div>";
+
+            message += "<div><b>Description:</b> " + util.getCombinedFVIDescription(value) + "</div>";
+        }
+        else{
+            if(locationName){
+                message += "<div><b>Location:</b> " + locationName + "</div>";
+            }
+        }
+        return message;
+    },
+
+    getNormalFVIDescription: function(value, shortDescription){
+        var message = "";
+        if(value >= 3 && value <= 5){        
+            message = shortDescription ? 
+                "Low" : 
+                "Areas unlikely to have flood events (E, PSI), and where communities are less susceptible (SSI).";
+
+        }
+        else if(value >= 6 && value <= 7){  
+            message =  shortDescription ? 
+                "Moderate":
+                "Areas unlikely to suffer damage during flood events (E, PSI), and where communities tend to be less susceptib­le (SSI).";
+        }
+        else if(value >= 8 && value <= 10){  
+            message = shortDescription ? 
+                "High" :
+                "Areas likely to suffer damage during flood events (E, PSI) and with susceptible communities (SSI).";
+        }
+        else if(value >= 11 && value <= 12){ 
+            message = shortDescription ? 
+                "Very high" :
+                "Areas very likely to suffer damage during flood events (E, PSI), with highly susceptible communities (SSI).";
+        }
+
+        return message;
+    },
+
+    getCombinedFVIDescription: function(value, shortDescription){
+        var message = "";
+        if(value == 1){        
+            message = shortDescription ? 
+                "" : 
+                "Low Physical Susceptibility, Exposure and Precipitation.";
+        }
+        if(value == 2){
+            message = shortDescription ? 
+                "" : 
+                "Low Physical Susceptibility and Precipitation, High Exposure.";
+        }
+        if(value == 3){
+            message = shortDescription ? 
+                "" : 
+                "Low Physical Susceptibility and Exposure and High Precipitation.";
+        }
+        if(value == 4){
+            message = shortDescription ? 
+                "" : 
+                "Low Physical Susceptibility and High Exposure and Precipitation.";
+        }
+        if(value == 5){
+            message = shortDescription ? 
+                "" : 
+                "High Physical Susceptibility and Low Exposure and Precipitation.";
+        }
+        if(value == 6){
+            message = shortDescription ? 
+                "" : 
+                "High Physical Susceptibility and Exposure and Low Precipitation.";
+        }
+        if(value == 7){
+            message = shortDescription ? 
+                "" : 
+                "High Physical Susceptibility and Precipitation and Low Exposure.";
+        }
+        if(value == 8){
+            message = shortDescription ? 
+                "" : 
+                "High Physical Susceptibility, Exposure and Precipitation.";
+        }
+
+        return message;
+    },
+
+}
 
 // create an instance of a backbone model
 var OptionsMenuM = Backbone.Model.extend({
     initialize: function(){
         this.on("change:activeLayerKey", function(){
             var mapKey = this.get("activeLayerKey").toLowerCase();
+
             this.set("activeMapIsCirac", mapKey.indexOf("cirac") !== -1 ? true : false);
         });
     }
@@ -120,20 +253,40 @@ var PointRowIV = Mn.ItemView.extend({
 });
 
 var PointsListCV = Mn.CompositeView.extend({
+
     template: "map/templates/points-table.html",
     childView: PointRowIV,
     childViewContainer: "tbody",
+    attributes: {
+        style: "overflow: scroll; height: 400px;"
+    },
     events: {
         "click #new-upload": function(){
+debugger;
+            // remove all layer that are markers and GeoJSON (circle markers)
+            this.map.eachLayer(function(layer){
+                if(layer instanceof L.GeoJSON || layer instanceof L.Marker){
+                    this.map.removeLayer(layer)
+                }
+            }, this);
+
+            window.pointCollection = undefined;
+
             tabChannel.command("show:my:maps");
         }
+    },
+
+    onBeforeAttach: function(){
+        //debugger;
+        //var mapHeight = $("#map").height();
+        //this.$el.height(mapHeight - 100);
     },
 
     // after the list is shown, show the markers as well
     onShow: function(){
 
         var geoJson = [];
-/*
+
         // create an array of geoJson feature objects
         window.pointCollection.each(function(model){
             geoJson.push({
@@ -149,10 +302,10 @@ var PointsListCV = Mn.CompositeView.extend({
             })
         });
 
-*/
 
-        
-geoJson = [
+/*        
+debugger;
+var xgeoJson = [
 {
     "type": "Feature",
     "properties": {
@@ -178,30 +331,41 @@ geoJson = [
 }
 
 ]
-        debugger;
+*/
         function getColor(value){
 
-            return "red";
+            var color,
+                layerKey = optionsMenuM.get("activeLayerKey").toLowerCase();
 
-            var color = util.getFVINormalColors(value);
-            //debugger;
+            if(layerKey.indexOf("cirac_vul_bgri_fvi_n") || 
+                layerKey.indexOf("cirac_vul_bgri_fvi_75")){
+
+                color = scales.FVINormalColors(value);    
+            }
+            else if(layerKey.indexOf("cirac_vul_bgri_cfvi") || 
+                layerKey.indexOf("cirac_vul_bgri_cfvi75")){
+
+                color = scales.FVICombinedColors(value);    
+            }
+            
             return color;
-
         };
 
         L.geoJson(geoJson, {
-                xpointToLayer: function (feature, latlng) {
-debugger;
+                pointToLayer: function (feature, latlng) {
                     var markerOptions = {
                         radius: 8,
-                        //fillColor: getColor(feature.properties.value),
-                        fillColor: "red",
+                        fillColor: getColor(feature.properties.value),
                         color: "#000",
                         weight: 1,
                         opacity: 1,
                         fillOpacity: 0.8
                     };
                     return L.circleMarker(latlng, markerOptions);
+                },
+
+                onEachFeature: function(feature, layer){
+                    layer.bindPopup(util.getPopupMessage(feature.properties.value, feature.properties.description))
                 }
            }).addTo(this.map);
 
@@ -361,8 +525,6 @@ var TabMenuLV = Mn.LayoutView.extend({
         }, this);
 
         tabChannel.comply("show:my:maps", function(){
-            debugger;
-            window.pointCollection = undefined;
             this.showMyMaps();
         }, this);
     },
@@ -486,7 +648,7 @@ var MainControlLV = Mn.LayoutView.extend({
     },
 
     openMenu: function(){
-
+        window.map = this.map;
         //var tileSwitcherIV = new TileSwitcherIV({
         var tabMenuLV = new TabMenuLV({
             model: optionsMenuM
@@ -535,7 +697,7 @@ var MapIV = Mn.ItemView.extend({
             attributionControl: false,
             zoom: 10,
             maxZoom: 16,
-            minZoom: 8,
+            minZoom: 6,
             //layers: [overlays["Mapa base"]["Ruas"]]
         });
 
@@ -609,7 +771,7 @@ var MapIV = Mn.ItemView.extend({
 
                     view._geocodeMarker = new L.Marker(result.center)
                         //.bindPopup(result.name + " <br><br> Vulnerabilidade: " + data[0].value)
-                        .bindPopup(view.getPopupMessage(data[0].value, result.name))
+                        .bindPopup(util.getPopupMessage(data[0].value, result.name))
                         .addTo(view.map)
                         .openPopup();
 
@@ -659,138 +821,6 @@ var MapIV = Mn.ItemView.extend({
         return mapTable;
     },
 
-    getPopupMessage: function(value, locationName){
-        //return " <br><br> xxVulnerabilidade: " + value;
-        //debugger;
-        // if the selected map if the normal 
-        var message = "";
-        if(this.map.hasLayer(tileProviders["cirac_vul_bgri_FVI_N"])){
-            message += "<h5>Normal FVI (mode)</h5>";
-
-            if(locationName){
-                message += "<div><b>Location:</b> " + locationName + "</div>";
-            }
-
-            message += "<div><b>Vulnerability:</b> " + value + " (" + this.getNormalFVIDescription(value, true) + ")</div>";
-
-            message += "<div><b>Description:</b> " + this.getNormalFVIDescription(value) + "</div>";
-        }
-
-        else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_FVI_75"])){
-            message += "<h5>Normal FVI (75 percentile)</h5>";
-
-            if(locationName){
-                message += "<div><b>Location:</b> " + locationName + "</div>";
-            }
-
-            message += "<div><b>Vulnerability:</b> " + value + " (" + this.getNormalFVIDescription(value, true) + ")</div>";
-
-            message += "<div><b>Description:</b> " + this.getNormalFVIDescription(value) + "</div>";
-        }
-
-        else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_cfvi"])){
-            message += "<h5>Combined FVI (mode)</h5>";
-
-            if(locationName){
-                message += "<div><b>Location:</b> " + locationName + "</div>";
-            }
-
-            message += "<div><b>Vulnerability:</b> " + value + "</div>";
-
-            message += "<div><b>Description:</b> " + this.getCombinedFVIDescription(value) + "</div>";
-        }
-
-        else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_cfvi75"])){
-            message += "<h5>Combined FVI (75 percentile)</h5>";
-
-            if(locationName){
-                message += "<div><b>Location:</b> " + locationName + "</div>";
-            }
-
-            message += "<div><b>Vulnerability:</b> " + value + "</div>";
-
-            message += "<div><b>Description:</b> " + this.getCombinedFVIDescription(value) + "</div>";
-        }
-        else{
-            if(locationName){
-                message += "<div><b>Location:</b> " + locationName + "</div>";
-            }
-        }
-        return message;
-    },
-
-    getNormalFVIDescription: function(value, shortDescription){
-        var message = "";
-        if(value >= 3 && value <= 5){        
-            message = shortDescription ? 
-                "Low" : 
-                "Areas unlikely to have flood events (E, PSI), and where communities are less susceptible (SSI).";
-
-        }
-        else if(value >= 6 && value <= 7){  
-            message =  shortDescription ? 
-                "Moderate":
-                "Areas unlikely to suffer damage during flood events (E, PSI), and where communities tend to be less susceptib­le (SSI).";
-        }
-        else if(value >= 8 && value <= 10){  
-            message = shortDescription ? 
-                "High" :
-                "Areas likely to suffer damage during flood events (E, PSI) and with susceptible communities (SSI).";
-        }
-        else if(value >= 11 && value <= 12){ 
-            message = shortDescription ? 
-                "Very high" :
-                "Areas very likely to suffer damage during flood events (E, PSI), with highly susceptible communities (SSI).";
-        }
-
-        return message;
-    },
-
-    getCombinedFVIDescription: function(value, shortDescription){
-        var message = "";
-        if(value == 1){        
-            message = shortDescription ? 
-                "" : 
-                "Low Physical Susceptibility, Exposure and Precipitation.";
-        }
-        if(value == 2){
-            message = shortDescription ? 
-                "" : 
-                "Low Physical Susceptibility and Precipitation, High Exposure.";
-        }
-        if(value == 3){
-            message = shortDescription ? 
-                "" : 
-                "Low Physical Susceptibility and Exposure and High Precipitation.";
-        }
-        if(value == 4){
-            message = shortDescription ? 
-                "" : 
-                "Low Physical Susceptibility and High Exposure and Precipitation.";
-        }
-        if(value == 5){
-            message = shortDescription ? 
-                "" : 
-                "High Physical Susceptibility and Low Exposure and Precipitation.";
-        }
-        if(value == 6){
-            message = shortDescription ? 
-                "" : 
-                "High Physical Susceptibility and Exposure and Low Precipitation.";
-        }
-        if(value == 7){
-            message = shortDescription ? 
-                "" : 
-                "High Physical Susceptibility and Precipitation and Low Exposure.";
-        }
-        if(value == 8){
-            message = shortDescription ? 
-                "" : 
-                "High Physical Susceptibility, Exposure and Precipitation.";
-        }
-
-        return message;
-    },
 
 
     initializeVulnLegend: function() {
@@ -813,7 +843,7 @@ var MapIV = Mn.ItemView.extend({
                 for (var i = 0; i < vuln.length-1; i++) {
 
                     div.innerHTML +=
-                        '<div style="margin-bottom: 2px;"><i style="background:' + util.getFVINormalColors(vuln[i]) + '"></i>&nbsp;' +
+                        '<div style="margin-bottom: 2px;"><i style="background:' + scales.FVINormalColors(vuln[i]) + '"></i>&nbsp;' +
                         vuln[i] + '-' + (vuln[i+1]-1) +  '&nbsp;<div>';
                 }
 
@@ -841,7 +871,7 @@ var MapIV = Mn.ItemView.extend({
                 for (var i = 0; i < vuln.length; i++) {
 
                     div.innerHTML +=
-                        '<div style="margin-bottom: 2px;"><i style="background:' + util.getFVICombinedColors(vuln[i]) + '"></i>&nbsp;' +
+                        '<div style="margin-bottom: 2px;"><i style="background:' + scales.FVICombinedColors(vuln[i]) + '"></i>&nbsp;' +
                         vuln[i] +  '&nbsp;<div>';
                 }
 
@@ -879,7 +909,7 @@ var MapIV = Mn.ItemView.extend({
 
                     view._geocodeMarker = new L.Marker([e.latlng.lat, e.latlng.lng])
                         //.bindPopup("Vulnerabilidade: " + data[0].value)
-                        .bindPopup(view.getPopupMessage(data[0].value))
+                        .bindPopup(util.getPopupMessage(data[0].value))
                         .addTo(view.map)
                         .openPopup();
                 })
@@ -888,9 +918,31 @@ var MapIV = Mn.ItemView.extend({
                 });
         });
 
+        // callback to update the legend 
         this.map.on("layeradd", function(e){
-            var tilesUrl = e.layer._url.toLowerCase() || "";
-//debugger;
+            // we only care if the layer that was added is a TileLayer
+            if(!(e.layer instanceof L.TileLayer)){ return; }
+
+            var tilesUrl = "";
+            if(e.layer._url){
+                tilesUrl = e.layer._url.toLowerCase();
+            }
+
+            // if the bgri borders was added, return early too
+            if(tilesUrl.indexOf("borders") != -1){ return; }
+
+            // if there is a geoJson layer, return early too (that is, don't remove the legend)
+            var hasGeoJSON = false;
+            this.map.eachLayer(function(l){
+                if(l instanceof L.GeoJSON){
+                    hasGeoJSON = true;
+                }
+            });
+
+            //debugger;
+            if(hasGeoJSON){ return; }
+
+
             if(view.currentLegendControl){
                 view.map.removeControl(view.currentLegendControl);
             }
@@ -910,7 +962,6 @@ var MapIV = Mn.ItemView.extend({
                 view.currentLegendControl = view.fviCombinedLegendControl;
             }
             else{
-                console.log("street");   
                 view.currentLegendControl = undefined;
             }
 
@@ -920,7 +971,7 @@ var MapIV = Mn.ItemView.extend({
             }
 
 
-        });
+        }, this);
     },
 
 
