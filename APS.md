@@ -10,13 +10,71 @@
 
   - add the bgri shapes (make sure the name of the table is lowercase):
 
-shp2pgsql -D -I -s 4326 BGRI/Indice-de-vulnerabilidade/cirac_vul_bgri_FVI_N.shp cirac_vul_bgri_fvi_n |  psql --dbname=aps_150504
+### VULNERABILITY INDEX
 
-shp2pgsql -D -I -s 4326 BGRI/Indice-de-vulnerabilidade/Percentile-75/cirac_vul_bgri_FVI_75.shp cirac_vul_bgri_fvi_75 |  psql --dbname=aps_150504
+shp2pgsql -D -I -s 4326 \
+outputs/mapas/vulnerabilidade/Indice-Vulnerabilidade/Map-SHP/BGRI/Indice-de-vulnerabilidade/cirac_vul_bgri_FVI_N.shp \
+cirac_vul_bgri_fvi_n \
+ |  psql --dbname=aps_150504
 
-shp2pgsql -D -I -s 4326 BGRI/Indice-de-Vulnerabilidade-Combinado/cirac_vul_bgri_cfvi.shp cirac_vul_bgri_cfvi |  psql --dbname=aps_150504
 
-shp2pgsql -D -I -s 4326 BGRI/Indice-de-Vulnerabilidade-Combinado/Percentile-75/cirac_vul_bgri_cfvi75.shp cirac_vul_bgri_cfvi75 |  psql --dbname=aps_150504
+shp2pgsql -D -I -s 4326 \
+outputs/mapas/vulnerabilidade/Indice-Vulnerabilidade/Map-SHP/BGRI/Indice-de-vulnerabilidade/Percentile-75/cirac_vul_bgri_FVI_75.shp \
+cirac_vul_bgri_fvi_75 \
+ |  psql --dbname=aps_150504
+
+
+
+### COMBINED VULNERABILITY INDEX
+
+
+shp2pgsql -D -I -s 4326 \
+outputs/mapas/vulnerabilidade/Indice-Vulnerabilidade/Map-SHP/BGRI/Indice-de-Vulnerabilidade-Combinado/cirac_vul_bgri_cfvi.shp \
+cirac_vul_bgri_cfvi \
+ |  psql --dbname=aps_150504
+
+
+shp2pgsql -D -I -s 4326 \
+outputs/mapas/vulnerabilidade/Indice-Vulnerabilidade/Map-SHP/BGRI/Indice-de-Vulnerabilidade-Combinado/Percentile-75/cirac_vul_bgri_cfvi75.shp \
+cirac_vul_bgri_cfvi75 \
+ |  psql --dbname=aps_150504
+
+
+
+
+### EXPOSIÇAO
+
+shp2pgsql -D -I -s 4326 \
+outputs/mapas/vulnerabilidade/Exposicao/Map-SHP/BGRI/cirac_vul_bgri_E.shp \
+cirac_vul_bgri_e \
+ |  psql --dbname=aps_150504
+
+
+shp2pgsql -D -I -s 4326 \
+outputs/mapas/vulnerabilidade/Exposicao/Map-SHP/BGRI/Percentile-75/cirac_vul_bgri_E75.shp \
+cirac_vul_bgri_e75 \
+ |  psql --dbname=aps_150504
+
+
+
+
+### PHYSICAL SUSCEPTIBILITY
+
+
+shp2pgsql -D -I -s 4326 \
+outputs/mapas/vulnerabilidade/Susceptibilidade-Fisica/Map-SHP/BGRI/cirac_vul_bgri_SF.shp \
+cirac_vul_bgri_sf \
+ |  psql --dbname=aps_150504
+
+
+shp2pgsql -D -I -s 4326 \
+outputs/mapas/vulnerabilidade/Susceptibilidade-Fisica/Map-SHP/BGRI/Percentile-75/cirac_vul_bgri_SF75.shp \
+cirac_vul_bgri_sf75 \
+ |  psql --dbname=aps_150504
+
+
+
+
 
 ## serve the tiles
 

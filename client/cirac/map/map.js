@@ -107,7 +107,24 @@ var scales = {
         else if(value == 8){ color = "#FF0000"; }
 
         return color;
+    },
+
+    exposureColors: function(value) {
+        var color = "#FFF";
+
+        if(value == 1){      color = "#38A800"; }
+        else if(value == 2){ color = "#FFFF00"; }
+        else if(value == 3){ color = "#FF9500"; }
+        else if(value == 4){ color = "#FF0000"; }
+
+        return color;
+    },
+
+    physicalSusceptibilityColors: function(value) {
+        var color = this.exposureColors(value);
+        return color;
     }
+
 };
 
 var util = {
@@ -160,6 +177,51 @@ var util = {
 
             message += "<div><b>Description:</b> " + util.getCombinedFVIDescription(value) + "</div>";
         }
+        else if(layerKey == "cirac_vul_bgri_e"){
+            message += "<h5>Exposure (mode)</h5>";
+
+            if(locationName){
+                message += "<div><b>Location:</b> " + locationName + "</div>";
+            }
+
+            message += "<div><b>Vulnerability:</b> " + value + "</div>";
+
+            message += "<div><b>Description:</b> " + util.getExposureDescription(value) + "</div>";
+        }
+        else if(layerKey == "cirac_vul_bgri_e75"){
+            message += "<h5>Exposure (75 percentile)</h5>";
+
+            if(locationName){
+                message += "<div><b>Location:</b> " + locationName + "</div>";
+            }
+
+            message += "<div><b>Vulnerability:</b> " + value + "</div>";
+
+            message += "<div><b>Description:</b> " + util.getExposureDescription(value) + "</div>";
+        }
+        else if(layerKey == "cirac_vul_bgri_sf"){
+            message += "<h5>Physical Susceptibility (mode)</h5>";
+
+            if(locationName){
+                message += "<div><b>Location:</b> " + locationName + "</div>";
+            }
+
+            message += "<div><b>Vulnerability:</b> " + value + "</div>";
+
+            message += "<div><b>Description:</b> " + util.getPhysicalSusceptibilityDescription(value) + "</div>";
+        }
+        else if(layerKey == "cirac_vul_bgri_sf75"){
+            message += "<h5>Physical Susceptibility (75 percentile)</h5>";
+
+            if(locationName){
+                message += "<div><b>Location:</b> " + locationName + "</div>";
+            }
+
+            message += "<div><b>Vulnerability:</b> " + value + "</div>";
+
+            message += "<div><b>Description:</b> " + util.getPhysicalSusceptibilityDescription(value) + "</div>";
+        }
+
         else{
             if(locationName){
                 message += "<div><b>Location:</b> " + locationName + "</div>";
@@ -241,6 +303,57 @@ var util = {
         return message;
     },
 
+    getExposureDescription: function(value, shortDescription){
+        var message = "";
+        if(value == 1){        
+            message = shortDescription ? 
+                "" : 
+                "Areas with scarce structures";
+        }
+        if(value == 2){
+            message = shortDescription ? 
+                "" : 
+                "Areas with sparse buildings usually in rural areas";
+        }
+        if(value == 3){
+            message = shortDescription ? 
+                "" : 
+                "Areas with medium buildings density usually villages and regions close to urban areas";
+        }
+        if(value == 4){
+            message = shortDescription ? 
+                "" : 
+                "Areas with high buildings density mainly representing urban areas";
+        }
+
+        return message;
+    },
+
+    getPhysicalSusceptibilityDescription: function(value, shortDescription){
+        var message = "";
+        if(value == 1){        
+            message = shortDescription ? 
+                "" : 
+                "<ul><li>Regions with no water accumulation potential</li><li>Regions with higher soil permeability</li><li>Regions with very high water transport cost distance values</li></ul>";
+        }
+        if(value == 2){
+            message = shortDescription ? 
+                "" : 
+                "<ul><li>Regions of medium/low water accumulation</li><li>Regions with significant water transport cost distance values</li><li>Regions of permeable soil</li></ul>";
+        }
+        if(value == 3){
+            message = shortDescription ? 
+                "" : 
+                "<ul><li>Flooding regions associated with large rivers</li><li>Regions of permeable soil + Regions with high water accumulation potential.</li></ul>";
+        }
+        if(value == 4){
+            message = shortDescription ? 
+                "" : 
+                "<ul><li>Water Lines and contiguous regions</li><li>Regions of impervious soil (e.g. cities)</li></ul>";
+        }
+
+        return message;
+    },
 }
 
 // create an instance of a backbone model
@@ -250,9 +363,12 @@ var OptionsMenuM = Backbone.Model.extend({
             var mapKey = this.get("activeLayerKey").toLowerCase();
 
             // TODO: missing exposure and physican susceptibility
-            var isCiracMap = mapKey.indexOf("cirac_vul_bgri_cfvi") !== -1 ||
+            var isCiracMap = mapKey.indexOf("cirac_vul_bgri") !== -1;
+/*
+                        mapKey.indexOf("cirac_vul_bgri_fvi") !== -1 ||
+                        mapKey.indexOf("cirac_vul_bgri_fvi") !== -1 ||
                         mapKey.indexOf("cirac_vul_bgri_fvi") !== -1;
-
+*/
             this.set("activeMapIsCirac", isCiracMap);
         });
     }
@@ -366,7 +482,17 @@ var xgeoJson = [
 
                 color = scales.FVICombinedColors(value);    
             }
-            
+            else if(layerKey.indexOf("cirac_vul_bgri_e")!=-1 || 
+                layerKey.indexOf("cirac_vul_bgri_e75")!=-1){
+
+                color = scales.exposureColors(value);    
+            }
+            else if(layerKey.indexOf("cirac_vul_bgri_sf")!=-1 || 
+                layerKey.indexOf("cirac_vul_bgri_sf75")!=-1){
+
+                color = scales.physicalSusceptibilityColors(value);    
+            }
+
             return color;
         };
 
@@ -811,13 +937,12 @@ var MapIV = Mn.ItemView.extend({
             this.map.hasLayer(tileProviders["cirac_vul_bgri_FVI_N"])  ||
             this.map.hasLayer(tileProviders["cirac_vul_bgri_FVI_75"]) || 
             this.map.hasLayer(tileProviders["cirac_vul_bgri_cfvi"])   ||
-            this.map.hasLayer(tileProviders["cirac_vul_bgri_cfvi75"])
-/*
+            this.map.hasLayer(tileProviders["cirac_vul_bgri_cfvi75"]) ||
             this.map.hasLayer(tileProviders["cirac_vul_bgri_E"]) ||
             this.map.hasLayer(tileProviders["cirac_vul_bgri_E75"]) ||
             this.map.hasLayer(tileProviders["cirac_vul_bgri_SF"]) ||
             this.map.hasLayer(tileProviders["cirac_vul_bgri_SF75"])
-*/
+
         ){
             return true;
         }
@@ -839,7 +964,7 @@ var MapIV = Mn.ItemView.extend({
         else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_cfvi75"])){
             mapTable = "cirac_vul_bgri_cfvi75";
         }
-/*
+
         else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_E"])){
             mapTable = "cirac_vul_bgri_e";
         }
@@ -852,7 +977,7 @@ var MapIV = Mn.ItemView.extend({
         else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_SF75"])){
             mapTable = "cirac_vul_bgri_sf75";
         }
-*/
+
         else{
             throw new Error("ERROR: the selected vulnerability map is unknown");
         }
@@ -919,6 +1044,63 @@ var MapIV = Mn.ItemView.extend({
         });
 
         this.fviCombinedLegendControl = new FVICombinedLegendControl();
+
+
+        // legend control for exposure 
+        var ExposureLegendControl = L.Control.extend({
+
+            options: {
+                position: 'bottomright'
+            },
+
+            onAdd: function(map) {
+
+                var div = L.DomUtil.create('div', 'info legend'),
+                    vuln = [1, 2, 3, 4];
+
+                div.innerHTML = '<div style="margin-bottom: 5px; font-weight: 700;">Exposure</div>';
+
+                for (var i = 0; i < vuln.length; i++) {
+
+                    div.innerHTML +=
+                        '<div style="margin-bottom: 2px;"><i style="background:' + scales.exposureColors(vuln[i]) + '"></i>&nbsp;' +
+                        vuln[i] +  '&nbsp;<div>';
+                }
+
+                return div;
+            }
+        });
+
+        this.exposureLegendControl = new ExposureLegendControl();
+
+
+        // legend control for physical susceptibility
+        var PhysicalSusceptibilityLegendControl = L.Control.extend({
+
+            options: {
+                position: 'bottomright'
+            },
+
+            onAdd: function(map) {
+
+                var div = L.DomUtil.create('div', 'info legend'),
+                    vuln = [1, 2, 3, 4];
+
+                div.innerHTML = '<div style="margin-bottom: 5px; font-weight: 700;">Physical Susceptibility</div>';
+
+                for (var i = 0; i < vuln.length; i++) {
+
+                    div.innerHTML +=
+                        '<div style="margin-bottom: 2px;"><i style="background:' + scales.physicalSusceptibilityColors(vuln[i]) + '"></i>&nbsp;' +
+                        vuln[i] +  '&nbsp;<div>';
+                }
+
+                return div;
+            }
+        });
+
+        this.physicalSusceptibilityLegendControl = new PhysicalSusceptibilityLegendControl();
+
     },
 
 
@@ -1000,6 +1182,23 @@ var MapIV = Mn.ItemView.extend({
 
                 view.currentLegendControl = view.fviCombinedLegendControl;
             }
+
+            // exposure - show the corresponding legend control
+            else if(tilesUrl.indexOf("cirac_vul_bgri_e/{z}/{x}/{y}.png") > 0 ||
+                tilesUrl.indexOf("cirac_vul_bgri_e75/{z}/{x}/{y}.png") > 0
+                ){
+
+                view.currentLegendControl = view.exposureLegendControl;
+            }
+
+            // physical susc - show the corresponding legend control
+            else if(tilesUrl.indexOf("cirac_vul_bgri_sf/{z}/{x}/{y}.png") > 0 ||
+                tilesUrl.indexOf("cirac_vul_bgri_sf75/{z}/{x}/{y}.png") > 0
+                ){
+
+                view.currentLegendControl = view.physicalSusceptibilityLegendControl;
+            }
+
             else{
                 view.currentLegendControl = undefined;
             }
