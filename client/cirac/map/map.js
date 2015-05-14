@@ -44,6 +44,16 @@ var tileProviders = {
         'app_code': 'dq2MYIvjAotR8tHvY8Q_Dg'
     }), // maxZoom: 19
 
+
+    // names of places
+    "MapQuestOpen_HybridOverlay": L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/{type}/{z}/{x}/{y}.{ext}', {
+        type: 'hyb',
+        ext: 'png',
+        //attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        subdomains: '1234',
+        opacity: 0.9
+    }),
+
     // cirac
     "BGRIBordersOnly": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_brgi_borders/{z}/{x}/{y}.png', {
         maxZoom: 16
@@ -377,7 +387,7 @@ var optionsMenuM = new OptionsMenuM({
     activeTabId: "tile-switcher",
     activeLayerKey: "MapQuestOpen.OSM",
     activeMapIsCirac: false,
-    BGRIBorders: false
+    //BGRIBorders: false
 });
 
 window.pointCollection = undefined;
@@ -610,6 +620,13 @@ var TileSwitcherIV = Mn.ItemView.extend({
             selector = "input[type='checkbox'][value='" + layerKey + "']";
             this.$(selector).prop("checked", true);
         }
+
+        // update the checkbox (overlays)
+        layerKey = "MapQuestOpen_HybridOverlay";
+        if(this.map.hasLayer(tileProviders[layerKey])){
+            selector = "input[type='checkbox'][value='" + layerKey + "']";
+            this.$(selector).prop("checked", true);
+        }
     },
 
     changeTileLayer: function(e){
@@ -617,19 +634,38 @@ var TileSwitcherIV = Mn.ItemView.extend({
             newLayer = tileProviders[newLayerKey],
             //activeLayerKey = util.getCurrentBaseLayerKey(this.map),
             activeLayerKey = this.model.get("activeLayerKey"),
-            activeLayer = tileProviders[activeLayerKey];
+            activeLayer = tileProviders[activeLayerKey],
+            namesLayer = tileProviders["MapQuestOpen_HybridOverlay"];
 
         if(newLayerKey === activeLayerKey){ return; }
 
         if(!this.map.hasLayer(newLayer)){
-            this.map.addLayer(newLayer);            
+            this.map.addLayer(newLayer);
         }
 
         if(this.map.hasLayer(activeLayer)){
             this.map.removeLayer(activeLayer);            
         }
 
+        if(this.map.hasLayer(namesLayer)){
+            namesLayer.bringToFront();
+        }
+
         this.model.set("activeLayerKey", newLayerKey);
+
+//debugger;
+/*
+        if(!this.model.get("activeMapIsCirac")){
+            this.map.removeLayer(namesLayer);
+        }
+        else{
+            if(!this.map.hasLayer(namesLayer)){
+                this.map.addLayer(namesLayer);    
+            }
+            namesLayer.bringToFront();
+        }
+*/
+
     },
 
     toggleOverlay: function(e){
@@ -637,6 +673,16 @@ var TileSwitcherIV = Mn.ItemView.extend({
             checked = $(e.target).prop("checked");
 
         if(layerKey === "BGRIBordersOnly"){
+            layer = tileProviders[layerKey];
+
+            if(checked && !this.map.hasLayer(layer)){
+                this.map.addLayer(layer);
+            }
+            else if(!checked && this.map.hasLayer(layer)){
+                this.map.removeLayer(layer);
+            }
+        }
+        else if(layerKey === "MapQuestOpen_HybridOverlay"){
             layer = tileProviders[layerKey];
 
             if(checked && !this.map.hasLayer(layer)){
