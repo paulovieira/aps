@@ -866,6 +866,9 @@ mainControlLV.render();
 
 var MapIV = Mn.ItemView.extend({
     template: "map/templates/map.html",
+    attributes: {
+        "style": "height: 100%;"
+    },
 
     initialize: function() {
     },

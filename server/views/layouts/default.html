@@ -44,15 +44,19 @@
 
 
     {# main container #}
-	<div class="xcontainer-fluid">
+	{# <div class="xcontainer-fluid"> #}
         {% block content %}{% endblock %}
-	</div>
+	{#</div> #}
 
-    {# sticky footer 
+    {# sticky footer #}
     <footer class="footer">
-        {% include "common/footer.html" %}
+        {# {% include "common/footer.html" %} #}
+        footer content
     </footer>
-#}
+
+
+{% block modalContainers %}
+{% endblock %}
 
     {# common javascript (included in all pages) #}
     {% include "common/common_scripts.html" %} 

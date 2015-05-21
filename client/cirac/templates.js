@@ -153,7 +153,8 @@ var lineno = null;
 var colno = null;
 var output = "";
 try {
-output += "<div id=\"main-right-region\">\n</div>\n\n<div class=\"row\" style=\"padding-top: 20px;\">\n\n    <div class=\"col-sm-0\" id=\"main-left-region\">\n    \n    </div>\n\n    <div class=\"col-sm-12\" id=\"main-right-regionx\">\n    </div>\n\n</div>\n";
+output += "<div id=\"main-right-region\" style=\"height: 100%;\">\n</div>\n\n";
+output += "\n";
 cb(null, output);
 ;
 } catch (e) {
@@ -204,7 +205,7 @@ var lineno = null;
 var colno = null;
 var output = "";
 try {
-output += "<div id=\"map\" style=\"height: 900px;\"></div>";
+output += "<div id=\"map\"></div>";
 cb(null, output);
 ;
 } catch (e) {

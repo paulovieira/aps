@@ -1,5 +1,7 @@
 var MainLayoutLV = Mn.LayoutView.extend({
-
+	attributes: {
+		"style": "height: 100%;"
+	},
 	template: "main-layout/templates/main-layout.html",
 
 	// initialize: function(){
@@ -21,10 +23,10 @@ var MainLayoutLV = Mn.LayoutView.extend({
 		this.showMap();
 	},
 
-	showMainMenuLeft: function(){
-		var mainMenuLeftIV = new MainMenuLeftIV();
-		this.mainLeftRegion.show(mainMenuLeftIV);
-	},
+	// showMainMenuLeft: function(){
+	// 	var mainMenuLeftIV = new MainMenuLeftIV();
+	// 	this.mainLeftRegion.show(mainMenuLeftIV);
+	// },
 
 	showMap: function(){
 		var mapIV = new MapIV();
