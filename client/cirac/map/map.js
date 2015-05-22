@@ -122,10 +122,11 @@ var scales = {
     exposureColors: function(value) {
         var color = "#FFF";
 
-        if(value == 1){      color = "#38A800"; }
-        else if(value == 2){ color = "#FFFF00"; }
-        else if(value == 3){ color = "#FF9500"; }
-        else if(value == 4){ color = "#FF0000"; }
+        value = value.toLowerCase();
+        if(value == "low"){      color = "#38A800"; }
+        else if(value == "moderate"){ color = "#FFFF00"; }
+        else if(value == "high"){ color = "#FF9500"; }
+        else if(value == "very high"){ color = "#FF0000"; }
 
         return color;
     },
@@ -843,25 +844,18 @@ var MainControlLV = Mn.LayoutView.extend({
 
     },
 
+    // NOTE: we wire up the events here instead of the events hash to avoid using event delegation (which 
+    // don't seem to work well with stopPropagation)
     onRender: function(){
         var self = this;
 
         $(this.el).find(".glyphicon-menu-hamburger").on("click", function(e){
             self.toggleMenu(e);
-            //debugger;
         });
 
         // NOTE: to work in firefox we must add "DOMMouseScroll MozMousePixelScroll" (!???)
         // http://stackoverflow.com/questions/13274326/firefoxjquery-mousewheel-scroll-event-bug
         $(this.el).on("mousewheel DOMMouseScroll MozMousePixelScroll dblclick", function(e){
-            e.stopPropagation();
-        });
-
-        $(this.el).on("dblclick", function(e){
-            e.stopPropagation();
-        });
-
-        $(this.el).on("click", function(e){
             e.stopPropagation();
         });
 
@@ -872,17 +866,20 @@ var MainControlLV = Mn.LayoutView.extend({
         }
 
         $(this.el).on(eventName, function(e){
+            console.log(eventName)
             e.stopPropagation();
         });
 
+        // NOTE: for non-touch browsers, "click" and "dblclick" are not necessary ("mousedown" is sufficient); but they are for
+        // touch devices (where "touchstart" will be used insteadof "mousedown")
+        $(this.el).on("dblclick", function(e){
+            e.stopPropagation();
+        });
 
-//         $(this.el).on("click", function(e){
-//             //console.log("mousedown")
-//             //e.stopImmediatePropagation();
-//             //debugger;
-//             e.stopPropagation();
-// //            debugger;
-//         });
+        $(this.el).on("click", function(e){
+            e.stopPropagation();
+        });
+
     },
 
     events: {
@@ -1209,7 +1206,8 @@ var MapIV = Mn.ItemView.extend({
             onAdd: function(map) {
 
                 var div = L.DomUtil.create('div', 'info legend'),
-                    vuln = [1, 2, 3, 4];
+                    vuln = ["Low", "Moderate", "High", "Very high"];
+
 
                 div.innerHTML = '<div style="margin-bottom: 5px; font-weight: 700;">Exposure</div>';
 
@@ -1237,7 +1235,7 @@ var MapIV = Mn.ItemView.extend({
             onAdd: function(map) {
 
                 var div = L.DomUtil.create('div', 'info legend'),
-                    vuln = [1, 2, 3, 4];
+                    vuln = ["Low", "Moderate", "High", "Very high"];
 
                 div.innerHTML = '<div style="margin-bottom: 5px; font-weight: 700;">Physical Susceptibility</div>';
 
@@ -1263,10 +1261,6 @@ var MapIV = Mn.ItemView.extend({
 
         var view = this;
 
-        this.map.on("dragstart", function(e){
-            //debugger;
-            console.log("dragstart @ " + Date.now());
-        });
 
         this.map.on('click', function getVulnerability(e) {
 
