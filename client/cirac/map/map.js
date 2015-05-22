@@ -838,16 +838,58 @@ var MainControlLV = Mn.LayoutView.extend({
     template: "map/templates/main-control.html",
 
     initialize: function(){
+        // var x = $(this.el).find(".glyphicon-menu-hamburger");
+        // debugger;
+
     },
 
+    onRender: function(){
+        var self = this;
+
+        $(this.el).find(".glyphicon-menu-hamburger").on("click", function(e){
+            self.toggleMenu(e);
+            //debugger;
+        });
+
+        // NOTE: to work in firefox we must add "DOMMouseScroll MozMousePixelScroll" (!???)
+        // http://stackoverflow.com/questions/13274326/firefoxjquery-mousewheel-scroll-event-bug
+        $(this.el).on("mousewheel DOMMouseScroll MozMousePixelScroll dblclick", function(e){
+            e.stopPropagation();
+        });
+
+        $(this.el).on("dblclick", function(e){
+            e.stopPropagation();
+        });
+
+        // check the correct event name (from modernizr)
+        var eventName = "mousedown";
+        if (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch) {
+            eventName = "touchstart";
+        }
+
+        $(this.el).on(eventName, function(e){
+            e.stopPropagation();
+        });
+
+
+//         $(this.el).on("click", function(e){
+//             //console.log("mousedown")
+//             //e.stopImmediatePropagation();
+//             //debugger;
+//             e.stopPropagation();
+// //            debugger;
+//         });
+    },
 
     events: {
        
-        "click .glyphicon-menu-hamburger": "toggleMenu",
-        "click": "stopPropagation", // avoid showing the popup on the map
-        "dblclick": "stopPropagation", // avoid zoom on the map
-        "mousedown": "stopPropagation",  // avoid dragging on the map
-        "mousewheel": "stopPropagation" // avoid dragging on the map
+        //"click .glyphicon-menu-hamburger": "toggleMenu",
+        //"click": "stopPropagation", // avoid showing the popup on the map
+        //"click": "temp",
+        //"dblclick": "stopPropagation", // avoid zoom on the map
+        //"mousedown": "stopPropagation",  // avoid dragging on the map
+        //"mousewheel": "stopPropagation" // avoid dragging on the map
+        //"mousewheel": "temp"
         
 
     },
@@ -856,9 +898,11 @@ var MainControlLV = Mn.LayoutView.extend({
         controlMainRegion: "#control-main-region"
     },
 
-    // temp: function(e){
-    //     debugger;
-    // },
+    temp: function(e){
+        console.log("mousewheel");
+        e.stopPropagation();
+        debugger;
+    },
 
     stopPropagation: function(e){
 //debugger;
