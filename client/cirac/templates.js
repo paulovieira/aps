@@ -188,7 +188,7 @@ var lineno = null;
 var colno = null;
 var output = "";
 try {
-output += "<div id=\"menu-container\">\n    <span class=\"glyphicon glyphicon-menu-hamburger\"></span>\n</div>\n\n\n<div style=\"padding: 0px 0px;\" id=\"control-main-region\">\n</div>\n\n\n\n";
+output += "<div id=\"menu-container\">\n    <span class=\"glyphicon glyphicon-menu-hamburger\"></span>\n</div>\n\n\n<div style=\"padding: 0px 0px; \" id=\"control-main-region\">\n</div>\n\n\n";
 cb(null, output);
 ;
 } catch (e) {
@@ -288,7 +288,7 @@ output += "<ul class=\"nav nav-tabs\">\n    <li role=\"presentation\" id=\"tile-
 output += runtime.suppressValue((runtime.contextOrFrameLookup(context, frame, "activeTabId") == "tile-switcher"?"active":""), env.autoesc);
 output += "><a href=\"#\">Base layers</a></li>\n    <li role=\"presentation\" id=\"my-maps\" class=";
 output += runtime.suppressValue((runtime.contextOrFrameLookup(context, frame, "activeTabId") == "my-maps"?"active":""), env.autoesc);
-output += "><a href=\"#\">My maps</a></li>\n</ul>\n<div id=\"tab-content-region\"></div>\n";
+output += "><a href=\"#\">My maps</a></li>\n</ul>\n<div style=\"xoverflow: scroll;\" id=\"tab-content-region\"></div>\n";
 cb(null, output);
 ;
 } catch (e) {

@@ -25,8 +25,8 @@
 
     {# common css (included in all pages, but only after authentication and authorization) #}
     {% if ctx.auth.isAuthenticated and ctx.auth.credentials.canEditTexts %}
-    {# {% include "common/kendo_stylesheets.html" %} #}
-    {% include "common/summernote_stylesheets.html" %}
+    {# {% include "common/kendo_stylesheets.html" %} 
+    {% include "common/summernote_stylesheets.html" %}#}
     {% endif %}
 
     {# custom css (specific for each page - to be overriden in that page) #}
@@ -36,27 +36,37 @@
 
 <body>
 
-    {# top navbar #}
-{# TO BE DELETED
-#}
-    {% block navigation %}{% endblock %} 
+    
+    <div id="main-container">
+        <div id="navbar-container">
+             {% block navigation %}{% endblock %}  
+        </div>
+         <div id="map-container">
+            {% block content %}{% endblock %}
+         </div>
+         <div id="footer-container">
+            {# {% include "common/footer.html" %} #}
+         </div>
+    </div>
+    
 
 
 
     {# main container #}
-	{# <div class="xcontainer-fluid"> #}
+	{# <div class="xcontainer-fluid"> 
         {% block content %}{% endblock %}
-	{#</div> #}
+	</div> #}
 
     {# sticky footer #}
+{#
     <footer class="footer">
-        {# {% include "common/footer.html" %} #}
+        {% include "common/footer.html" %} 
         footer content
     </footer>
+#}
 
-
-{% block modalContainers %}
-{% endblock %}
+    {% block modalContainers %}
+    {% endblock %}
 
     {# common javascript (included in all pages) #}
     {% include "common/common_scripts.html" %} 

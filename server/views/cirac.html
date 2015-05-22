@@ -1,4 +1,4 @@
-{% extends "layouts/cirac-layout.html"          %}
+{% extends "layouts/default.html"          %}
 
 {% from "macros/navigation.html" import navigation %}
 
@@ -16,14 +16,22 @@
     <link href="/cirac/lib/css/leaflet-geocoder-1.1.0.css" rel="stylesheet" />
 {% endblock %}
 
+{% block navigation %}
+    {{ navigation(ctx) }}
+{% endblock %}
 
 {% block content %}
 
-
-    <div id="main-region">
+    <div class="row" style="height: 100%; margin: 0; padding: 0;">
+        <div id="main-region" class="col-sm-12" style="height: 100%; margin: 0; padding: 0; border-right: 2px black solid;">
+        </div>
     </div>
 
 {#
+    <div id="main-region">
+    </div>
+
+
     <div class="modal xfade" id="modal" tabindex="-1" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content" id="modal-content-region">
@@ -54,6 +62,7 @@
 {% block scripts %}
 
 {# NOTE: libraries that are loaded in all pages: jquery, bootstrap, underscore, q #}
+    <script src="/common/js/jquery.mousewheel-3.1.12.js"></script>
     <script src="/common/js/bootstrap-fileinput-4.2.0.js"></script>
     <script src="/common/js/bootstrap-modal-2.2.5.js"></script>    
     <script src="/common/js/underscore.string-3.0.3.js"></script>

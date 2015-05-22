@@ -592,7 +592,7 @@ var TileSwitcherIV = Mn.ItemView.extend({
     className: "infox tile-switcher",
     attributes: {
         //style: "margin-top: 10px;"
-        style: "padding: 10px 10px;"
+        style: "padding: 10px 10px; overflow-y: auto;"
     },
     template: "map/templates/tile-switcher.html",
 
@@ -600,10 +600,36 @@ var TileSwitcherIV = Mn.ItemView.extend({
         this.updateForm();
     },
 
+
+    initialize: function(){
+        var self = this;
+        $( window ).resize(function() {
+            //var mapHeight = ($("#map").height() - 120) + "px";
+            //var x = this;
+            //debugger;
+            self.setHeight();
+        });
+    },
+
     events: {
         "click input[type='radio']": "changeTileLayer",
         "click input[type='checkbox']": "toggleOverlay",
 //        "dblclick": "stopPropagation"
+        //"mousedown": "temp"
+    },
+
+    setHeight: function(){
+        var mapHeight = ($("#map").height() - 140) + "px";
+        this.$el.height(mapHeight);
+    },
+
+    onAttach: function(){
+        //debugger;
+//        var mapHeight = ($("#map").height() - 12340) + "px";
+        //console.log("mapHeight: ", mapHeight);
+        //this.$el.attr("style", "padding: 10px 10px; overflow-y: auto; height: " + mapHeight + ";")
+  //      this.$el.height(mapHeight);
+        this.setHeight();
     },
 
     updateForm: function(){
@@ -814,15 +840,25 @@ var MainControlLV = Mn.LayoutView.extend({
     initialize: function(){
     },
 
+
     events: {
+       
         "click .glyphicon-menu-hamburger": "toggleMenu",
-        "click": "stopPropagation",
-        "dblclick": "stopPropagation"
+        "click": "stopPropagation", // avoid showing the popup on the map
+        "dblclick": "stopPropagation", // avoid zoom on the map
+        "mousedown": "stopPropagation",  // avoid dragging on the map
+        "mousewheel": "stopPropagation" // avoid dragging on the map
+        
+
     },
 
     regions: {
         controlMainRegion: "#control-main-region"
     },
+
+    // temp: function(e){
+    //     debugger;
+    // },
 
     stopPropagation: function(e){
 //debugger;
@@ -862,6 +898,26 @@ var mainControlLV = new MainControlLV({
 });
 mainControlLV.render();
 
+// mainControlLV.$(".glyphicon-menu-hamburger").on("click", function(e){
+//     debugger;
+//     mainControlLV.toggleMenu(e);
+// });
+
+// mainControlLV.$(".glyphicon-menu-hamburger").on("dblclick", function(e){
+//     debugger;
+// });
+
+// mainControlLV.$el.on("mousedown", function(e){
+//     debugger;
+//     //e.stopPropagation();
+//     //mainControlLV.toggleMenu(e);
+// });
+
+// $("body").on("mousedown", "#control-main-region", function(e){
+//     debugger;
+    //e.stopPropagation();
+    //mainControlLV.toggleMenu(e);
+// });
 
 
 var MapIV = Mn.ItemView.extend({
@@ -1158,6 +1214,12 @@ var MapIV = Mn.ItemView.extend({
     registerMapEvents: function() {
 
         var view = this;
+
+        this.map.on("dragstart", function(e){
+            //debugger;
+            console.log("dragstart @ " + Date.now());
+        });
+
         this.map.on('click', function getVulnerability(e) {
 
             if(!view.hasVulnMap()){

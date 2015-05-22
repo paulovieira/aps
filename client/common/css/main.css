@@ -1,10 +1,10 @@
+/*
 html {
   position: relative;
   min-height: 100%;
 }
 
 body {
-/*	padding-top: 0px; */
 	margin-bottom: 110px;
 }
 
@@ -15,7 +15,7 @@ body {
 .header {
 	padding-top: 25px;	
 }
-
+*/
 
 .text-title {
 	color: #fafafa;
@@ -55,18 +55,17 @@ body {
 }
 */
 
+/*
 .navbar {
   margin-bottom: 0px;
 }
 
-body {
-/*  background-image: url('/common/images/bg/grid_noise.png') ;*/
-}
+
 
 #main-container {
   background-color: white;
 }
-
+*/
 
 
 .main-menu-text {
@@ -118,27 +117,16 @@ body {
 
 
 /* sticky footer - taken from http://getbootstrap.com/examples/sticky-footer/*/
-
+/*
 .footer {
 
 	position: absolute;
 	bottom: 0;
 	width: 100%;
-	/* height of the footer - must be the same as margin-bottom of body  */
 	height: 110px;
 	background-color: #ddd;
-
-
-/*
-
-	border-style:solid;
-	border-width: 1px;
-	border-color: red;
-
-	background-color: #f5f5f5;
-	background-color: green;	
-	*/
 }
+*/
 
 /*
 img.grayscale {

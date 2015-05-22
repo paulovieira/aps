@@ -1,22 +1,63 @@
-/*
+html,
 body {
-    padding: 0;
-    margin: 0;
-}
-html, body, #main-region, #map {
     height: 100%;
 }
+
+body {
+    xbackground-color: orange;
+}
+
+#main-container {
+    xbackground-color: red;
+    position: relative;
+    height: 100%;
+}
+
+#navbar-container {
+    xbackground-color: blue;
+    position: absolute;
+    top: 0px;
+    height: 52px;
+    width: 100%;
+}
+
+.navbar {
+    border-width: 1px 0px 1px 0px;
+    xborder-color: black;
+}
+
+/*
+instead of defining height on the map container, we set both top and bottom,
+thus obtaining the height implicitely (dinamically stretched vertically)
+NOTE: navbar height is 50px + 1px border top + 1px border bottom
 */
 
-html {
-    position: relative;
-    min-height: 100%;
+#map-container {
+    xbackground-color: green;
+    position: absolute;
+    top: 52px;
+    bottom: 20px;
+    width: 100%;
 }
 
-body {
-    margin-bottom: 60px;
+
+
+#map {
     height: 100%;
 }
+
+#footer-container {
+    xbackground-color: yellow;
+    position: absolute;
+    bottom: 0px;
+    height: 20px;
+    border: 1px #e7e7e7 solid;
+    xborder-color: black;
+    border-width: 1px 0px 0px 0px;
+    width: 100%;
+}
+
+/*
 
 #main-region, #map {
     height: 100%;
@@ -29,7 +70,7 @@ body {
     height: 60px;
     background-color: gray;
 }
-
+*/
 
 
 
@@ -98,6 +139,9 @@ custom controls
     background: rgba(255, 255, 255, 0.95);
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
     border-radius: 5px;
+    /*position: absolute;
+    height: 100%;*/
+
 }
 
 .info {
