@@ -861,6 +861,10 @@ var MainControlLV = Mn.LayoutView.extend({
             e.stopPropagation();
         });
 
+        $(this.el).on("click", function(e){
+            e.stopPropagation();
+        });
+
         // check the correct event name (from modernizr)
         var eventName = "mousedown";
         if (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch) {
