@@ -65,6 +65,20 @@ var tileProviders = {
     }),
 
 
+    // risk
+    "cirac_risk_lx_T500": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_risk_lx_T500/{z}/{x}/{y}.png', {
+        maxZoom: 16
+    }),
+    "cirac_risk_lx_structure": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_risk_lx_structure/{z}/{x}/{y}.png', {
+        maxZoom: 16
+    }),
+    "cirac_risk_cmbr_bx_T500": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_risk_cmbr_bx_T500/{z}/{x}/{y}.png', {
+        maxZoom: 16
+    }),
+    "cirac_risk_cmbr_sul_structure": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_risk_cmbr_sul_structure/{z}/{x}/{y}.png', {
+        maxZoom: 16
+    }),
+
     // FVI
     "cirac_vul_bgri_FVI_N": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_FVI_N/{z}/{x}/{y}.png', {
         maxZoom: 16
@@ -769,6 +783,32 @@ var TileSwitcherIV = Mn.ItemView.extend({
             selector = "input[type='checkbox'][value='" + layerKey + "']";
             this.$(selector).prop("checked", true);
         }
+
+        // update the checkbox (overlays)
+        layerKey = "cirac_risk_lx_T500";
+        if(this.map.hasLayer(tileProviders[layerKey])){
+            selector = "input[type='checkbox'][value='" + layerKey + "']";
+            this.$(selector).prop("checked", true);
+        }
+
+        // update the checkbox (overlays)
+        layerKey = "cirac_risk_lx_structure";
+        if(this.map.hasLayer(tileProviders[layerKey])){
+            selector = "input[type='checkbox'][value='" + layerKey + "']";
+            this.$(selector).prop("checked", true);
+        }
+
+        layerKey = "cirac_risk_cmbr_bx_T500";
+        if(this.map.hasLayer(tileProviders[layerKey])){
+            selector = "input[type='checkbox'][value='" + layerKey + "']";
+            this.$(selector).prop("checked", true);
+        }
+
+        layerKey = "cirac_risk_cmbr_sul_structure";
+        if(this.map.hasLayer(tileProviders[layerKey])){
+            selector = "input[type='checkbox'][value='" + layerKey + "']";
+            this.$(selector).prop("checked", true);
+        }
     },
 
     changeTileLayer: function(e){
@@ -837,6 +877,50 @@ var TileSwitcherIV = Mn.ItemView.extend({
         }
 
         else if(layerKey === "MapQuestOpen_HybridOverlay"){
+            layer = tileProviders[layerKey];
+
+            if(checked && !this.map.hasLayer(layer)){
+                this.map.addLayer(layer);
+            }
+            else if(!checked && this.map.hasLayer(layer)){
+                this.map.removeLayer(layer);
+            }
+        }
+
+        else if(layerKey === "cirac_risk_lx_T500"){
+            layer = tileProviders[layerKey];
+
+            if(checked && !this.map.hasLayer(layer)){
+                this.map.addLayer(layer);
+            }
+            else if(!checked && this.map.hasLayer(layer)){
+                this.map.removeLayer(layer);
+            }
+        }
+
+        else if(layerKey === "cirac_risk_lx_structure"){
+            layer = tileProviders[layerKey];
+
+            if(checked && !this.map.hasLayer(layer)){
+                this.map.addLayer(layer);
+            }
+            else if(!checked && this.map.hasLayer(layer)){
+                this.map.removeLayer(layer);
+            }
+        }
+
+        else if(layerKey === "cirac_risk_cmbr_bx_T500"){
+            layer = tileProviders[layerKey];
+
+            if(checked && !this.map.hasLayer(layer)){
+                this.map.addLayer(layer);
+            }
+            else if(!checked && this.map.hasLayer(layer)){
+                this.map.removeLayer(layer);
+            }
+        }
+
+        else if(layerKey === "cirac_risk_cmbr_sul_structure"){
             layer = tileProviders[layerKey];
 
             if(checked && !this.map.hasLayer(layer)){
