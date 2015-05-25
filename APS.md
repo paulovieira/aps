@@ -24,6 +24,7 @@ cirac_vul_bgri_fvi_75 \
  |  psql --dbname=aps_150504
 
 
+ 
 
 ### COMBINED VULNERABILITY INDEX
 
@@ -42,7 +43,7 @@ cirac_vul_bgri_cfvi75 \
 
 
 
-### EXPOSIÇAO
+### EXPOSURE
 
 shp2pgsql -D -I -s 4326 \
 outputs/mapas/vulnerabilidade/Exposicao/Map-SHP/BGRI/cirac_vul_bgri_E.shp \

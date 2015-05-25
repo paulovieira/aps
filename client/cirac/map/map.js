@@ -54,11 +54,18 @@ var tileProviders = {
         opacity: 0.9
     }),
 
-    // cirac
+    // BGRI borders
     "BGRIBordersOnly": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_brgi_borders/{z}/{x}/{y}.png', {
         maxZoom: 16
     }),
 
+    // rivers
+    "rios": L.tileLayer(Clima.tilesBaseUrl + '/v2/rios/{z}/{x}/{y}.png', {
+        maxZoom: 15
+    }),
+
+
+    // FVI
     "cirac_vul_bgri_FVI_N": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_FVI_N/{z}/{x}/{y}.png', {
         maxZoom: 16
     }),
@@ -67,6 +74,15 @@ var tileProviders = {
         maxZoom: 16
     }),
 
+    "cirac_vul_CP4_FVI": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_CP4_FVI/{z}/{x}/{y}.png', {
+        maxZoom: 15
+    }),
+
+    "cirac_vul_CP4_FVI75": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_CP4_FVI75/{z}/{x}/{y}.png', {
+        maxZoom: 15
+    }),
+
+    // CFVI
     "cirac_vul_bgri_cfvi": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_cfvi/{z}/{x}/{y}.png', {
         maxZoom: 16
     }),
@@ -75,6 +91,15 @@ var tileProviders = {
         maxZoom: 16
     }),
 
+    "cirac_vul_cp4_cfvi_mode": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_cp4_cfvi_mode/{z}/{x}/{y}.png', {
+        maxZoom: 15
+    }),
+
+    "cirac_vul_cp4_cfvi_75": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_cp4_cfvi_75/{z}/{x}/{y}.png', {
+        maxZoom: 15
+    }),
+
+    // EXPOSURE
     "cirac_vul_bgri_E": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_E/{z}/{x}/{y}.png', {
         maxZoom: 16
     }),
@@ -83,13 +108,66 @@ var tileProviders = {
         maxZoom: 16
     }),
 
+    "cirac_vul_CP4_E": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_CP4_E/{z}/{x}/{y}.png', {
+        maxZoom: 15
+    }),
+
+    "cirac_vul_CP4_E75": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_CP4_E75/{z}/{x}/{y}.png', {
+        maxZoom: 15
+    }),
+
+    // PHYSICAL SUSCEPTIBILITY
     "cirac_vul_bgri_SF": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_SF/{z}/{x}/{y}.png', {
         maxZoom: 16
     }),
 
     "cirac_vul_bgri_SF75": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_SF75/{z}/{x}/{y}.png', {
         maxZoom: 16
-    })
+    }),
+
+    "cirac_vul_CP4_SF": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_CP4_SF/{z}/{x}/{y}.png', {
+        maxZoom: 15
+    }),
+
+    "cirac_vul_CP4_SF75": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_CP4_SF75/{z}/{x}/{y}.png', {
+        maxZoom: 15
+    }),
+
+    // SOCIAL SUSCEPTIBILITY
+
+    "cirac_vul_bgri_SSI": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_SSI/{z}/{x}/{y}.png', {
+        maxZoom: 16
+    }),
+
+    "cirac_vul_bgri_SSI75": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_SSI75/{z}/{x}/{y}.png', {
+        maxZoom: 16
+    }),
+
+    "cirac_vul_CP4_SSI": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_CP4_SSI/{z}/{x}/{y}.png', {
+        maxZoom: 15
+    }),
+
+    "cirac_vul_CP4_SSI75": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_CP4_SSI75/{z}/{x}/{y}.png', {
+        maxZoom: 15
+    }),
+
+    // PRECIPITATION
+
+    "cirac_vul_bgri_TF": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_TF/{z}/{x}/{y}.png', {
+        maxZoom: 16
+    }),
+
+    "cirac_vul_bgri_TF75": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_TF75/{z}/{x}/{y}.png', {
+        maxZoom: 16
+    }),
+
+    "cirac_vul_CP4_TF": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_CP4_TF/{z}/{x}/{y}.png', {
+        maxZoom: 15
+    }),
+
+    "cirac_vul_CP4_TF75": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_CP4_TF75/{z}/{x}/{y}.png', {
+        maxZoom: 15
+    }),
 };
 
 var scales = {
@@ -134,8 +212,17 @@ var scales = {
     physicalSusceptibilityColors: function(value) {
         var color = this.exposureColors(value);
         return color;
-    }
+    },
 
+    socialSusceptibilityColors: function(value) {
+        var color = this.exposureColors(value);
+        return color;
+    },
+
+    precipitationColors: function(value) {
+        var color = this.exposureColors(value);
+        return color;
+    }
 };
 
 var util = {
@@ -483,28 +570,48 @@ var xgeoJson = [
             var color,
                 layerKey = optionsMenuM.get("activeLayerKey").toLowerCase();
 
-            if(layerKey.indexOf("cirac_vul_bgri_fvi_n")!=-1 || 
-                layerKey.indexOf("cirac_vul_bgri_fvi_75")!=-1){
+            if(layerKey.indexOf("cirac_vul_bgri_fvi_n")!=-1   || 
+                layerKey.indexOf("cirac_vul_bgri_fvi_75")!=-1 ||
+                layerKey.indexOf("cirac_vul_cp4_fvi")!=-1     ||
+                layerKey.indexOf("cirac_vul_cp4_fvi75")!=-1){
 
                 color = scales.FVINormalColors(value);    
             }
-            else if(layerKey.indexOf("cirac_vul_bgri_cfvi")!=-1 || 
-                layerKey.indexOf("cirac_vul_bgri_cfvi75")!=-1){
+            else if(layerKey.indexOf("cirac_vul_bgri_cfvi")!=-1   || 
+                layerKey.indexOf("cirac_vul_bgri_cfvi75")!=-1     ||
+                layerKey.indexOf("cirac_vul_cp4_cfvi_mode")!=-1   ||
+                layerKey.indexOf("cirac_vul_cp4_cfvi_75")!=-1){
 
                 color = scales.FVICombinedColors(value);    
             }
             else if(layerKey.indexOf("cirac_vul_bgri_e")!=-1 || 
-                layerKey.indexOf("cirac_vul_bgri_e75")!=-1){
+                layerKey.indexOf("cirac_vul_bgri_e75")!=-1    ||
+                layerKey.indexOf("cirac_vul_cp4_e")!=-1      ||
+                layerKey.indexOf("cirac_vul_cp4_e75")!=-1){
 
                 color = scales.exposureColors(value);    
             }
             else if(layerKey.indexOf("cirac_vul_bgri_sf")!=-1 || 
-                layerKey.indexOf("cirac_vul_bgri_sf75")!=-1){
+                layerKey.indexOf("cirac_vul_bgri_sf75")!=-1   ||
+                layerKey.indexOf("cirac_vul_cp4_sf")!=-1      ||
+                layerKey.indexOf("cirac_vul_cp4_sf75")!=-1){
 
                 color = scales.physicalSusceptibilityColors(value);    
             }
+            else if(layerKey.indexOf("cirac_vul_bgri_ssi")!=-1 || 
+                layerKey.indexOf("cirac_vul_bgri_ssi75")!=-1   ||
+                layerKey.indexOf("cirac_vul_cp4_ssi")!=-1      ||
+                layerKey.indexOf("cirac_vul_cp4_ssi75")!=-1){
 
-            return color;
+                color = scales.socialSusceptibilityColors(value);    
+            }
+            else if(layerKey.indexOf("cirac_vul_bgri_tf")!=-1 || 
+                layerKey.indexOf("cirac_vul_bgri_tf75")!=-1   ||
+                layerKey.indexOf("cirac_vul_cp4_tf")!=-1      ||
+                layerKey.indexOf("cirac_vul_cp4_tf75")!=-1){
+
+                color = scales.precipitationColors(value);    
+            }            return color;
         };
 
         L.geoJson(geoJson, {
@@ -649,6 +756,14 @@ var TileSwitcherIV = Mn.ItemView.extend({
         }
 
         // update the checkbox (overlays)
+        layerKey = "rios";
+        if(this.map.hasLayer(tileProviders[layerKey])){
+            selector = "input[type='checkbox'][value='" + layerKey + "']";
+            this.$(selector).prop("checked", true);
+        }
+
+
+        // update the checkbox (overlays)
         layerKey = "MapQuestOpen_HybridOverlay";
         if(this.map.hasLayer(tileProviders[layerKey])){
             selector = "input[type='checkbox'][value='" + layerKey + "']";
@@ -709,6 +824,18 @@ var TileSwitcherIV = Mn.ItemView.extend({
                 this.map.removeLayer(layer);
             }
         }
+
+        else if(layerKey === "rios"){
+            layer = tileProviders[layerKey];
+
+            if(checked && !this.map.hasLayer(layer)){
+                this.map.addLayer(layer);
+            }
+            else if(!checked && this.map.hasLayer(layer)){
+                this.map.removeLayer(layer);
+            }
+        }
+
         else if(layerKey === "MapQuestOpen_HybridOverlay"){
             layer = tileProviders[layerKey];
 
@@ -985,7 +1112,7 @@ var MapIV = Mn.ItemView.extend({
     },
 
     initializeMap: function() {
-
+        
         this.map = L.map('map', {
             center: [38.75, -9.15],
             zoomControl: false,
@@ -994,10 +1121,74 @@ var MapIV = Mn.ItemView.extend({
             maxZoom: 16,
             minZoom: 6,
             //layers: [overlays["Mapa base"]["Ruas"]]
+            
+            // contextmenu: true,
+
+            // contextmenuWidth: 180,
+            // contextmenuItems: [{
+            //     text: 'Normal layout',
+            //     //icon: <span class="glyphicon glyphicon-th-large"></span>
+            //     callback: this.mapLayoutNormal
+            // }, {
+            //     text: 'Splitted layout (2 maps)',
+            //     //icon: <span class="glyphicon glyphicon-th-large"></span>
+            //     callback: this.mapLayout2
+            // }, {
+            //     text: 'Splitted layout (3 maps)',
+            //     //icon: 'images/zoom-in.png',
+            //     callback: this.mapLayout3
+            // }]
         });
 
         this.map.addLayer(tileProviders["MapQuestOpen.OSM"]);
+        /*
+        this.map2 = L.map('map2', {
+            center: [38.75, -9.15],
+            zoomControl: false,
+            attributionControl: false,
+            zoom: 10,
+            maxZoom: 16,
+            minZoom: 6,
+            //layers: [overlays["Mapa base"]["Ruas"]]
+            
+            // contextmenu: true,
 
+            // contextmenuWidth: 180,
+            // contextmenuItems: [{
+            //     text: 'Normal layout',
+            //     //icon: <span class="glyphicon glyphicon-th-large"></span>
+            //     callback: this.mapLayoutNormal
+            // }, {
+            //     text: 'Splitted layout (2 maps)',
+            //     //icon: <span class="glyphicon glyphicon-th-large"></span>
+            //     callback: this.mapLayout2
+            // }, {
+            //     text: 'Splitted layout (3 maps)',
+            //     //icon: 'images/zoom-in.png',
+            //     callback: this.mapLayout3
+
+            // }]
+        });
+
+        this.map2.addLayer(tileProviders["MapQuestOpen.OSM"]);
+*/
+        // start sync
+        //this.map.sync(this.map2);
+        //this.map2.sync(this.map);
+
+
+    },
+
+    mapLayoutNormal: function(dividers){
+        debugger;
+    },
+
+    mapLayout2: function(dividers){
+        debugger;
+    },
+
+    mapLayout3:function(dividers){
+        debugger;
     },
 
     addBasicControls: function() {
@@ -1108,12 +1299,27 @@ var MapIV = Mn.ItemView.extend({
         else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_FVI_75"])){
             mapTable = "cirac_vul_bgri_fvi_75";
         }
+        else if(this.map.hasLayer(tileProviders["cirac_vul_cp4_fvi"])){
+            mapTable = "cirac_vul_cp4_fvi";
+        }
+        else if(this.map.hasLayer(tileProviders["cirac_vul_cp4_fvi75"])){
+            mapTable = "cirac_vul_cp4_fvi75";
+        }
+
+
         else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_cfvi"])){
             mapTable = "cirac_vul_bgri_cfvi";
         }
         else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_cfvi75"])){
             mapTable = "cirac_vul_bgri_cfvi75";
         }
+        else if(this.map.hasLayer(tileProviders["cirac_vul_cp4_cfvi_mode"])){
+            mapTable = "cirac_vul_cp4_cfvi_mode";
+        }
+        else if(this.map.hasLayer(tileProviders["cirac_vul_cp4_cfvi_75"])){
+            mapTable = "cirac_vul_cp4_cfvi_75";
+        }
+
 
         else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_E"])){
             mapTable = "cirac_vul_bgri_e";
@@ -1121,11 +1327,53 @@ var MapIV = Mn.ItemView.extend({
         else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_E75"])){
             mapTable = "cirac_vul_bgri_e75";
         }
+        else if(this.map.hasLayer(tileProviders["cirac_vul_cp4_e"])){
+            mapTable = "cirac_vul_cp4_e";
+        }
+        else if(this.map.hasLayer(tileProviders["cirac_vul_cp4_e75"])){
+            mapTable = "cirac_vul_cp4_e75";
+        }
+
+
         else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_SF"])){
             mapTable = "cirac_vul_bgri_sf";
         }
         else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_SF75"])){
             mapTable = "cirac_vul_bgri_sf75";
+        }
+        else if(this.map.hasLayer(tileProviders["cirac_vul_cp4_sf"])){
+            mapTable = "cirac_vul_cp4_sf";
+        }
+        else if(this.map.hasLayer(tileProviders["cirac_vul_cp4_sf75"])){
+            mapTable = "cirac_vul_cp4_sf75";
+        }
+
+
+        else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_ssi"])){
+            mapTable = "cirac_vul_bgri_ssi";
+        }
+        else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_ssi75"])){
+            mapTable = "cirac_vul_bgri_ssi75";
+        }
+        else if(this.map.hasLayer(tileProviders["cirac_vul_cp4_ssi"])){
+            mapTable = "cirac_vul_cp4_ssi";
+        }
+        else if(this.map.hasLayer(tileProviders["cirac_vul_cp4_ssi75"])){
+            mapTable = "cirac_vul_cp4_ssi75";
+        }
+
+
+        else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_tf"])){
+            mapTable = "cirac_vul_bgri_tf";
+        }
+        else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_tf75"])){
+            mapTable = "cirac_vul_bgri_tf75";
+        }
+        else if(this.map.hasLayer(tileProviders["cirac_vul_cp4_tf"])){
+            mapTable = "cirac_vul_cp4_tf";
+        }
+        else if(this.map.hasLayer(tileProviders["cirac_vul_cp4_tf75"])){
+            mapTable = "cirac_vul_cp4_tf75";
         }
 
         else{
@@ -1252,8 +1500,61 @@ var MapIV = Mn.ItemView.extend({
 
         this.physicalSusceptibilityLegendControl = new PhysicalSusceptibilityLegendControl();
 
-    },
 
+        // legend control for social susceptibility
+        var SocialSusceptibilityLegendControl = L.Control.extend({
+
+            options: {
+                position: 'bottomright'
+            },
+
+            onAdd: function(map) {
+
+                var div = L.DomUtil.create('div', 'info legend'),
+                    vuln = ["Low", "Moderate", "High", "Very high"];
+
+                div.innerHTML = '<div style="margin-bottom: 5px; font-weight: 700;">Social Susceptibility</div>';
+
+                for (var i = 0; i < vuln.length; i++) {
+
+                    div.innerHTML +=
+                        '<div style="margin-bottom: 2px;"><i style="background:' + scales.socialSusceptibilityColors(vuln[i]) + '"></i>&nbsp;' +
+                        vuln[i] +  '&nbsp;<div>';
+                }
+
+                return div;
+            }
+        });
+
+        this.socialSusceptibilityLegendControl = new SocialSusceptibilityLegendControl();
+
+        // legend control for precipitation index
+        var PrecipitationLegendControl = L.Control.extend({
+
+            options: {
+                position: 'bottomright'
+            },
+
+            onAdd: function(map) {
+
+                var div = L.DomUtil.create('div', 'info legend'),
+                    vuln = ["Low", "Moderate", "High", "Very high"];
+
+                div.innerHTML = '<div style="margin-bottom: 5px; font-weight: 700;">Precipitation Index</div>';
+
+                for (var i = 0; i < vuln.length; i++) {
+
+                    div.innerHTML +=
+                        '<div style="margin-bottom: 2px;"><i style="background:' + scales.precipitationColors(vuln[i]) + '"></i>&nbsp;' +
+                        vuln[i] +  '&nbsp;<div>';
+                }
+
+                return div;
+            }
+        });
+
+        this.precipitationLegendControl = new PrecipitationLegendControl();
+    },
 
 
 
@@ -1320,10 +1621,12 @@ var MapIV = Mn.ItemView.extend({
             if(view.currentLegendControl){
                 view.map.removeControl(view.currentLegendControl);
             }
-
+//debugger;
             // normal FVI - show the corresponding legend control
             if(tilesUrl.indexOf("cirac_vul_bgri_fvi_n/{z}/{x}/{y}.png") > 0 ||
-                tilesUrl.indexOf("cirac_vul_bgri_fvi_75/{z}/{x}/{y}.png") > 0){
+                tilesUrl.indexOf("cirac_vul_bgri_fvi_75/{z}/{x}/{y}.png") > 0 ||
+                tilesUrl.indexOf("cirac_vul_cp4_fvi/{z}/{x}/{y}.png") > 0 ||
+                tilesUrl.indexOf("cirac_vul_cp4_fvi75/{z}/{x}/{y}.png") > 0){
 
                 view.currentLegendControl = view.fviNormalLegendControl;
                 
@@ -1331,14 +1634,18 @@ var MapIV = Mn.ItemView.extend({
 
             // combined FVI - show the corresponding legend control
             else if(tilesUrl.indexOf("cirac_vul_bgri_cfvi/{z}/{x}/{y}.png") > 0 ||
-                tilesUrl.indexOf("cirac_vul_bgri_cfvi75/{z}/{x}/{y}.png") > 0){
+                tilesUrl.indexOf("cirac_vul_bgri_cfvi75/{z}/{x}/{y}.png") > 0 ||
+                tilesUrl.indexOf("cirac_vul_cp4_cfvi_mode/{z}/{x}/{y}.png") > 0 ||
+                tilesUrl.indexOf("cirac_vul_cp4_cfvi_75/{z}/{x}/{y}.png") > 0){
 
                 view.currentLegendControl = view.fviCombinedLegendControl;
             }
 
             // exposure - show the corresponding legend control
             else if(tilesUrl.indexOf("cirac_vul_bgri_e/{z}/{x}/{y}.png") > 0 ||
-                tilesUrl.indexOf("cirac_vul_bgri_e75/{z}/{x}/{y}.png") > 0
+                tilesUrl.indexOf("cirac_vul_bgri_e75/{z}/{x}/{y}.png") > 0 ||
+                tilesUrl.indexOf("cirac_vul_cp4_e/{z}/{x}/{y}.png") > 0 ||
+                tilesUrl.indexOf("cirac_vul_cp4_e75/{z}/{x}/{y}.png") > 0
                 ){
 
                 view.currentLegendControl = view.exposureLegendControl;
@@ -1346,7 +1653,29 @@ var MapIV = Mn.ItemView.extend({
 
             // physical susc - show the corresponding legend control
             else if(tilesUrl.indexOf("cirac_vul_bgri_sf/{z}/{x}/{y}.png") > 0 ||
-                tilesUrl.indexOf("cirac_vul_bgri_sf75/{z}/{x}/{y}.png") > 0
+                tilesUrl.indexOf("cirac_vul_bgri_sf75/{z}/{x}/{y}.png") > 0 ||
+                tilesUrl.indexOf("cirac_vul_cp4_sf/{z}/{x}/{y}.png") > 0 ||
+                tilesUrl.indexOf("cirac_vul_cp4_sf75/{z}/{x}/{y}.png") > 0
+                ){
+
+                view.currentLegendControl = view.physicalSusceptibilityLegendControl;
+            }
+
+            // social susc - show the corresponding legend control
+            else if(tilesUrl.indexOf("cirac_vul_bgri_ssi/{z}/{x}/{y}.png") > 0 ||
+                tilesUrl.indexOf("cirac_vul_bgri_ssi75/{z}/{x}/{y}.png") > 0 ||
+                tilesUrl.indexOf("cirac_vul_cp4_ssi/{z}/{x}/{y}.png") > 0 ||
+                tilesUrl.indexOf("cirac_vul_cp4_ssi75/{z}/{x}/{y}.png") > 0
+                ){
+
+                view.currentLegendControl = view.physicalSusceptibilityLegendControl;
+            }
+
+            // precipitation - show the corresponding legend control
+            else if(tilesUrl.indexOf("cirac_vul_bgri_tf/{z}/{x}/{y}.png") > 0 ||
+                tilesUrl.indexOf("cirac_vul_bgri_tf75/{z}/{x}/{y}.png") > 0 ||
+                tilesUrl.indexOf("cirac_vul_cp4_tf/{z}/{x}/{y}.png") > 0 ||
+                tilesUrl.indexOf("cirac_vul_cp4_tf75/{z}/{x}/{y}.png") > 0
                 ){
 
                 view.currentLegendControl = view.physicalSusceptibilityLegendControl;

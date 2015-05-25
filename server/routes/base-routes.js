@@ -224,23 +224,194 @@ var routes = [
         },
     },
 
-    // catch-all route
 
+    // tilemill routes
     {
         method: "GET",
-        path: "/{lang}/{anyPath*}",
-        handler: baseHandlers.catchAll,
+        path: "/{lang}/tilemill",
+        handler: {
+            proxy: {
+                mapUri: function(request, cb){
+                    console.log("proxy: tilemill index");
+                    return cb(null, "http://localhost:20009/");
+                },
+            }
+        },
 
         config: {
-            auth: {
-                mode: "try"
-            },
+
+            auth: config.get('hapi.auth'),
 
             validate: {
                 params: validate.params.lang
             }
-        }
+        },
     },
+
+    {
+        method: "GET",
+        path: "/xassets/{anyPath*}",
+        handler: {
+            proxy: {
+                mapUri: function(request, cb){
+                    return cb(null, "http://localhost:20009" + request.path);
+                },
+            }
+        },
+
+        config: {
+
+            auth: false
+
+        },
+    },
+
+    {
+        method: "GET",
+        path: "/api/Project/{anyPath*}",
+        handler: {
+            proxy: {
+                mapUri: function(request, cb){
+                    return cb(null, "http://localhost:20009" + request.path);
+                },
+            }
+        },
+
+        config: {
+
+            auth: false
+
+        },
+    },
+
+    {
+        method: "GET",
+        path: "/api/updatesVersion/{anyPath*}",
+        handler: {
+            proxy: {
+                mapUri: function(request, cb){
+                    return cb(null, "http://localhost:20009" + request.path);
+                },
+            }
+        },
+
+        config: {
+
+            auth: false
+
+        },
+    },
+
+
+    {
+        method: "GET",
+        path: "/api/Error/{anyPath*}",
+        handler: {
+            proxy: {
+                mapUri: function(request, cb){
+                    return cb(null, "http://localhost:20009" + request.path);
+                },
+            }
+        },
+
+        config: {
+
+            auth: false
+
+        },
+    },
+
+    {
+        method: "GET",
+        path: "/api/Export/{anyPath*}",
+        handler: {
+            proxy: {
+                mapUri: function(request, cb){
+                    return cb(null, "http://localhost:20009" + request.path);
+                },
+            }
+        },
+
+        config: {
+
+            auth: false
+
+        },
+    },
+
+    {
+        method: "PUT",
+        path: "/api/Export/{anyPath*}",
+        handler: {
+            proxy: {
+                passThrough: true,
+                mapUri: function(request, cb){
+                    return cb(null, "http://localhost:20009" + request.path);
+                },
+            }
+        },
+
+        config: {
+
+            auth: false
+
+        },
+    },
+
+    {
+        method: "GET",
+        path: "/api/Preview/{anyPath*}",
+        handler: {
+            proxy: {
+                mapUri: function(request, cb){
+                    return cb(null, "http://localhost:20009" + request.path);
+                },
+            }
+        },
+
+        config: {
+
+            auth: false
+
+        },
+    },
+
+    {
+        method: "GET",
+        path: "/api/Config/{anyPath*}",
+        handler: {
+            proxy: {
+                mapUri: function(request, cb){
+                    return cb(null, "http://localhost:20009" + request.path);
+                },
+            }
+        },
+
+        config: {
+
+            auth: false
+
+        },
+    },
+
+    {
+        method: "GET",
+        path: "/export/{anyPath*}",
+        handler: {
+            proxy: {
+                mapUri: function(request, cb){
+                    return cb(null, "http://localhost:20009" + request.path);
+                },
+            }
+        },
+
+        config: {
+
+            auth: false
+
+        },
+    },
+
 
 
     // {

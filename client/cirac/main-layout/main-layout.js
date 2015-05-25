@@ -9,6 +9,7 @@ var MainLayoutLV = Mn.LayoutView.extend({
 	// },
 
 	regions: {
+		map1Region: "#map-1-region",
 		mainLeftRegion: "#main-left-region",
 		mainRightRegion: "#main-right-region"
 	},
@@ -20,7 +21,8 @@ var MainLayoutLV = Mn.LayoutView.extend({
 		// this.mainLeftRegion.show(menuLeftIV);
 
 		//this.showMainMenuLeft();
-		this.showMap();
+		this.showMap1();
+		//this.showMap2();
 	},
 
 	// showMainMenuLeft: function(){
@@ -28,10 +30,12 @@ var MainLayoutLV = Mn.LayoutView.extend({
 	// 	this.mainLeftRegion.show(mainMenuLeftIV);
 	// },
 
-	showMap: function(){
-		var mapIV = new MapIV();
-		this.mainRightRegion.show(mapIV);
+	showMap1: function(){
+		var map1IV = new MapIV();
+		this.map1Region.show(map1IV);
 	},
+
+
 
 	// showViewRight: function(code){
 
