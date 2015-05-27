@@ -16,6 +16,7 @@ server.connection({
 });
 
 
+
 // 2. configure views and template engine
 server.views(config.get("hapi.views"));
 

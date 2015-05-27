@@ -225,7 +225,74 @@ var routes = [
     },
 
 
+    // reverse proxy for tilestream
+    {
+        method: "GET",
+        path: "/tiles/{anyPath*}",
+        handler: {
+            proxy: {
+                mapUri: function(request, cb){
+                    return cb(null, "http://localhost:8001/" + request.params.anyPath);
+                },
+            }
+        },
+
+        config: {
+
+            auth: false
+
+        },
+    },
+
+    // tilejson route (json produced by tilemill)
+
+    {
+        method: "GET",
+        path: "/api/tilejson/{param?}",
+        handler: {
+            directory: {
+                path: "/home/pvieira/Documents/MapBox/export",
+                //listing: true
+            }
+        },
+
+        config: {
+            auth: false
+        }
+    },
+
+
     // tilemill routes
+
+/*
+
+    GET /api/Project
+    GET /api/updatesVersion
+GET /api/Error  (??? - nao encontrei)
+    GET /api/Export
+    PUT /api/Export
+    GET /api/Preview
+    GET /api/Config
+    GET /export
+
+
+Falta adicionar  (qual o metodo?)
+    /api/Favorite/
+    /api/Library/
+    /api/Page
+    /api/Plugin
+    /api/Key
+    /status
+    /restart
+
+    /assets
+    /manual
+    /oauth
+    /tile
+    /datasource
+    /clear-mapnik-cache
+
+    */
     {
         method: "GET",
         path: "/{lang}/tilemill",
@@ -250,7 +317,7 @@ var routes = [
 
     {
         method: "GET",
-        path: "/xassets/{anyPath*}",
+        path: "/assets/{anyPath*}",
         handler: {
             proxy: {
                 mapUri: function(request, cb){

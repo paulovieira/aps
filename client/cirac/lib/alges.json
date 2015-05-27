@@ -1,0 +1,88 @@
+{
+      "bounds": [
+        -9.246,
+        38.6893,
+        -9.2072,
+        38.7164
+      ],
+      "format": "png8",
+      "interactivity": {
+        "layer": "cirac_risk_algs_structure",
+        "template_full": "the <b>vuln</b> is: {{{value}}}",
+        "fields": [
+          "value",
+          "gid"
+        ]
+      },
+      "minzoom": 10,
+      "maxzoom": 20,
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "Stylesheet": [
+        {
+          "data": "\nMap {\n  background-color: #b8dee6;\n}\n\n#countries {\n  ::outline {\n    line-color: #85c5d3;\n    line-width: 2;\n    line-join: round;\n  }\n  polygon-fill: #fff;\n}\n/*\n*/\n\n/*\nSettings to use when rendering to mbtiles:\n\nZoom: 6-20\nCenter: -9.2277,38.7035,16\nBounds: -9.2328,38.6969,-9.2214,38.7085\nMetatile: 4\n\nMinimum value: 0\nMinimum value: 56\n*/\n\n\n#cirac_risk_algs_structure {\n  polygon-opacity:1;\n  polygon-fill: #377fbc;\n}\n\n#cirac_risk_algs_structure[zoom>=19] {\n  line-color: #cccccc;\n  line-width: 2.0;\n}\n\n#cirac_risk_algs_structure[zoom=18] {\n  line-color: #e5e5e5;\n  line-width: 1.5;\n}\n\n#cirac_risk_algs_structure[zoom<=17] {\n  line-color: white;\n  line-width:1.0;\n}",
+          "id": "style.mss"
+        }
+      ],
+      "Layer": [
+        {
+          "id": "countries",
+          "name": "countries",
+          "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+          "geometry": "polygon",
+          "Datasource": {
+            "file": "/home/pvieira/Documents/MapBox/project/cirac_risk_algs_structure-filename/layers/countries/82945364-10m-admin-0-countries.shp",
+            "type": "shape",
+            "id": "countries",
+            "project": "cirac_risk_algs_structure-filename",
+            "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over"
+          }
+        },
+        {
+          "geometry": "polygon",
+          "extent": [
+            -9.23015483557439,
+            38.6983675577879,
+            -9.22430982996008,
+            38.7102385725564
+          ],
+          "Datasource": {
+            "type": "postgis",
+            "table": "cirac_risk_algs_structure",
+            "key_field": "gid",
+            "geometry_field": "geom",
+            "extent_cache": "auto",
+            "extent": "-9.23015483557439,38.6983675577879,-9.22430982996008,38.7102385725564",
+            "user": "pvieira",
+            "password": "budapeste",
+            "dbname": "aps_150504",
+            "id": "cirac_risk_algs_structure",
+            "project": "cirac_risk_algs_structure-filename",
+            "srs": "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs",
+            "max_size": 8
+          },
+          "id": "cirac_risk_algs_structure",
+          "class": "",
+          "srs-name": "WGS84",
+          "srs": "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs",
+          "advanced": {},
+          "name": "cirac_risk_algs_structure"
+        }
+      ],
+      "scale": 1,
+      "metatile": 2,
+      "id": "cirac_risk_algs_structure-filename",
+      "_updated": 1432732420000,
+      "name": "cirac_risk_algs_structure-name",
+      "description": "cirac_risk_algs_structure-desc",
+      "legend": "<strong>Magnitude 2.5+ Earthquakes (Past 7 Days)</strong><br/>Circle size indicates magnitude of earthquake.\n<ul>\n <li><u>fefwe</u></li>\n <li>fwe fw</li>\n</ul>",
+      "tilejson": "2.0.0",
+      "scheme": "xyz",
+      "tiles": [
+        "http://localhost:8001/v2/cirac_risk_algs_structure-filename/{z}/{x}/{y}.png"
+      ],
+      "grids": [
+        "http://localhost:8001/v2/cirac_risk_algs_structure-filename/{z}/{x}/{y}.grid.json"
+      ],
+      "template": "{{#__location__}}{{/__location__}}{{#__teaser__}}{{/__teaser__}}{{#__full__}}the <b>vuln</b> is: {{{value}}}{{/__full__}}",
+      "version": "1.0.0"
+    }

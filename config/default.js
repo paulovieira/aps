@@ -252,6 +252,12 @@ module.exports = {
             level1: "estrategia-adaptacao",
             level2: "",
             level3: ""
+        },
+
+        {
+            level1: "cirac2",
+            level2: "",
+            level3: ""
         }
 
     ]

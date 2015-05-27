@@ -80,7 +80,11 @@ var tileProviders = {
     }),
 
     // FVI
-    "cirac_vul_bgri_FVI_N": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_FVI_N/{z}/{x}/{y}.png', {
+    // "cirac_vul_bgri_FVI_N": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_FVI_N/{z}/{x}/{y}.png', {
+    //     maxZoom: 16
+    // }),
+
+    "cirac_vul_bgri_FVI_N": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_risk_algs_structure_685522/{z}/{x}/{y}.png', {
         maxZoom: 16
     }),
 

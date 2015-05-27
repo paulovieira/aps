@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>Legend in a custom position</title>
+<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+<script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
+<style>
+  body { margin:0; padding:0; }
+  #map { position:absolute; top:0; bottom:0; width:100%; }
+</style>
+</head>
+
+<body>
+<div id='map'></div>
+
+<script>
+
+//var layer = L.mapbox.tileLayer('https://api.tiles.mapbox.com/v3/examples.map-0l53fhk2.json');
+
+//L.mapbox.accessToken = 'pk.eyJ1IjoicGF1bG92aWVpcmEiLCJhIjoiZzQ0LTVsWSJ9.INl3yoH_OrMrS2BxORgSbw';
+
+L.mapbox.map('map', 'http://cirac.dev/api/tilejson/cirac_vul_CP4_FVI_18fae2.json', {
+	center: [38.7035, -9.2277],
+	zoom: 14,
+
+
+    legendControl: {
+        // Any of the valid control positions:
+        // https://www.mapbox.com/mapbox.js/api/v2.1.9/l-control/#control-positions
+        position: 'bottomleft'
+    }
+
+
+});
+</script>
+</body>
+</html>
+
