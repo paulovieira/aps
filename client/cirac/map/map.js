@@ -570,6 +570,55 @@ debugger;
         });
 
 
+
+        // draw the chart
+//debugger;
+
+Chart.defaults.global = {
+    responsive: true,
+    showScale: true,
+    scaleOverride: false,
+};
+var ctx = document.getElementById("myChart").getContext("2d");
+var data2 = [
+    {
+        value: 300,
+        color:"#F7464A",
+        highlight: "#FF5A5E",
+        label: "Red"
+    },
+    {
+        value: 50,
+        color: "#46BFBD",
+        highlight: "#5AD3D1",
+        label: "Green"
+    },
+    {
+        value: 100,
+        color: "#FDB45C",
+        highlight: "#FFC870",
+        label: "Yellow"
+    }
+];
+
+var data = [
+    {
+        value: 300,
+        label: "xxx"
+      },
+    {
+        value: 50,
+        label: "Green"
+    },
+    {
+        value: 100,
+        label: "Yellow"
+    }
+];
+        var myPieChart = new Chart(ctx).Pie(data, {});
+
+
+
 /*        
 debugger;
 var xgeoJson = [
