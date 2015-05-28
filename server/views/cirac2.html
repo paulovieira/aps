@@ -4,8 +4,12 @@
 <meta charset=utf-8 />
 <title>Legend in a custom position</title>
 <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-<script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.js'></script>
-<link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
+
+<script src="/cirac/lib/js/mapbox.uncompressed-2.1.9.js"></script>
+<script src="/cirac/map/tilejson.js"></script>
+
+
+<link  href="/cirac/lib/css/mapbox.uncompressed-2.1.9.css" rel="stylesheet" /> 
 <style>
   body { margin:0; padding:0; }
   #map { position:absolute; top:0; bottom:0; width:100%; }
@@ -17,23 +21,46 @@
 
 <script>
 
+
+
 //var layer = L.mapbox.tileLayer('https://api.tiles.mapbox.com/v3/examples.map-0l53fhk2.json');
 
 //L.mapbox.accessToken = 'pk.eyJ1IjoicGF1bG92aWVpcmEiLCJhIjoiZzQ0LTVsWSJ9.INl3yoH_OrMrS2BxORgSbw';
 
-L.mapbox.map('map', 'http://cirac.dev/api/tilejson/cirac_vul_CP4_FVI_18fae2.json', {
+
+var myMaps = {};
+
+for(var key in tileJson){
+	myMaps[key] = {};
+	
+	myMaps[key]["tileLayer"] = L.mapbox.tileLayer(tileJson[key], {
+	});
+	
+	myMaps[key]["gridLayer"] = L.mapbox.gridLayer(tileJson[key], {
+	});
+
+	myMaps[key]["legendControl"] = L.mapbox.legendControl({position: 'bottomright'})
+											.addLegend(tileJson[key].legend);
+
+	myMaps[key]["gridControl"] = L.mapbox.gridControl(myMaps[key]["gridLayer"], {follow: true});
+}
+
+
+var map = L.mapbox.map('map', undefined, {
 	center: [38.7035, -9.2277],
 	zoom: 14,
-
-
-    legendControl: {
-        // Any of the valid control positions:
-        // https://www.mapbox.com/mapbox.js/api/v2.1.9/l-control/#control-positions
-        position: 'bottomleft'
-    }
-
-
 });
+
+var key = "cirac_vul_CP4_FVI_18fae2";
+map.addLayer(myMaps[key]["tileLayer"]);
+map.addLayer(myMaps[key]["gridLayer"]);
+map.addControl(myMaps[key]["legendControl"]);
+map.addControl(myMaps[key]["gridControl"]);
+
+// TODO: how to deal with multiple layers that have UTFGrids? (a base map and an overlay)
+// https://www.mapbox.com/mapbox.js/example/v1.0.0/multilayer-utfgrid/
+
+
 </script>
 </body>
 </html>

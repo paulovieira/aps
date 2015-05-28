@@ -17,10 +17,13 @@ var tileProviders = {
 
     // streets
     "Esri.WorldStreetMap": L.tileLayer.provider('Esri.WorldStreetMap'),
-    "MapQuestOpen.OSM": L.tileLayer.provider('MapQuestOpen.OSM'),
+    "MapQuestOpen.OSM": L.tileLayer.provider('MapQuestOpen.OSM', {
+        maxZoom: 19
+    }),
     "HERE.normalDayGrey": L.tileLayer.provider('HERE.normalDayGrey', {
         'app_id': 'Y8m9dK2brESDPGJPdrvs',
-        'app_code': 'dq2MYIvjAotR8tHvY8Q_Dg'
+        'app_code': 'dq2MYIvjAotR8tHvY8Q_Dg',
+        maxZoom: 19
     }),
 
     // terrain
@@ -41,7 +44,8 @@ var tileProviders = {
     "Esri.WorldImagery": L.tileLayer.provider('Esri.WorldImagery'), // maxZoom: 13
     "HERE.satelliteDay": L.tileLayer.provider('HERE.satelliteDay', {
         'app_id': 'Y8m9dK2brESDPGJPdrvs',
-        'app_code': 'dq2MYIvjAotR8tHvY8Q_Dg'
+        'app_code': 'dq2MYIvjAotR8tHvY8Q_Dg',
+        maxZoom: 19
     }), // maxZoom: 19
 
 
@@ -65,26 +69,38 @@ var tileProviders = {
     }),
 
 
-    // risk
+    // risk lisbon
     "cirac_risk_lx_T500": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_risk_lx_T500/{z}/{x}/{y}.png', {
-        maxZoom: 16
+        maxZoom: 20,
+        opacity: 0.7
     }),
     "cirac_risk_lx_structure": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_risk_lx_structure/{z}/{x}/{y}.png', {
-        maxZoom: 16
+        maxZoom: 20,
+        opacity: 0.8
     }),
+
+    // risk coimbra
     "cirac_risk_cmbr_bx_T500": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_risk_cmbr_bx_T500/{z}/{x}/{y}.png', {
         maxZoom: 16
     }),
+
     "cirac_risk_cmbr_sul_structure": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_risk_cmbr_sul_structure/{z}/{x}/{y}.png', {
         maxZoom: 16
     }),
 
-    // FVI
-    // "cirac_vul_bgri_FVI_N": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_FVI_N/{z}/{x}/{y}.png', {
-    //     maxZoom: 16
-    // }),
+    // risk alges
+    "cirac_risk_algs_T500": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_risk_algs_T500/{z}/{x}/{y}.png', {
+        maxZoom: 20,
+        opacity: 0.7
+    }),
 
-    "cirac_vul_bgri_FVI_N": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_risk_algs_structure_685522/{z}/{x}/{y}.png', {
+    "cirac_risk_algs_structure": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_risk_algs_structure/{z}/{x}/{y}.png', {
+        maxZoom: 20,
+        opacity: 0.8
+    }),
+
+    // FVI
+    "cirac_vul_bgri_FVI_N": L.tileLayer(Clima.tilesBaseUrl + '/v2/cirac_vul_bgri_FVI_N/{z}/{x}/{y}.png', {
         maxZoom: 16
     }),
 
@@ -813,6 +829,18 @@ var TileSwitcherIV = Mn.ItemView.extend({
             selector = "input[type='checkbox'][value='" + layerKey + "']";
             this.$(selector).prop("checked", true);
         }
+
+        layerKey = "cirac_risk_algs_structure";
+        if(this.map.hasLayer(tileProviders[layerKey])){
+            selector = "input[type='checkbox'][value='" + layerKey + "']";
+            this.$(selector).prop("checked", true);
+        }
+
+        layerKey = "cirac_risk_algs_T500";
+        if(this.map.hasLayer(tileProviders[layerKey])){
+            selector = "input[type='checkbox'][value='" + layerKey + "']";
+            this.$(selector).prop("checked", true);
+        }
     },
 
     changeTileLayer: function(e){
@@ -821,7 +849,7 @@ var TileSwitcherIV = Mn.ItemView.extend({
             //activeLayerKey = util.getCurrentBaseLayerKey(this.map),
             activeLayerKey = this.model.get("activeLayerKey"),
             activeLayer = tileProviders[activeLayerKey],
-            namesLayer = tileProviders["MapQuestOpen_HybridOverlay"];
+            overlay;
 
         if(newLayerKey === activeLayerKey){ return; }
 
@@ -833,8 +861,30 @@ var TileSwitcherIV = Mn.ItemView.extend({
             this.map.removeLayer(activeLayer);            
         }
 
-        if(this.map.hasLayer(namesLayer)){
-            namesLayer.bringToFront();
+        // make sure the overlays are in the top
+        overlay = tileProviders["cirac_risk_lx_T500"]
+        if(this.map.hasLayer(overlay)){
+            overlay.bringToFront();
+        }
+
+        overlay = tileProviders["cirac_risk_lx_structure"]
+        if(this.map.hasLayer(overlay)){
+            overlay.bringToFront();
+        }
+
+        overlay = tileProviders["cirac_risk_algs_T500"]
+        if(this.map.hasLayer(overlay)){
+            overlay.bringToFront();
+        }
+
+        overlay = tileProviders["cirac_risk_algs_structure"]
+        if(this.map.hasLayer(overlay)){
+            overlay.bringToFront();
+        }
+
+        overlay = tileProviders["MapQuestOpen_HybridOverlay"]
+        if(this.map.hasLayer(overlay)){
+            overlay.bringToFront();
         }
 
         this.model.set("activeLayerKey", newLayerKey);
@@ -934,6 +984,29 @@ var TileSwitcherIV = Mn.ItemView.extend({
                 this.map.removeLayer(layer);
             }
         }
+
+        else if(layerKey === "cirac_risk_algs_structure"){
+            layer = tileProviders[layerKey];
+
+            if(checked && !this.map.hasLayer(layer)){
+                this.map.addLayer(layer);
+            }
+            else if(!checked && this.map.hasLayer(layer)){
+                this.map.removeLayer(layer);
+            }
+        }
+
+        else if(layerKey === "cirac_risk_algs_T500"){
+            layer = tileProviders[layerKey];
+
+            if(checked && !this.map.hasLayer(layer)){
+                this.map.addLayer(layer);
+            }
+            else if(!checked && this.map.hasLayer(layer)){
+                this.map.removeLayer(layer);
+            }
+        }
+        
     },
 /*
     stopPropagation: function(e){
@@ -1206,7 +1279,7 @@ var MapIV = Mn.ItemView.extend({
             zoomControl: false,
             attributionControl: false,
             zoom: 10,
-            maxZoom: 16,
+            //maxZoom: 16,
             minZoom: 6,
             //layers: [overlays["Mapa base"]["Ruas"]]
             
