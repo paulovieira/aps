@@ -552,7 +552,10 @@ debugger;
     // after the list is shown, show the markers as well
     onShow: function(){
 
-        var geoJson = [];
+        var geoJson = [], xlsArray = [];
+
+
+        xlsArray.push(window.pointCollection.first().keys());
 
         // create an array of geoJson feature objects
         window.pointCollection.each(function(model){
@@ -566,57 +569,13 @@ debugger;
                     "type": "Point",
                     "coordinates": [model.get("lon"), model.get("lat")]
                 }
-            })
+            });
+
+            xlsArray.push(model.values());
         });
 
 
-
-        // draw the chart
-//debugger;
-
-Chart.defaults.global = {
-    responsive: true,
-    showScale: true,
-    scaleOverride: false,
-};
-var ctx = document.getElementById("myChart").getContext("2d");
-var data2 = [
-    {
-        value: 300,
-        color:"#F7464A",
-        highlight: "#FF5A5E",
-        label: "Red"
-    },
-    {
-        value: 50,
-        color: "#46BFBD",
-        highlight: "#5AD3D1",
-        label: "Green"
-    },
-    {
-        value: 100,
-        color: "#FDB45C",
-        highlight: "#FFC870",
-        label: "Yellow"
-    }
-];
-
-var data = [
-    {
-        value: 300,
-        label: "xxx"
-      },
-    {
-        value: 50,
-        label: "Green"
-    },
-    {
-        value: 100,
-        label: "Yellow"
-    }
-];
-        var myPieChart = new Chart(ctx).Pie(data, {});
-
+        $("#vuln").val(JSON.stringify(xlsArray));
 
 
 /*        
@@ -714,6 +673,86 @@ var xgeoJson = [
                     layer.bindPopup(util.getPopupMessage(feature.properties.value, feature.properties.description))
                 }
            }).addTo(this.map);
+
+
+        // draw the chart
+                
+
+        Chart.defaults.global.tooltipTemplate = "<%if (label){%><%=label%>: <%}%><%=value%> (<%= (circumference*100/6.283).toFixed(1) %> %)";
+
+        var ctx = document.getElementById("myChart").getContext("2d");
+
+        var data = [], countObj = {}, colorMapping;
+        if(this.map.hasLayer(tileProviders["cirac_vul_bgri_cfvi"])  ||
+            this.map.hasLayer(tileProviders["cirac_vul_bgri_cfvi75"])){
+
+            countObj = window.pointCollection.countBy("value");
+
+            colorMapping = {
+                "1": "#38A800",
+                "2": "#66BF00",
+                "3": "#9BD900",
+                "4": "#DEF200",
+                "5": "#FFDD00",
+                "6": "#FF9100",
+                "7": "#FF4800",
+                "8": "#FF0000"
+            }
+
+            for(var key in countObj){
+
+                data.push({
+                    value: countObj[key],
+                    label: "value " + key,
+                    color: colorMapping[key],
+                    highlight: colorMapping[key]
+                });
+            }
+
+        }
+        else if(this.map.hasLayer(tileProviders["cirac_vul_bgri_FVI_N"])  ||
+            this.map.hasLayer(tileProviders["cirac_vul_bgri_FVI_75"])){
+
+            window.pointCollection.each(function(model){
+                var value = model.get("value");
+                if(value >= 3 && value <= 5){
+                    countObj["3-5"] = _.isNumber(countObj["3-5"]) ? countObj["3-5"]+1 : 1;
+                }
+                else if(value >= 6 && value <= 7){
+                    countObj["6-7"] = _.isNumber(countObj["6-7"]) ? countObj["6-7"]+1 : 1;
+                }
+                else if(value >= 8 && value <= 10){
+                    countObj["8-10"] = _.isNumber(countObj["8-10"]) ? countObj["8-10"]+1 : 1;
+                }
+                else if(value >= 11 && value <= 12){
+                    countObj["11-12"] = _.isNumber(countObj["11-12"]) ? countObj["11-12"]+1 : 1;
+                }
+            });
+
+            colorMapping = {
+                "3-5": "#38A800",
+                "6-7": "#FFFF00",
+                "8-10": "#FF9500",
+                "11-12": "#FF0000"
+            }
+
+            for(var key in countObj){
+
+                data.push({
+                    value: countObj[key],
+                    label: "value " + key,
+                    color: colorMapping[key],
+                    highlight: colorMapping[key]
+                });
+            }
+
+        }
+        else{
+            return;            
+        }
+
+        var myPieChart = new Chart(ctx).Pie(data, {});
+
 
     }
 });
@@ -1805,6 +1844,7 @@ var MapIV = Mn.ItemView.extend({
 
         // callback to update the legend 
         this.map.on("layeradd", function(e){
+//debugger;
             // we only care if the layer that was added is a TileLayer
             if(!(e.layer instanceof L.TileLayer)){ return; }
 
