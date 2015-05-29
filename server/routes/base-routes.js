@@ -3,6 +3,9 @@ var config = require('config');
 var pre = require(global.rootPath +  'server/common/pre.js');
 var validate = require(global.rootPath + 'server/common/validate.js');
 var baseHandlers = require(global.rootPath + 'server/routes/base-handlers.js');
+var Boom = require("boom");
+var Wreck = require("wreck");
+
 
 var routes = [
 
@@ -225,26 +228,108 @@ var routes = [
     },
 
 
-    // reverse proxy for tilestream
+    // reverse proxy for tilestream (see also the cached version below)
     {
         method: "GET",
         path: "/tiles/{anyPath*}",
         handler: {
             proxy: {
                 mapUri: function(request, cb){
-                    return cb(null, "http://localhost:8001/" + request.params.anyPath);
-                },
+                    return cb(null, "http://localhost:8001/" + request.params.anyPath);                    
+                }
             }
         },
 
         config: {
-
-            auth: false
-
+            auth: false,
         },
     },
 
-    // tilejson route (json produced by tilemill)
+
+    // reverse proxy for tilestream (cached version - it has to be improved because it takes a lot of time doing the converson)
+    {
+        method: "GET",
+        path: "/cachedtiles/{anyPath*}",
+        handler: {
+            proxy: {
+                mapUri: function(request, cb){
+                    return cb(null, "http://localhost:8001/" + request.params.anyPath);                    
+                },
+                onResponse: function(err, res, request, reply, settings, ttl){
+                    
+                    if(err){
+                        return reply(Boom.badImplementation());
+                    }
+
+
+                    //var buffer = new Buffer("I'm a string!", "utf-8");
+                    //console.log(buffer instanceof Buffer);
+
+                    console.log("cacheId", request.pre.cacheId);
+                    Wreck.read(res, null, function (err, buffer) {
+
+                        request.server.app.memoryCachePolicy.set(request.pre.cacheId, buffer, 0, function(err){
+                            if(err){
+                                return reply(Boom.badImplementation());
+                            }
+
+                            console.log("the tile was cached");
+                            return reply(buffer);
+                        });
+
+                    });
+                    
+                }
+            }
+        },
+
+        config: {
+            auth: false,
+            pre: [{
+                method: function(request, reply){
+
+                    var array = (request.params.anyPath).split("/");
+                    array.shift();
+                    var cacheId = array.join("/");
+
+
+                    console.log("checking cache...");
+                    request.server.app.memoryCachePolicy.get(cacheId, function(err, value, cachedData, report){
+
+                        //console.log("value: \n", value);
+                        // console.log("is buffer: ", value instanceof Buffer);
+                        // console.log("is array: ", value instanceof Array);
+                        // if(cachedData){
+                        //     console.log("is buffer 2: ", cachedData.item instanceof Buffer);
+                        // }
+                        //console.log("cachedData: \n", cachedData);
+                        //console.log("\nreport: \n", report);
+                        //console.log("--------------")
+
+                        if(err){
+                            return cb(err);
+                        }
+
+                        if(cachedData){
+                            console.log("the tile was served from cache!")
+                            //return reply(cachedData.item).takeover();
+                            var buffer = new Buffer(value);
+                            return reply(buffer).takeover();
+                        }
+
+                        // continue to the handler (which in this case will be mapUri and onResponse)
+                        return reply(cacheId);
+
+                    });
+
+
+                },
+                assign: "cacheId"
+            }]
+        },
+    },
+
+    // tilejson route (obtain the json produced by tilemill)
 
     {
         method: "GET",

@@ -10,10 +10,18 @@ var Hapi = require('hapi'),
 // 1. create a server with the options defined in the main server's settings file
 var server = new Hapi.Server(config.get("hapi.server"));
 
+var memoryCachePolicy = server.cache({
+    expiresIn: 60*1000,
+    segment: "mem-segment"
+});
+server.app.memoryCachePolicy = memoryCachePolicy;
+
+
 server.connection({
     host: config.get("host"),
     port: config.get("port")
 });
+
 
 
 

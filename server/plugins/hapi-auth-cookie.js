@@ -18,6 +18,7 @@ module.exports = function registerHapiAuthCookie(server){
             console.log("plugin registered: hapi-auth-cookie");
 
             // 12 * 60 * 60 * 1000 = 12 hours
+            // create a new cache policy (using the default catbox client, which is memory)
             var cache = server.cache({ segment: 'sessions',  expiresIn: 12 * 60 * 60 * 1000 });
             server.app.cache = cache;
 
