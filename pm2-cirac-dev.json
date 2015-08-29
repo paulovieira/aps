@@ -1,0 +1,11 @@
+{
+  "name": "cirac.dev",
+  "script": "index.js",
+  "args": [
+  ],
+  "env": {
+    "NODE_ENV": "dev"
+  },
+  "max_memory_restart" : "300M",
+  "treekill": true
+}
