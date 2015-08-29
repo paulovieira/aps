@@ -235,6 +235,7 @@ var routes = [
         handler: {
             proxy: {
                 mapUri: function(request, cb){
+                    console.log("xxx");
                     return cb(null, "http://localhost:8001/" + request.params.anyPath);                    
                 }
             }
