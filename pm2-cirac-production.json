@@ -4,7 +4,7 @@
   "args": [
   ],
   "env": {
-    "NODE_ENV": "production"
+    "NODE_ENV": "dev"
   },
   "max_memory_restart" : "300M",
   "treekill": true
