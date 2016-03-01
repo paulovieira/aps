@@ -18,6 +18,7 @@
     "hapi-auth-cookie": "2.0.0",
     "hapi-nunjucks": "^0.0.5",
     "hapi-swagger": "0.6.0",
+    "hapi-tilelive": "0.0.2",
     "hoek": "2.11.0",
     "install": "^0.1.8",
     "joi": "5.0.2",

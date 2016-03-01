@@ -1,3 +1,4 @@
+var Path = require("path");
 var Hapi = require('hapi'),
     Nunjucks = require('hapi-nunjucks'),
     _ = require('underscore'),
@@ -43,6 +44,32 @@ Nunjucks.addFilter('stringify', function(str) {
 // 3. register the plugins
 utils.registerPlugins(server);
 
+server.register(
+    {
+        register: require('hapi-tilelive'),
+        options: {
+            source: config.get("tilesDir"),
+            routePath: "/tiles/v2/{mapId}/{z}/{x}/{y}",
+
+            // options for Chokidar.watch
+            watch: {
+                cwd: config.get("tilesDir"),
+                ignoreInitial: true,
+                ignored: "*.export*",
+                awaitWriteFinish: {
+                    stabilityThreshold: 1000,
+                    pollInterval: 500
+                }
+            }
+        }
+    }, 
+    function (err) {
+
+        if (err){ throw err; }
+
+        console.log("plugin registered: hapi-tilelive");
+    }
+);
 
 // 3.5 require the db module to initialize the db instance
 require(global.rootPath + 'server/common/db.js');
