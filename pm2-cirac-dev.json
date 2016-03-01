@@ -1,5 +1,5 @@
 {
-  "name": "cirac.dev",
+  "name": "cirac v1",
   "script": "index.js",
   "args": [
   ],
@@ -7,5 +7,7 @@
     "NODE_ENV": "dev"
   },
   "max_memory_restart" : "300M",
-  "treekill": true
+  "treekill": true,
+  "restart_delay": 5000,
+  "out_file": "/dev/null"
 }
