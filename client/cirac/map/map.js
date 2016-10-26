@@ -507,7 +507,7 @@ var OptionsMenuM = Backbone.Model.extend({
 })
 var optionsMenuM = new OptionsMenuM({
     activeTabId: "tile-switcher",
-    activeLayerKey: "MapQuestOpen.OSM",
+    activeLayerKey: "Esri.WorldStreetMap",
     activeMapIsCirac: false,
     //BGRIBorders: false
 });
@@ -1389,7 +1389,7 @@ var MapIV = Mn.ItemView.extend({
             // }]
         });
 
-        this.map.addLayer(tileProviders["MapQuestOpen.OSM"]);
+        this.map.addLayer(tileProviders["Esri.WorldStreetMap"]);
         /*
         this.map2 = L.map('map2', {
             center: [38.75, -9.15],
